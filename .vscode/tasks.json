@@ -1,0 +1,73 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "⚡ dev",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "dev"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "🏗️ build",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "build"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "🧠 typecheck",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "typecheck"],
+      "group": "test",
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "🔍 lint",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "lint"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "🧼 format",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "format"],
+      "problemMatcher": []
+    },
+    {
+      "label": "🧪 test",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "test"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "📊 coverage",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "coverage"],
+      "problemMatcher": []
+    },
+    {
+      "label": "✅ check",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "check"],
+      "problemMatcher": []
+    },
+    {
+      "label": "👀 preview",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "preview"],
+      "problemMatcher": []
+    }
+  ]
+}
