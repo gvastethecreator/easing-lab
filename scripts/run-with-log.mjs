@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { createWriteStream, mkdirSync } from 'node:fs';
+import { createWriteStream, existsSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const args = process.argv.slice(2);
@@ -16,12 +16,24 @@ mkdirSync(logsDir, { recursive: true });
 const logFilePath = resolve(logsDir, `${logName}.log`);
 const logStream = createWriteStream(logFilePath, { flags: 'a' });
 const startedAt = new Date().toISOString();
+const env = { ...process.env };
+
+const isVpLintWorkflow =
+  command === 'vp' && commandArgs.some((arg) => arg === 'lint' || arg === 'check');
+
+if (process.platform === 'win32' && isVpLintWorkflow) {
+  const tsgolintExePath = resolve(process.cwd(), 'node_modules', '.bin', 'tsgolint.exe');
+
+  if (existsSync(tsgolintExePath)) {
+    env.OXLINT_TSGOLINT_PATH = tsgolintExePath;
+  }
+}
 
 logStream.write(`\n=== ${startedAt} :: ${command} ${commandArgs.join(' ')} ===\n`);
 
 const child = spawn(command, commandArgs, {
   cwd: process.cwd(),
-  env: process.env,
+  env,
   shell: process.platform === 'win32',
   stdio: ['inherit', 'pipe', 'pipe'],
 });

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
@@ -27,20 +26,21 @@ const App: React.FC = () => {
     { x: 0, y: 0, handle2: { x: 0.34, y: 0 } },
     { x: 1, y: 1, handle1: { x: 0.66, y: 1 } },
   ]);
-  
-  const customEaseId = "custom-gsap-ease";
+
+  const customEaseId = 'custom-gsap-ease';
 
   // Master Animation Logic
   useEffect(() => {
     const currentEase = `cubic-bezier(${p1.x}, ${p1.y}, ${p2.x}, ${p2.y})`;
-    
+
     // Kill previous tween
     if (masterTweenRef.current) {
       masterTweenRef.current.kill();
     }
 
     // Create master tween
-    masterTweenRef.current = gsap.fromTo(progressRef.current, 
+    masterTweenRef.current = gsap.fromTo(
+      progressRef.current,
       { progress: 0 },
       {
         progress: 1,
@@ -53,10 +53,10 @@ const App: React.FC = () => {
           // Clamp values for safety
           if (progressRef.current.progress > 1) progressRef.current.progress = 1;
           if (progressRef.current.progress < 0) progressRef.current.progress = 0;
-        }
+        },
       }
     );
-    
+
     // Update global CSS vars for components relying on CSS transitions matching the GSAP tween
     const root = document.documentElement;
     root.style.setProperty('--global-duration', `${duration}s`);
@@ -70,33 +70,39 @@ const App: React.FC = () => {
   // Handle Play/Pause efficiently
   useEffect(() => {
     if (masterTweenRef.current) {
-      isPlaying ? masterTweenRef.current.play() : masterTweenRef.current.pause();
+      if (isPlaying) {
+        masterTweenRef.current.play();
+      } else {
+        masterTweenRef.current.pause();
+      }
     }
   }, [isPlaying]);
 
   // Generate CustomEase when points change
   useEffect(() => {
     const pathParts: string[] = [`M ${gsapPoints[0].x},${gsapPoints[0].y}`];
-    
-    for (let i = 0; i < gsapPoints.length - 1; i++) {
-        const start = gsapPoints[i];
-        const end = gsapPoints[i + 1];
 
-        if (start.handle2 && end.handle1) {
-            pathParts.push(`C ${start.handle2.x},${start.handle2.y} ${end.handle1.x},${end.handle1.y} ${end.x},${end.y}`);
-        } else {
-            pathParts.push(`L ${end.x},${end.y}`);
-        }
+    for (let i = 0; i < gsapPoints.length - 1; i++) {
+      const start = gsapPoints[i];
+      const end = gsapPoints[i + 1];
+
+      if (start.handle2 && end.handle1) {
+        pathParts.push(
+          `C ${start.handle2.x},${start.handle2.y} ${end.handle1.x},${end.handle1.y} ${end.x},${end.y}`
+        );
+      } else {
+        pathParts.push(`L ${end.x},${end.y}`);
+      }
     }
-    
-    const pathString = pathParts.join(" ");
+
+    const pathString = pathParts.join(' ');
     CustomEase.create(customEaseId, pathString);
   }, [gsapPoints, customEaseId]);
 
   return (
     <div className="min-h-screen font-sans flex flex-col selection:bg-accent-primary-bg selection:text-accent-primary transition-colors duration-300">
-      <Header 
-        activeView={view} 
+      <Header
+        activeView={view}
         setView={setView}
         progressRef={progressRef}
         isPlaying={isPlaying}
@@ -104,19 +110,23 @@ const App: React.FC = () => {
       />
       <main className="p-4 flex-grow w-full max-w-[1920px] mx-auto animate-in fade-in duration-500">
         {view === 'cubic' && (
-          <CubicBezierView 
-            p1={p1} setP1={setP1} 
-            p2={p2} setP2={setP2}
-            duration={duration} setDuration={setDuration}
-            range={range} setRange={setRange}
+          <CubicBezierView
+            p1={p1}
+            setP1={setP1}
+            p2={p2}
+            setP2={setP2}
+            duration={duration}
+            setDuration={setDuration}
+            range={range}
+            setRange={setRange}
             progressRef={progressRef}
           />
         )}
         {view === 'gsap' && (
-          <GSAPView 
-            customEaseId={customEaseId} 
-            points={gsapPoints} 
-            setPoints={setGsapPoints} 
+          <GSAPView
+            customEaseId={customEaseId}
+            points={gsapPoints}
+            setPoints={setGsapPoints}
             progressRef={progressRef}
             duration={duration}
             setDuration={setDuration}

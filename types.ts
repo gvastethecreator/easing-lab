@@ -1,4 +1,3 @@
-
 export enum EasingCategory {
   ALL = 'All',
   CUBIC = 'Cubic Easing',
@@ -60,16 +59,4 @@ export interface PathPoint extends Point {
   handle1?: Point;
   // Control point for the curve *starting* from this anchor
   handle2?: Point;
-}
-
-// Global Type Augmentation for View Transitions API
-declare global {
-  interface Document {
-    startViewTransition?: (callback: () => void | Promise<void>) => {
-      ready: Promise<void>;
-      finished: Promise<void>;
-      updateCallbackDone: Promise<void>;
-      skipTransition: () => void;
-    };
-  }
 }

@@ -8,7 +8,8 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
     type: EasingType.IN_OUT,
     path: 'M0,224 C144.48,213.92 79.52,0 224,0',
     bezier: [0.645, 0.045, 0.355, 1],
-    description: 'A standard, symmetrical curve. Starts slow, accelerates, then decelerates smoothly.',
+    description:
+      'A standard, symmetrical curve. Starts slow, accelerates, then decelerates smoothly.',
   },
   {
     id: 'in',
@@ -28,7 +29,7 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
     bezier: [0, 0, 0.58, 1],
     description: 'Starts fast and decelerates to a smooth stop. Ideal for exits.',
   },
-   {
+  {
     id: 'in-out-back',
     name: 'Ease In Out Back',
     category: EasingCategory.CUBIC,
@@ -44,7 +45,8 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
     type: EasingType.IN,
     path: 'M0,224 C80.64,224 147.84,349.44 224,0',
     bezier: [0.36, 0, 0.66, -0.56],
-    description: 'Pulls back slightly at the start before accelerating forward. Creates anticipation.',
+    description:
+      'Pulls back slightly at the start before accelerating forward. Creates anticipation.',
   },
   {
     id: 'out-back',
@@ -179,7 +181,8 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
     type: EasingType.OUT,
     path: 'M0,224 C35.84,0 67.2,0 224,0',
     bezier: [0.16, 1, 0.3, 1],
-    description: 'A slightly stronger version of the exponential out curve for an even more abrupt stop.',
+    description:
+      'A slightly stronger version of the exponential out curve for an even more abrupt stop.',
   },
   {
     id: 'in-out-quad',
@@ -287,7 +290,8 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
     type: EasingType.IN_OUT,
     path: 'M0,224 C156.8,224 67.2,0 224,0',
     bezier: [0.7, 0, 0.3, 1],
-    description: 'Starts very fast, hesitates in the middle, then finishes. Creates a unique rhythm.',
+    description:
+      'Starts very fast, hesitates in the middle, then finishes. Creates a unique rhythm.',
   },
   {
     id: 'smooth-step',
@@ -333,7 +337,7 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
     category: EasingCategory.ELASTIC,
     type: EasingType.IN,
     path: 'M0,224 C103.04,347.2 89.6,0 224,0',
-    bezier: [0.46,-0.55,0.4,1],
+    bezier: [0.46, -0.55, 0.4, 1],
     description: 'An elastic band effect at the start, winding up before it moves.',
   },
   {
@@ -342,7 +346,7 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
     category: EasingCategory.ELASTIC,
     type: EasingType.OUT,
     path: 'M0,224 C112,224 120.96,-123.2 224,0',
-    bezier: [0.5,0,0.54,1.55],
+    bezier: [0.5, 0, 0.54, 1.55],
     description: 'An elastic band effect at the end, overshooting and oscillating to a stop.',
   },
   {
@@ -379,7 +383,8 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
     type: EasingType.OTHER,
     path: 'M0,224 C89.6,313.6 134.4,-89.6 224,0',
     bezier: [0.4, -0.4, 0.6, 1.4],
-    description: 'Pulls back before moving forward, then overshoots before settling. Highly expressive.',
+    description:
+      'Pulls back before moving forward, then overshoots before settling. Highly expressive.',
   },
   // Bounce Category
   {
@@ -425,7 +430,8 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
     type: EasingType.OUT,
     path: 'M0,224 C112,-44.8 112,0 224,0',
     bezier: [0.5, 1.2, 0.5, 1],
-    description: 'A soft bounce with a single, gentle oscillation. Like an object plopping into place.',
+    description:
+      'A soft bounce with a single, gentle oscillation. Like an object plopping into place.',
   },
   // Spring Category
   {

@@ -1,14 +1,10 @@
 /// <reference types="vitest/config" />
 
-import { fileURLToPath, URL } from 'node:url';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite-plus';
 
-const workspaceRoot = fileURLToPath(new URL('.', import.meta.url));
-
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
+const config = {
+  plugins: [...react(), tailwindcss()],
   server: {
     host: '0.0.0.0',
     port: 3000,
@@ -17,20 +13,22 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 4173,
   },
-  resolve: {
-    alias: {
-      '@': workspaceRoot,
-    },
-  },
   build: {
     target: 'es2022',
     sourcemap: true,
     chunkSizeWarningLimit: 900,
     rolldownOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom'],
-          gsap: ['gsap'],
+        manualChunks(id: string) {
+          if (id.includes('/node_modules/react/') || id.includes('/node_modules/react-dom/')) {
+            return 'react';
+          }
+
+          if (id.includes('/node_modules/gsap/')) {
+            return 'gsap';
+          }
+
+          return undefined;
         },
       },
     },
@@ -40,7 +38,13 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: ['./vitest.setup.ts'],
     include: ['**/*.{test,spec}.{ts,tsx}'],
-    exclude: ['dist/**', 'coverage/**', 'logs/**', 'migrated_prompt_history/**'],
+    exclude: [
+      '**/node_modules/**',
+      'dist/**',
+      'coverage/**',
+      'logs/**',
+      'migrated_prompt_history/**',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'json-summary'],
@@ -69,4 +73,6 @@ export default defineConfig({
   staged: {
     '*.{ts,tsx,css,md,json,html}': 'vp check --fix',
   },
-});
+};
+
+export default config;

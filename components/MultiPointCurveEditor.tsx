@@ -1,4 +1,3 @@
-
 import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react';
 import { useHistory } from '../hooks/useHistory';
 import { AnimationPreview } from './AnimationPreview';
@@ -13,26 +12,41 @@ import { arePathPointsEqual } from '../utils/equality';
 const VIEW_BOX_SIZE = 250;
 
 interface MultiPointCurveEditorProps {
-  points: PathPoint[];
-  setPoints: (points: PathPoint[]) => void;
-  customEaseId: string;
-  duration: number;
-  setDuration: (d: number) => void;
-  range: number;
-  setRange: (r: number) => void;
-  progressRef: React.MutableRefObject<{ progress: number }>;
+    points: PathPoint[];
+    setPoints: (points: PathPoint[]) => void;
+    customEaseId: string;
+    duration: number;
+    setDuration: (d: number) => void;
+    range: number;
+    setRange: (r: number) => void;
+    progressRef: React.MutableRefObject<{ progress: number }>;
 }
 
-export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({ 
-    points: propPoints, setPoints: setPropPoints, customEaseId, duration, setDuration, range, setRange, progressRef 
+export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
+    points: propPoints,
+    setPoints: setPropPoints,
+    customEaseId,
+    duration,
+    setDuration,
+    range,
+    setRange,
+    progressRef,
 }) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const [copied, setCopied] = useState(false);
     const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null);
     const [snapEnabled, setSnapEnabled] = useState(false);
-    
+
     // Internal history state
-    const { state: points, set: setPointsInternal, undo, redo, reset, canUndo, canRedo } = useHistory(propPoints);
+    const {
+        state: points,
+        set: setPointsInternal,
+        undo,
+        redo,
+        reset,
+        canUndo,
+        canRedo,
+    } = useHistory(propPoints);
     const isInteractingRef = useRef(false);
 
     // ---------------------------------------------------------------------------
@@ -49,14 +63,17 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
     }, [propPoints, reset, points]);
 
     // 2. Upward Sync helper
-    const updateParent = useCallback((newPoints: PathPoint[]) => {
-        setPropPoints(newPoints);
-    }, [setPropPoints]);
+    const updateParent = useCallback(
+        (newPoints: PathPoint[]) => {
+            setPropPoints(newPoints);
+        },
+        [setPropPoints]
+    );
 
     // Handle Undo/Redo (when history changes but no interaction active)
     useEffect(() => {
         if (!isInteractingRef.current) {
-             updateParent(points);
+            updateParent(points);
         }
     }, [points, updateParent]);
 
@@ -64,8 +81,10 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
     // HANDLERS
     // ---------------------------------------------------------------------------
 
-    const startInteraction = () => { isInteractingRef.current = true; };
-    const endInteraction = () => { 
+    const startInteraction = () => {
+        isInteractingRef.current = true;
+    };
+    const endInteraction = () => {
         isInteractingRef.current = false;
         setPointsInternal(points, true); // Commit history
         updateParent(points);
@@ -76,7 +95,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
     const handleReset = () => {
         const newPoints = [
             { x: 0, y: 0, handle2: { x: 0.3, y: 0 } },
-            { x: 1, y: 1, handle1: { x: 0.7, y: 1 } }
+            { x: 1, y: 1, handle1: { x: 0.7, y: 1 } },
         ];
         setPointsInternal(newPoints, true);
         updateParent(newPoints);
@@ -94,29 +113,35 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
                 const dx = next.x - prev.x;
                 const dy = next.y - prev.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                
+
                 const d1 = Math.sqrt(Math.pow(p.x - prev.x, 2) + Math.pow(p.y - prev.y, 2));
                 const d2 = Math.sqrt(Math.pow(next.x - p.x, 2) + Math.pow(next.y - p.y, 2));
 
                 const scale1 = (d1 / dist) * tension;
                 const scale2 = (d2 / dist) * tension;
 
-                point.handle1 = { 
-                    x: parseFloat((p.x - dx * scale1).toFixed(3)), 
-                    y: parseFloat((p.y - dy * scale1).toFixed(3)) 
+                point.handle1 = {
+                    x: parseFloat((p.x - dx * scale1).toFixed(3)),
+                    y: parseFloat((p.y - dy * scale1).toFixed(3)),
                 };
-                point.handle2 = { 
-                    x: parseFloat((p.x + dx * scale2).toFixed(3)), 
-                    y: parseFloat((p.y + dy * scale2).toFixed(3)) 
+                point.handle2 = {
+                    x: parseFloat((p.x + dx * scale2).toFixed(3)),
+                    y: parseFloat((p.y + dy * scale2).toFixed(3)),
                 };
             } else if (i === 0 && next) {
                 const tx = next.x - p.x;
                 const ty = next.y - p.y;
-                point.handle2 = { x: parseFloat((p.x + tx * tension).toFixed(3)), y: parseFloat((p.y + ty * tension).toFixed(3)) };
+                point.handle2 = {
+                    x: parseFloat((p.x + tx * tension).toFixed(3)),
+                    y: parseFloat((p.y + ty * tension).toFixed(3)),
+                };
             } else if (i === arr.length - 1 && prev) {
                 const tx = p.x - prev.x;
                 const ty = p.y - prev.y;
-                point.handle1 = { x: parseFloat((p.x - tx * tension).toFixed(3)), y: parseFloat((p.y - ty * tension).toFixed(3)) };
+                point.handle1 = {
+                    x: parseFloat((p.x - tx * tension).toFixed(3)),
+                    y: parseFloat((p.y - ty * tension).toFixed(3)),
+                };
             }
             return point;
         });
@@ -130,42 +155,43 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
             setPointsInternal(newPoints, true);
             updateParent(newPoints);
             if (selectedPointIndex === indexToRemove) setSelectedPointIndex(null);
-            else if (selectedPointIndex !== null && selectedPointIndex > indexToRemove) setSelectedPointIndex(selectedPointIndex - 1);
+            else if (selectedPointIndex !== null && selectedPointIndex > indexToRemove)
+                setSelectedPointIndex(selectedPointIndex - 1);
         }
     };
 
     const addPoint = () => {
-      let largestGapIndex = 0;
-      let maxGap = 0;
+        let largestGapIndex = 0;
+        let maxGap = 0;
 
-      for (let i = 0; i < points.length - 1; i++) {
-          const gap = points[i+1].x - points[i].x;
-          if (gap > maxGap) {
-              maxGap = gap;
-              largestGapIndex = i;
-          }
-      }
+        for (let i = 0; i < points.length - 1; i++) {
+            const gap = points[i + 1].x - points[i].x;
+            if (gap > maxGap) {
+                maxGap = gap;
+                largestGapIndex = i;
+            }
+        }
 
-      const p1 = points[largestGapIndex];
-      const p2 = points[largestGapIndex + 1];
-      
-      const newPoint: PathPoint = {
-          x: parseFloat((p1.x + (p2.x - p1.x) / 2).toFixed(3)),
-          y: parseFloat((p1.y + (p2.y - p1.y) / 2).toFixed(3)),
-      };
-      
-      const handleOffset = (p2.x - p1.x) / 6;
-      newPoint.handle1 = { x: parseFloat((newPoint.x - handleOffset).toFixed(3)), y: newPoint.y };
-      newPoint.handle2 = { x: parseFloat((newPoint.x + handleOffset).toFixed(3)), y: newPoint.y };
-      
-      const newPoints = [
-          ...points.slice(0, largestGapIndex + 1),
-          newPoint,
-          ...points.slice(largestGapIndex + 1)
-      ];
-      setPointsInternal(newPoints, true);
-      updateParent(newPoints);
-      setSelectedPointIndex(largestGapIndex + 1);
+        const p1 = points[largestGapIndex];
+        const p2 = points[largestGapIndex + 1];
+
+        const newPoint: PathPoint = {
+            x: parseFloat((p1.x + (p2.x - p1.x) / 2).toFixed(3)),
+            y: parseFloat((p1.y + (p2.y - p1.y) / 2).toFixed(3)),
+        };
+
+        const handleOffset = (p2.x - p1.x) / 6;
+        newPoint.handle1 = { x: parseFloat((newPoint.x - handleOffset).toFixed(3)), y: newPoint.y };
+        newPoint.handle2 = { x: parseFloat((newPoint.x + handleOffset).toFixed(3)), y: newPoint.y };
+
+        const newPoints = [
+            ...points.slice(0, largestGapIndex + 1),
+            newPoint,
+            ...points.slice(largestGapIndex + 1),
+        ];
+        setPointsInternal(newPoints, true);
+        updateParent(newPoints);
+        setSelectedPointIndex(largestGapIndex + 1);
     };
 
     const togglePointSmoothing = (index: number) => {
@@ -179,7 +205,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
             const prev = newPoints[index - 1] || { x: point.x - 0.1, y: point.y };
             const next = newPoints[index + 1] || { x: point.x + 0.1, y: point.y };
             const width = Math.min(Math.abs(point.x - prev.x), Math.abs(next.x - point.x)) * 0.35;
-            
+
             point.handle1 = { x: parseFloat((point.x - width).toFixed(3)), y: point.y };
             point.handle2 = { x: parseFloat((point.x + width).toFixed(3)), y: point.y };
         }
@@ -190,14 +216,14 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
 
     const updatePointCoordinate = (index: number, axis: 'x' | 'y', value: number) => {
         const newPoints = [...points];
-        
+
         if (axis === 'x') {
-             const prevX = index > 0 ? newPoints[index - 1].x : 0;
-             const nextX = index < newPoints.length - 1 ? newPoints[index + 1].x : 1;
-             
-             if (index === 0) value = 0;
-             else if (index === newPoints.length - 1) value = 1;
-             else value = Math.max(prevX + 0.001, Math.min(nextX - 0.001, value));
+            const prevX = index > 0 ? newPoints[index - 1].x : 0;
+            const nextX = index < newPoints.length - 1 ? newPoints[index + 1].x : 1;
+
+            if (index === 0) value = 0;
+            else if (index === newPoints.length - 1) value = 1;
+            else value = Math.max(prevX + 0.001, Math.min(nextX - 0.001, value));
         }
 
         const point = { ...newPoints[index], [axis]: value };
@@ -205,11 +231,15 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
         if (axis === 'x' || axis === 'y') {
             const dx = value - newPoints[index][axis];
             if (axis === 'x') {
-                if (point.handle1) point.handle1 = { ...point.handle1, x: parseFloat((point.handle1.x + dx).toFixed(3)) };
-                if (point.handle2) point.handle2 = { ...point.handle2, x: parseFloat((point.handle2.x + dx).toFixed(3)) };
+                if (point.handle1)
+                    point.handle1 = { ...point.handle1, x: parseFloat((point.handle1.x + dx).toFixed(3)) };
+                if (point.handle2)
+                    point.handle2 = { ...point.handle2, x: parseFloat((point.handle2.x + dx).toFixed(3)) };
             } else {
-                if (point.handle1) point.handle1 = { ...point.handle1, y: parseFloat((point.handle1.y + dx).toFixed(3)) };
-                if (point.handle2) point.handle2 = { ...point.handle2, y: parseFloat((point.handle2.y + dx).toFixed(3)) };
+                if (point.handle1)
+                    point.handle1 = { ...point.handle1, y: parseFloat((point.handle1.y + dx).toFixed(3)) };
+                if (point.handle2)
+                    point.handle2 = { ...point.handle2, y: parseFloat((point.handle2.y + dx).toFixed(3)) };
             }
         }
 
@@ -217,31 +247,44 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
         setPointsInternal(newPoints, true);
         updateParent(newPoints);
     };
-    
+
     const handleDragAnchor = (index: number, draggedPoint: Point) => {
         const newPoints = [...points];
-        
+
         const prevX = index > 0 ? newPoints[index - 1].x : 0;
         const nextX = index < newPoints.length - 1 ? newPoints[index + 1].x : 1;
-        
+
         const constrainedX = Math.max(prevX + 0.001, Math.min(nextX - 0.001, draggedPoint.x));
-        const finalX = (index === 0 || index === points.length - 1) ? (index === 0 ? 0 : 1) : constrainedX;
-        
+        const finalX =
+            index === 0 || index === points.length - 1 ? (index === 0 ? 0 : 1) : constrainedX;
+
         const dx = finalX - newPoints[index].x;
         const dy = draggedPoint.y - newPoints[index].y;
-        
+
         const updatedPoint = { ...newPoints[index], x: finalX, y: draggedPoint.y };
 
-        if (updatedPoint.handle1) updatedPoint.handle1 = { x: parseFloat((updatedPoint.handle1.x + dx).toFixed(3)), y: parseFloat((updatedPoint.handle1.y + dy).toFixed(3)) };
-        if (updatedPoint.handle2) updatedPoint.handle2 = { x: parseFloat((updatedPoint.handle2.x + dx).toFixed(3)), y: parseFloat((updatedPoint.handle2.y + dy).toFixed(3)) };
-        
+        if (updatedPoint.handle1)
+            updatedPoint.handle1 = {
+                x: parseFloat((updatedPoint.handle1.x + dx).toFixed(3)),
+                y: parseFloat((updatedPoint.handle1.y + dy).toFixed(3)),
+            };
+        if (updatedPoint.handle2)
+            updatedPoint.handle2 = {
+                x: parseFloat((updatedPoint.handle2.x + dx).toFixed(3)),
+                y: parseFloat((updatedPoint.handle2.y + dy).toFixed(3)),
+            };
+
         newPoints[index] = updatedPoint;
         setPointsInternal(newPoints, false);
         updateParent(newPoints);
         if (selectedPointIndex !== index) setSelectedPointIndex(index);
     };
 
-    const handleDragHandle = (pointIndex: number, handleKey: 'handle1' | 'handle2', handlePos: Point) => {
+    const handleDragHandle = (
+        pointIndex: number,
+        handleKey: 'handle1' | 'handle2',
+        handlePos: Point
+    ) => {
         const newPoints = [...points];
         const point = { ...newPoints[pointIndex] };
         point[handleKey] = handlePos;
@@ -250,33 +293,39 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
         updateParent(newPoints);
         if (selectedPointIndex !== pointIndex) setSelectedPointIndex(pointIndex);
     };
-    
-    const { pathData, easeCodeString } = useMemo(() => {
-        if (!points || points.length === 0) return { pathData: "", easeCodeString: "" };
 
-        const svgPathParts: string[] = [`M ${points[0].x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - points[0].y * VIEW_BOX_SIZE}`];
+    const { pathData, easeCodeString } = useMemo(() => {
+        if (!points || points.length === 0) return { pathData: '', easeCodeString: '' };
+
+        const svgPathParts: string[] = [
+            `M ${points[0].x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - points[0].y * VIEW_BOX_SIZE}`,
+        ];
         const pathParts: string[] = [`M ${points[0].x.toFixed(3)},${points[0].y.toFixed(3)}`];
-        
+
         for (let i = 0; i < points.length - 1; i++) {
             const p1 = points[i];
             const p2 = points[i + 1];
 
             if (p1.handle2 && p2.handle1) {
-                svgPathParts.push(`C ${p1.handle2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p1.handle2.y * VIEW_BOX_SIZE} ${p2.handle1.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.handle1.y * VIEW_BOX_SIZE} ${p2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.y * VIEW_BOX_SIZE}`);
-                pathParts.push(`C ${p1.handle2.x.toFixed(3)},${p1.handle2.y.toFixed(3)} ${p2.handle1.x.toFixed(3)},${p2.handle1.y.toFixed(3)} ${p2.x.toFixed(3)},${p2.y.toFixed(3)}`);
+                svgPathParts.push(
+                    `C ${p1.handle2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p1.handle2.y * VIEW_BOX_SIZE} ${p2.handle1.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.handle1.y * VIEW_BOX_SIZE} ${p2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.y * VIEW_BOX_SIZE}`
+                );
+                pathParts.push(
+                    `C ${p1.handle2.x.toFixed(3)},${p1.handle2.y.toFixed(3)} ${p2.handle1.x.toFixed(3)},${p2.handle1.y.toFixed(3)} ${p2.x.toFixed(3)},${p2.y.toFixed(3)}`
+                );
             } else {
                 svgPathParts.push(`L ${p2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.y * VIEW_BOX_SIZE}`);
                 pathParts.push(`L ${p2.x.toFixed(3)},${p2.y.toFixed(3)}`);
             }
         }
-        return { 
-            pathData: svgPathParts.join(" "), 
-            easeCodeString: `CustomEase.create("${customEaseId}", "${pathParts.join(" ")}");` 
+        return {
+            pathData: svgPathParts.join(' '),
+            easeCodeString: `CustomEase.create("${customEaseId}", "${pathParts.join(' ')}");`,
         };
     }, [points, customEaseId]);
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(easeCodeString);
+        void navigator.clipboard.writeText(easeCodeString);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
     };
@@ -285,14 +334,14 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
 
     const toolbarActions = (
         <>
-            <button 
+            <button
                 onClick={handleSmoothAll}
                 className="p-1.5 rounded-md hover:bg-surface-2 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
                 title="Smooth All Points"
             >
                 <SparklesIcon />
             </button>
-             <button 
+            <button
                 onClick={handleReset}
                 className="p-1.5 rounded-md hover:bg-surface-2 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
                 title="Reset to Linear"
@@ -300,30 +349,65 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
                 <ResetIcon />
             </button>
             <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
-            <button 
-                onClick={() => setSnapEnabled(!snapEnabled)} 
-                className={`p-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary ${snapEnabled ? 'bg-accent-primary text-white' : 'hover:bg-surface-2 text-text-secondary'}`} 
+            <button
+                onClick={() => setSnapEnabled(!snapEnabled)}
+                className={`p-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary ${snapEnabled ? 'bg-accent-primary text-white' : 'hover:bg-surface-2 text-text-secondary'}`}
                 title="Toggle Snap to Grid"
             >
                 <MagnetIcon />
             </button>
             <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
-            <button onClick={undo} disabled={!canUndo} className="p-1.5 rounded-md hover:bg-surface-2 disabled:opacity-30 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary" aria-label="Undo"><UndoIcon /></button>
-            <button onClick={redo} disabled={!canRedo} className="p-1.5 rounded-md hover:bg-surface-2 disabled:opacity-30 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary" aria-label="Redo"><RedoIcon /></button>
-             <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
-            <button onClick={addPoint} className="px-2 py-1.5 rounded-md hover:bg-surface-2 text-[10px] font-bold uppercase tracking-wide text-text-secondary transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-accent-primary">
-                 + Point
+            <button
+                onClick={undo}
+                disabled={!canUndo}
+                className="p-1.5 rounded-md hover:bg-surface-2 disabled:opacity-30 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                aria-label="Undo"
+            >
+                <UndoIcon />
+            </button>
+            <button
+                onClick={redo}
+                disabled={!canRedo}
+                className="p-1.5 rounded-md hover:bg-surface-2 disabled:opacity-30 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                aria-label="Redo"
+            >
+                <RedoIcon />
+            </button>
+            <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
+            <button
+                onClick={addPoint}
+                className="px-2 py-1.5 rounded-md hover:bg-surface-2 text-[10px] font-bold uppercase tracking-wide text-text-secondary transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            >
+                + Point
             </button>
         </>
     );
 
     const canvas = (
-        <div className="aspect-square w-full max-w-[280px] relative" onClick={(e) => { e.stopPropagation(); setSelectedPointIndex(null); }}>
-            <svg ref={svgRef} viewBox={`-40 -80 ${VIEW_BOX_SIZE + 80} ${VIEW_BOX_SIZE + 160}`} className="overflow-visible w-full h-full touch-none">
-                 <GraphGrid size={VIEW_BOX_SIZE} />
+        <div
+            className="relative aspect-square w-full max-w-70"
+            onClick={(e) => {
+                e.stopPropagation();
+                setSelectedPointIndex(null);
+            }}
+        >
+            <svg
+                ref={svgRef}
+                viewBox={`-40 -80 ${VIEW_BOX_SIZE + 80} ${VIEW_BOX_SIZE + 160}`}
+                className="overflow-visible w-full h-full touch-none"
+            >
+                <GraphGrid size={VIEW_BOX_SIZE} />
 
                 {/* Path */}
-                <path d={pathData} stroke="currentColor" strokeWidth="4" fill="none" className="text-text-primary drop-shadow-md pointer-events-none" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                    d={pathData}
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                    className="text-text-primary drop-shadow-md pointer-events-none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
 
                 {/* Interactions */}
                 {points.map((p, i) => (
@@ -348,33 +432,33 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
                         )}
 
                         {p.handle1 && (
-                            <DraggableHandle 
-                                point={p.handle1} 
-                                onDrag={(np) => handleDragHandle(i, 'handle1', np)} 
-                                onDragStart={startInteraction} 
-                                onDragEnd={endInteraction} 
-                                viewBoxSize={VIEW_BOX_SIZE} 
-                                containerRef={svgRef} 
+                            <DraggableHandle
+                                point={p.handle1}
+                                onDrag={(np) => handleDragHandle(i, 'handle1', np)}
+                                onDragStart={startInteraction}
+                                onDragEnd={endInteraction}
+                                viewBoxSize={VIEW_BOX_SIZE}
+                                containerRef={svgRef}
                                 type="handle"
                                 isSelected={selectedPointIndex === i}
                                 snapToGrid={snapEnabled}
                             />
                         )}
                         {p.handle2 && (
-                            <DraggableHandle 
-                                point={p.handle2} 
-                                onDrag={(np) => handleDragHandle(i, 'handle2', np)} 
-                                onDragStart={startInteraction} 
-                                onDragEnd={endInteraction} 
-                                viewBoxSize={VIEW_BOX_SIZE} 
-                                containerRef={svgRef} 
+                            <DraggableHandle
+                                point={p.handle2}
+                                onDrag={(np) => handleDragHandle(i, 'handle2', np)}
+                                onDragStart={startInteraction}
+                                onDragEnd={endInteraction}
+                                viewBoxSize={VIEW_BOX_SIZE}
+                                containerRef={svgRef}
                                 type="handle"
                                 isSelected={selectedPointIndex === i}
                                 snapToGrid={snapEnabled}
                             />
                         )}
-                        
-                         <DraggableHandle
+
+                        <DraggableHandle
                             point={p}
                             onDrag={(np) => handleDragAnchor(i, np)}
                             onDragStart={startInteraction}
@@ -391,7 +475,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
                     </g>
                 ))}
             </svg>
-            
+
             <div className="absolute top-2 right-2 bg-surface-1/80 backdrop-blur-sm border border-border-subtle px-2 py-1 rounded text-[9px] text-text-secondary shadow-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 select-none">
                 Double click to remove point
             </div>
@@ -400,66 +484,82 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
 
     const controls = (
         <>
-             {/* Selected Point Context Menu */}
-             {selectedPoint && selectedPointIndex !== null && (
+            {/* Selected Point Context Menu */}
+            {selectedPoint && selectedPointIndex !== null && (
                 <div className="px-5 py-3 bg-accent-primary/5 border-t border-b border-accent-primary/20 flex flex-wrap items-center justify-between gap-3 animate-in slide-in-from-top-2 duration-200">
-                   <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3">
                         <div className="text-[10px] font-bold text-accent-primary uppercase tracking-wide">
-                           Point {selectedPointIndex + 1}
+                            Point {selectedPointIndex + 1}
                         </div>
                         <div className="w-px h-4 bg-accent-primary/20"></div>
                         <div className="flex gap-2 w-32">
-                           <ScrubbableInput 
-                               label="X" 
-                               value={selectedPoint.x} 
-                               onChange={(v) => updatePointCoordinate(selectedPointIndex, 'x', v)}
-                               min={0} max={1}
-                           />
-                           <ScrubbableInput 
-                               label="Y" 
-                               value={selectedPoint.y} 
-                               onChange={(v) => updatePointCoordinate(selectedPointIndex, 'y', v)}
-                           />
+                            <ScrubbableInput
+                                label="X"
+                                value={selectedPoint.x}
+                                onChange={(v) => updatePointCoordinate(selectedPointIndex, 'x', v)}
+                                min={0}
+                                max={1}
+                            />
+                            <ScrubbableInput
+                                label="Y"
+                                value={selectedPoint.y}
+                                onChange={(v) => updatePointCoordinate(selectedPointIndex, 'y', v)}
+                            />
                         </div>
-                   </div>
-                   <div className="flex items-center gap-2">
-                       <button 
-                           onClick={() => togglePointSmoothing(selectedPointIndex)}
-                           className={`px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors ${
-                               selectedPoint.handle1 || selectedPoint.handle2 
-                               ? 'bg-accent-primary text-white' 
-                               : 'bg-surface-1 text-text-secondary hover:text-text-primary border border-border-subtle'
-                           }`}
-                       >
-                           {selectedPoint.handle1 || selectedPoint.handle2 ? 'Smooth' : 'Linear'}
-                       </button>
-                       <button 
-                           onClick={() => handleRemovePoint(selectedPointIndex)}
-                           disabled={selectedPointIndex === 0 || selectedPointIndex === points.length - 1}
-                           className="p-1.5 rounded bg-surface-1 text-text-secondary hover:text-red-500 disabled:opacity-30 border border-border-subtle transition-colors"
-                           title="Remove Point"
-                       >
-                           <TrashIcon />
-                       </button>
-                   </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => togglePointSmoothing(selectedPointIndex)}
+                            className={`px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors ${selectedPoint.handle1 || selectedPoint.handle2
+                                    ? 'bg-accent-primary text-white'
+                                    : 'bg-surface-1 text-text-secondary hover:text-text-primary border border-border-subtle'
+                                }`}
+                        >
+                            {selectedPoint.handle1 || selectedPoint.handle2 ? 'Smooth' : 'Linear'}
+                        </button>
+                        <button
+                            onClick={() => handleRemovePoint(selectedPointIndex)}
+                            disabled={selectedPointIndex === 0 || selectedPointIndex === points.length - 1}
+                            className="p-1.5 rounded bg-surface-1 text-text-secondary hover:text-red-500 disabled:opacity-30 border border-border-subtle transition-colors"
+                            title="Remove Point"
+                        >
+                            <TrashIcon />
+                        </button>
+                    </div>
                 </div>
-           )}
+            )}
 
-           <div className="flex gap-6 pt-2">
-                 <div className="flex flex-col gap-1 flex-1">
+            <div className="flex gap-6 pt-2">
+                <div className="flex flex-col gap-1 flex-1">
                     <div className="flex justify-between text-[10px] font-bold text-text-secondary uppercase">
                         <span>Duration</span>
                         <span className="font-mono text-text-primary">{duration.toFixed(1)}s</span>
                     </div>
-                    <input type="range" min="0.5" max="5" step="0.1" value={duration} onChange={(e) => setDuration(parseFloat(e.target.value))} className="w-full h-1.5 bg-surface-2 rounded-lg accent-accent-primary appearance-none cursor-pointer" />
-                 </div>
-                 <div className="flex flex-col gap-1 flex-1">
+                    <input
+                        type="range"
+                        min="0.5"
+                        max="5"
+                        step="0.1"
+                        value={duration}
+                        onChange={(e) => setDuration(parseFloat(e.target.value))}
+                        className="w-full h-1.5 bg-surface-2 rounded-lg accent-accent-primary appearance-none cursor-pointer"
+                    />
+                </div>
+                <div className="flex flex-col gap-1 flex-1">
                     <div className="flex justify-between text-[10px] font-bold text-text-secondary uppercase">
                         <span>Scale</span>
                         <span className="font-mono text-text-primary">{range}x</span>
                     </div>
-                    <input type="range" min="0.1" max="3" step="0.1" value={range} onChange={(e) => setRange(parseFloat(e.target.value))} className="w-full h-1.5 bg-surface-2 rounded-lg accent-accent-primary appearance-none cursor-pointer" />
-                 </div>
+                    <input
+                        type="range"
+                        min="0.1"
+                        max="3"
+                        step="0.1"
+                        value={range}
+                        onChange={(e) => setRange(parseFloat(e.target.value))}
+                        className="w-full h-1.5 bg-surface-2 rounded-lg accent-accent-primary appearance-none cursor-pointer"
+                    />
+                </div>
             </div>
         </>
     );
@@ -470,7 +570,14 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
             toolbarActions={toolbarActions}
             canvas={canvas}
             controls={controls}
-            preview={<AnimationPreview ease={customEaseId} duration={duration} range={range} progressRef={progressRef} />}
+            preview={
+                <AnimationPreview
+                    ease={customEaseId}
+                    duration={duration}
+                    range={range}
+                    progressRef={progressRef}
+                />
+            }
             codeString={easeCodeString}
             onCopyCode={copyToClipboard}
             isCopied={copied}

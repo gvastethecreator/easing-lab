@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface FilterButtonProps<T> {
@@ -9,11 +8,18 @@ interface FilterButtonProps<T> {
   key?: React.Key;
 }
 
-function FilterButton<T extends string>({ item, isActive, onClick, className = '' }: FilterButtonProps<T>) {
-  const baseClasses = 'px-3 py-1 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-surface-base focus:ring-accent-primary';
+function FilterButton<T extends string>({
+  item,
+  isActive,
+  onClick,
+  className = '',
+}: FilterButtonProps<T>) {
+  const baseClasses =
+    'px-3 py-1 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-surface-base focus:ring-accent-primary';
   const activeClasses = 'bg-accent-primary text-white font-semibold shadow-sm';
-  const inactiveClasses = 'bg-surface-2 dark:bg-surface-2 text-text-secondary dark:text-text-secondary hover:bg-surface-hover dark:hover:bg-surface-hover hover:text-text-primary dark:hover:text-text-primary';
-  
+  const inactiveClasses =
+    'bg-surface-2 dark:bg-surface-2 text-text-secondary dark:text-text-secondary hover:bg-surface-hover dark:hover:bg-surface-hover hover:text-text-primary dark:hover:text-text-primary';
+
   return (
     <button
       onClick={() => onClick(item.value)}
@@ -38,9 +44,8 @@ export const FilterControls = <T extends string>({
   activeItem,
   setActiveItem,
   label,
-  buttonClassName
+  buttonClassName,
 }: FilterControlsProps<T>) => {
-
   const updateWithTransition = (updateCallback: () => void) => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -58,8 +63,12 @@ export const FilterControls = <T extends string>({
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      {label && <span className="text-sm font-medium text-text-secondary dark:text-text-secondary mr-2">{label}</span>}
-      {items.map(item => (
+      {label && (
+        <span className="text-sm font-medium text-text-secondary dark:text-text-secondary mr-2">
+          {label}
+        </span>
+      )}
+      {items.map((item) => (
         <FilterButton
           key={item.value}
           item={item}

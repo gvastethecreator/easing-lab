@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { gsap } from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
@@ -9,6 +8,13 @@ interface GSAPCardProps {
   easing: GSAPEasingFunction;
   onClick: () => void;
 }
+
+const createMotionPath = (path: SVGPathElement, end?: number) => ({
+  path,
+  align: path,
+  alignOrigin: [0.5, 0.5] as [number, number],
+  ...(typeof end === 'number' ? { end } : {}),
+});
 
 export const GSAPCard: React.FC<GSAPCardProps> = ({ easing, onClick }) => {
   const animationTl = useRef<gsap.core.Timeline | null>(null);
@@ -23,12 +29,14 @@ export const GSAPCard: React.FC<GSAPCardProps> = ({ easing, onClick }) => {
 
   useEffect(() => {
     gsap.registerPlugin(MotionPathPlugin);
+    const marker = markerRef.current;
+    const path = pathRef.current;
+    if (!marker || !path) return;
+
     // Set initial position of the marker at the start of the path
-    gsap.set(markerRef.current, {
+    gsap.set(marker, {
       motionPath: {
-        path: pathRef.current,
-        align: pathRef.current,
-        alignOrigin: [0.5, 0.5],
+        ...createMotionPath(path),
         end: 0,
       },
     });
@@ -38,10 +46,13 @@ export const GSAPCard: React.FC<GSAPCardProps> = ({ easing, onClick }) => {
 
   const handleMouseEnter = () => {
     if (animationTl.current) animationTl.current.kill();
-    if (!cardRef.current) return;
+    const card = cardRef.current;
+    const marker = markerRef.current;
+    const path = pathRef.current;
+    if (!card || !marker || !path) return;
 
     // Get computed styles to pass concrete values to GSAP
-    const computedStyle = getComputedStyle(cardRef.current);
+    const computedStyle = getComputedStyle(card);
     const accentPrimaryBg = computedStyle.getPropertyValue('--accent-primary-bg');
     const accentPrimary = computedStyle.getPropertyValue('--accent-primary');
 
@@ -49,92 +60,117 @@ export const GSAPCard: React.FC<GSAPCardProps> = ({ easing, onClick }) => {
       repeat: -1,
       yoyo: true,
     });
-    
-    animationTl.current.to(markerRef.current, {
-      motionPath: {
-        path: pathRef.current,
-        align: pathRef.current,
-        alignOrigin: [0.5, 0.5],
-        end: 1,
-      },
-      duration: 1.5,
-      ease: easing.ease,
-    }, 0)
-    .to(cardRef.current, {
-      backgroundColor: accentPrimaryBg,
-      borderColor: accentPrimary,
-      duration: 1.5,
-      ease: easing.ease,
-    }, 0)
-    .to(pathRef.current, {
-      stroke: accentPrimary,
-      duration: 1.5,
-      ease: easing.ease,
-    }, 0);
-      
+
+    animationTl.current
+      .to(
+        marker,
+        {
+          motionPath: {
+            ...createMotionPath(path),
+            end: 1,
+          },
+          duration: 1.5,
+          ease: easing.ease,
+        },
+        0
+      )
+      .to(
+        card,
+        {
+          backgroundColor: accentPrimaryBg,
+          borderColor: accentPrimary,
+          duration: 1.5,
+          ease: easing.ease,
+        },
+        0
+      )
+      .to(
+        path,
+        {
+          stroke: accentPrimary,
+          duration: 1.5,
+          ease: easing.ease,
+        },
+        0
+      );
+
     // Tooltip animation runs once, not part of the yoyo loop
     gsap.to(tooltipRef.current, {
-        duration: 0.5,
-        ease: easing.ease,
-        autoAlpha: 1,
-        y: 0,
+      duration: 0.5,
+      ease: easing.ease,
+      autoAlpha: 1,
+      y: 0,
     });
   };
 
   const handleMouseLeave = () => {
     if (animationTl.current) animationTl.current.kill();
-    if (!cardRef.current) return;
-    
+    const card = cardRef.current;
+    const marker = markerRef.current;
+    const path = pathRef.current;
+    if (!card || !marker || !path) return;
+
     // Kill any running tooltip animations
     gsap.killTweensOf(tooltipRef.current);
-    
+
     // Get computed styles for the revert animation
-    const computedStyle = getComputedStyle(cardRef.current);
+    const computedStyle = getComputedStyle(card);
     const surface1 = computedStyle.getPropertyValue('--surface-1');
     const borderSubtle = computedStyle.getPropertyValue('--border-subtle');
     const textSecondary = computedStyle.getPropertyValue('--text-secondary');
 
-    gsap.timeline({ defaults: { duration: 0.5, ease: 'power2.out' }})
-      .to(markerRef.current, {
-        motionPath: {
-          path: pathRef.current,
-          align: pathRef.current,
-          alignOrigin: [0.5, 0.5],
-          end: 0,
+    gsap
+      .timeline({ defaults: { duration: 0.5, ease: 'power2.out' } })
+      .to(
+        marker,
+        {
+          motionPath: {
+            ...createMotionPath(path),
+            end: 0,
+          },
         },
-      }, 0)
-      .to(cardRef.current, {
-        backgroundColor: surface1,
-        borderColor: borderSubtle,
-      }, 0)
-      .to(pathRef.current, {
-        stroke: textSecondary,
-      }, 0)
-      .to(tooltipRef.current, {
-        autoAlpha: 0,
-        y: 15,
-      }, 0);
+        0
+      )
+      .to(
+        card,
+        {
+          backgroundColor: surface1,
+          borderColor: borderSubtle,
+        },
+        0
+      )
+      .to(
+        path,
+        {
+          stroke: textSecondary,
+        },
+        0
+      )
+      .to(
+        tooltipRef.current,
+        {
+          autoAlpha: 0,
+          y: 15,
+        },
+        0
+      );
   };
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering the parent click
-    navigator.clipboard.writeText(easing.ease);
+    void navigator.clipboard.writeText(easing.ease);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
 
   return (
     <div className="group flex flex-col gap-2">
-      <div 
-        className="relative"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <button
-            ref={cardRef} // Ref is on this button specifically for BG/Border animations
-            type="button"
-            className="aspect-square w-full rounded-md border-2 border-border-subtle dark:border-border-subtle bg-surface-1 dark:bg-surface-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-base focus-visible:ring-accent-primary"
-            onClick={onClick} // Main action is select
+          ref={cardRef} // Ref is on this button specifically for BG/Border animations
+          type="button"
+          className="aspect-square w-full rounded-md border-2 border-border-subtle dark:border-border-subtle bg-surface-1 dark:bg-surface-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-base focus-visible:ring-accent-primary"
+          onClick={onClick} // Main action is select
         >
           <svg
             width="100%"
@@ -175,22 +211,35 @@ export const GSAPCard: React.FC<GSAPCardProps> = ({ easing, onClick }) => {
         </button>
 
         {/* Copy Button Overlay */}
-        <button 
-            onClick={handleCopy}
-            className="absolute top-1.5 right-1.5 p-1.5 rounded-full bg-surface-1/60 dark:bg-surface-2/60 backdrop-blur-md text-text-placeholder hover:text-text-primary dark:hover:text-text-primary opacity-0 group-hover:opacity-100 transition-all duration-200 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary z-20"
-            aria-label="Copy GSAP ease string"
+        <button
+          onClick={handleCopy}
+          className="absolute top-1.5 right-1.5 p-1.5 rounded-full bg-surface-1/60 dark:bg-surface-2/60 backdrop-blur-md text-text-placeholder hover:text-text-primary dark:hover:text-text-primary opacity-0 group-hover:opacity-100 transition-all duration-200 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary z-20"
+          aria-label="Copy GSAP ease string"
         >
-             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+          </svg>
         </button>
 
-          {copied && (
-            <div className="absolute top-1.5 right-8 bg-accent-primary-bg px-2 py-1 rounded-md transition-opacity duration-200 pointer-events-none z-30">
-              <span className="text-accent-primary font-bold text-xs">Copied!</span>
-            </div>
-          )}
-        
+        {copied && (
+          <div className="absolute top-1.5 right-8 bg-accent-primary-bg px-2 py-1 rounded-md transition-opacity duration-200 pointer-events-none z-30">
+            <span className="text-accent-primary font-bold text-xs">Copied!</span>
+          </div>
+        )}
+
         {/* Tooltip for description */}
-        <div 
+        <div
           ref={tooltipRef}
           className="absolute border-4 border-zinc-950 bottom-full mb-2 w-32 p-2 text-center text-xs text-white bg-zinc-900 dark:bg-zinc-900 rounded-md shadow-lg pointer-events-none z-10 left-1/2 -translate-x-1/2"
         >
@@ -201,10 +250,10 @@ export const GSAPCard: React.FC<GSAPCardProps> = ({ easing, onClick }) => {
 
       <div className="flex flex-col items-center">
         <p className="text-center text-[11px] text-text-primary font-semibold truncate w-full group-hover:text-text-primary dark:group-hover:text-text-primary transition-colors duration-200">
-            {easing.name}
+          {easing.name}
         </p>
         <p className="text-center text-[10px] text-text-secondary font-mono truncate w-full">
-            {easing.ease}
+          {easing.ease}
         </p>
       </div>
     </div>

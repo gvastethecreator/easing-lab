@@ -1,13 +1,12 @@
-
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { ACCENT_COLORS } from '../constants';
 
 interface ThemeContextType {
   isDarkMode: boolean;
   toggleTheme: () => void;
-  accentColor: typeof ACCENT_COLORS[0];
+  accentColor: (typeof ACCENT_COLORS)[0];
   cycleAccentColor: () => void;
-  nextAccentColor: typeof ACCENT_COLORS[0];
+  nextAccentColor: (typeof ACCENT_COLORS)[0];
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -44,23 +43,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     root.style.setProperty('--accent-primary-bg', currentColor.bg);
   }, [colorIndex]);
 
-  const toggleTheme = () => setIsDarkMode(prev => !prev);
-  
-  const cycleAccentColor = () => setColorIndex(prev => (prev + 1) % ACCENT_COLORS.length);
+  const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
-  const value = useMemo(() => ({
-    isDarkMode,
-    toggleTheme,
-    accentColor: ACCENT_COLORS[colorIndex],
-    cycleAccentColor,
-    nextAccentColor: ACCENT_COLORS[(colorIndex + 1) % ACCENT_COLORS.length]
-  }), [isDarkMode, colorIndex]);
+  const cycleAccentColor = () => setColorIndex((prev) => (prev + 1) % ACCENT_COLORS.length);
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+  const value = useMemo(
+    () => ({
+      isDarkMode,
+      toggleTheme,
+      accentColor: ACCENT_COLORS[colorIndex],
+      cycleAccentColor,
+      nextAccentColor: ACCENT_COLORS[(colorIndex + 1) % ACCENT_COLORS.length],
+    }),
+    [isDarkMode, colorIndex]
   );
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
 export const useTheme = () => {

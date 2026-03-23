@@ -1,10 +1,10 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --font-sans: "Inter", sans-serif;
-  --font-mono: "Roboto Mono", monospace;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
 
   --color-surface-base: var(--surface-base);
   --color-surface-1: var(--surface-1);
@@ -144,7 +144,8 @@ html.dark {
   .ring-accent-primary,
   .group:hover .group-hover\:text-accent-primary,
   .group:hover .group-hover\:border-accent-primary {
-    transition-property: color, background-color, border-color, accent-color, fill, stroke, box-shadow;
+    transition-property:
+      color, background-color, border-color, accent-color, fill, stroke, box-shadow;
     transition-duration: var(--global-duration);
     transition-timing-function: var(--global-easing);
   }

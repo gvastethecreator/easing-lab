@@ -1,5 +1,4 @@
-
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 
 interface ScrubbableInputProps {
   value: number;
@@ -30,7 +29,7 @@ export const ScrubbableInput: React.FC<ScrubbableInputProps> = ({
     startValue.current = value;
     document.body.style.cursor = 'ew-resize';
     document.body.style.userSelect = 'none';
-    
+
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
   };
@@ -40,11 +39,11 @@ export const ScrubbableInput: React.FC<ScrubbableInputProps> = ({
     // Slow down the sensitivity
     const change = delta * (step / 2);
     let newValue = startValue.current + change;
-    
+
     // Clamp
     if (min !== undefined) newValue = Math.max(min, newValue);
     if (max !== undefined) newValue = Math.min(max, newValue);
-    
+
     onChange(parseFloat(newValue.toFixed(2)));
   };
 
@@ -73,20 +72,24 @@ export const ScrubbableInput: React.FC<ScrubbableInputProps> = ({
   };
 
   const handleClickLabel = () => {
-      // If needed, we could focus input here, but drag is priority
+    // If needed, we could focus input here, but drag is priority
   };
 
   return (
-    <div className={`relative group flex-1 rounded-md bg-surface-2 transition-colors hover:bg-surface-hover focus-within:ring-1 focus-within:ring-accent-primary ${isDragging ? 'ring-1 ring-accent-primary bg-surface-hover' : ''}`}>
+    <div
+      className={`relative group flex-1 rounded-md bg-surface-2 transition-colors hover:bg-surface-hover focus-within:ring-1 focus-within:ring-accent-primary ${isDragging ? 'ring-1 ring-accent-primary bg-surface-hover' : ''}`}
+    >
       {/* Label / Scrubber */}
-      <div 
+      <div
         className="absolute left-0 top-0 bottom-0 w-8 flex items-center justify-center cursor-ew-resize z-10"
         onMouseDown={handleMouseDown}
         onClick={handleClickLabel}
         title="Drag to change value"
       >
-        <span className={`text-[10px] font-mono select-none transition-colors ${isDragging ? 'text-accent-primary font-bold' : 'text-text-placeholder group-hover:text-text-secondary'}`}>
-            {label}
+        <span
+          className={`text-[10px] font-mono select-none transition-colors ${isDragging ? 'text-accent-primary font-bold' : 'text-text-placeholder group-hover:text-text-secondary'}`}
+        >
+          {label}
         </span>
       </div>
 

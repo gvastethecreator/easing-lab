@@ -9,6 +9,13 @@ interface EasingCardProps {
   duration: number;
 }
 
+const createMotionPath = (path: SVGPathElement, end?: number) => ({
+  path,
+  align: path,
+  alignOrigin: [0.5, 0.5] as [number, number],
+  ...(typeof end === 'number' ? { end } : {}),
+});
+
 export const EasingCard: React.FC<EasingCardProps> = ({ easing, onClick, duration }) => {
   const animationTl = useRef<gsap.core.Timeline | null>(null);
   const cardRef = useRef<HTMLButtonElement>(null);
@@ -19,11 +26,13 @@ export const EasingCard: React.FC<EasingCardProps> = ({ easing, onClick, duratio
 
   useEffect(() => {
     gsap.registerPlugin(MotionPathPlugin);
-    gsap.set(markerRef.current, {
+    const marker = markerRef.current;
+    const path = pathRef.current;
+    if (!marker || !path) return;
+
+    gsap.set(marker, {
       motionPath: {
-        path: pathRef.current,
-        align: pathRef.current,
-        alignOrigin: [0.5, 0.5],
+        ...createMotionPath(path),
         end: 0,
       },
     });
@@ -33,78 +42,106 @@ export const EasingCard: React.FC<EasingCardProps> = ({ easing, onClick, duratio
     if (animationTl.current) {
       animationTl.current.kill();
     }
-    if (!cardRef.current) return;
+    const card = cardRef.current;
+    const marker = markerRef.current;
+    const path = pathRef.current;
+    if (!card || !marker || !path) return;
 
     // Get computed styles to pass concrete values to GSAP
-    const computedStyle = getComputedStyle(cardRef.current);
+    const computedStyle = getComputedStyle(card);
     const accentPrimaryBg = computedStyle.getPropertyValue('--accent-primary-bg');
     const accentPrimary = computedStyle.getPropertyValue('--accent-primary');
 
     const easeString = `cubic-bezier(${easing.bezier.join(',')})`;
-    
+
     animationTl.current = gsap.timeline({
       repeat: -1,
       yoyo: true,
     });
 
-    animationTl.current.to(markerRef.current, {
-      motionPath: {
-        path: pathRef.current,
-        align: pathRef.current,
-        alignOrigin: [0.5, 0.5],
-      },
-      duration,
-      ease: easeString,
-    }, 0)
-    .to(cardRef.current, {
-      backgroundColor: accentPrimaryBg,
-      borderColor: accentPrimary,
-      duration,
-      ease: easeString,
-    }, 0)
-    .to(pathRef.current, {
-      stroke: accentPrimary,
-      duration,
-      ease: easeString,
-    }, 0);
+    animationTl.current
+      .to(
+        marker,
+        {
+          motionPath: {
+            ...createMotionPath(path),
+          },
+          duration,
+          ease: easeString,
+        },
+        0
+      )
+      .to(
+        card,
+        {
+          backgroundColor: accentPrimaryBg,
+          borderColor: accentPrimary,
+          duration,
+          ease: easeString,
+        },
+        0
+      )
+      .to(
+        path,
+        {
+          stroke: accentPrimary,
+          duration,
+          ease: easeString,
+        },
+        0
+      );
   };
 
   const handleMouseLeave = () => {
     if (animationTl.current) {
       animationTl.current.kill();
     }
-    if (!cardRef.current) return;
-    
+    const card = cardRef.current;
+    const marker = markerRef.current;
+    const path = pathRef.current;
+    if (!card || !marker || !path) return;
+
     // Get computed styles for the revert animation
-    const computedStyle = getComputedStyle(cardRef.current);
+    const computedStyle = getComputedStyle(card);
     const surface1 = computedStyle.getPropertyValue('--surface-1');
     const borderSubtle = computedStyle.getPropertyValue('--border-subtle');
     const accentPrimary = computedStyle.getPropertyValue('--accent-primary');
     const textSecondary = computedStyle.getPropertyValue('--text-secondary');
 
     const initialBorderColor = isCustom ? accentPrimary : borderSubtle;
-    
-    gsap.timeline({ defaults: { duration: 0.5, ease: 'power2.out' }})
-      .to(markerRef.current, {
-        motionPath: {
-          path: pathRef.current,
-          align: pathRef.current,
-          alignOrigin: [0.5, 0.5],
-          end: 0,
+
+    gsap
+      .timeline({ defaults: { duration: 0.5, ease: 'power2.out' } })
+      .to(
+        marker,
+        {
+          motionPath: {
+            ...createMotionPath(path),
+            end: 0,
+          },
         },
-      }, 0)
-      .to(cardRef.current, {
-        backgroundColor: surface1,
-        borderColor: initialBorderColor,
-      }, 0)
-      .to(pathRef.current, {
-        stroke: textSecondary,
-      }, 0);
+        0
+      )
+      .to(
+        card,
+        {
+          backgroundColor: surface1,
+          borderColor: initialBorderColor,
+        },
+        0
+      )
+      .to(
+        path,
+        {
+          stroke: textSecondary,
+        },
+        0
+      );
   };
-  
+
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation(); // prevent card click from firing
-    navigator.clipboard.writeText(`cubic-bezier(${easing.bezier.join(', ')})`);
+    void navigator.clipboard.writeText(`cubic-bezier(${easing.bezier.join(', ')})`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -118,9 +155,8 @@ export const EasingCard: React.FC<EasingCardProps> = ({ easing, onClick, duratio
         <button
           ref={cardRef}
           type="button"
-          className={`relative aspect-square w-full rounded-md border-2 bg-surface-1 dark:bg-surface-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-base focus-visible:ring-accent-primary ${
-            isCustom ? 'border-accent-primary' : 'border-border-subtle dark:border-border-subtle'
-          }`}
+          className={`relative aspect-square w-full rounded-md border-2 bg-surface-1 dark:bg-surface-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-base focus-visible:ring-accent-primary ${isCustom ? 'border-accent-primary' : 'border-border-subtle dark:border-border-subtle'
+            }`}
           onClick={onClick}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -139,7 +175,7 @@ export const EasingCard: React.FC<EasingCardProps> = ({ easing, onClick, duratio
               stroke="var(--border-subtle)"
               strokeWidth="1"
             />
-            
+
             {/* Curve */}
             <path
               ref={pathRef}
@@ -152,16 +188,16 @@ export const EasingCard: React.FC<EasingCardProps> = ({ easing, onClick, duratio
             />
 
             {/* Marker */}
-            <circle 
-              ref={markerRef} 
-              r="20" 
-              fill="currentColor" 
-              stroke="var(--surface-1)" 
-              strokeWidth="4" 
-              className="text-accent-primary dark:stroke-surface-1" 
+            <circle
+              ref={markerRef}
+              r="20"
+              fill="currentColor"
+              stroke="var(--surface-1)"
+              strokeWidth="4"
+              className="text-accent-primary dark:stroke-surface-1"
             />
           </svg>
-           {copied && (
+          {copied && (
             <div className="absolute inset-0 bg-accent-primary-bg flex items-center justify-center rounded-md transition-opacity duration-200 pointer-events-none">
               <span className="text-accent-primary font-bold text-sm">Copied!</span>
             </div>
@@ -169,22 +205,35 @@ export const EasingCard: React.FC<EasingCardProps> = ({ easing, onClick, duratio
         </button>
 
         {easing.description && !isCustom && (
-          <div 
+          <div
             className="absolute border-4 border-zinc-950 bottom-full mb-2 w-36 p-2 text-center text-xs text-white bg-zinc-900 rounded-md shadow-lg pointer-events-none z-10 left-1/2 -translate-x-1/2 opacity-0 translate-y-full group-hover/card:opacity-100 group-hover/card:translate-y-0 transition-all duration-300"
-            style={{transitionTimingFunction: 'cubic-bezier(0.645, 0.045, 0.355, 1)'}}
+            style={{ transitionTimingFunction: 'cubic-bezier(0.645, 0.045, 0.355, 1)' }}
           >
             {easing.description}
             <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-zinc-900"></div>
           </div>
         )}
 
-         {!isCustom && (
-          <button 
+        {!isCustom && (
+          <button
             onClick={handleCopy}
             className="absolute top-1.5 right-1.5 p-1 rounded-full bg-surface-1/50 dark:bg-surface-2/50 backdrop-blur-sm text-text-placeholder hover:text-text-primary dark:hover:text-text-primary opacity-0 group-hover/card:opacity-100 transition-all duration-200 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary"
             aria-label="Copy cubic-bezier value"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+            </svg>
           </button>
         )}
       </div>

@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 
 interface HistoryState<T> {
@@ -134,11 +133,11 @@ export function useHistory<T>(initialState: T, maxHistory = 50) {
 
   // Force override the entire history (useful when external props reset the state)
   const reset = useCallback((newState: T) => {
-      setState({
-          past: [],
-          present: newState,
-          future: []
-      });
+    setState({
+      past: [],
+      present: newState,
+      future: [],
+    });
   }, []);
 
   return {
@@ -149,6 +148,6 @@ export function useHistory<T>(initialState: T, maxHistory = 50) {
     reset,
     canUndo,
     canRedo,
-    historyState: state 
+    historyState: state,
   };
 }

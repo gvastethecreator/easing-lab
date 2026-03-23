@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { useDraggable } from '../hooks/useDraggable';
 import type { Point } from '../types';
 
-interface DraggableHandleProps extends React.SVGProps<SVGCircleElement> {
+interface DraggableHandleProps extends Omit<React.SVGProps<SVGCircleElement>, 'onDrag'> {
   point: Point;
   onDrag: (p: Point) => void;
   onDragStart?: () => void;
@@ -10,10 +10,10 @@ interface DraggableHandleProps extends React.SVGProps<SVGCircleElement> {
   onSelect?: () => void;
   isSelected?: boolean;
   viewBoxSize: number;
-  containerRef: React.RefObject<SVGSVGElement>;
+  containerRef: React.RefObject<SVGSVGElement | null>;
   isDraggable?: boolean;
   type?: 'anchor' | 'handle';
-  connectedTo?: Point; 
+  connectedTo?: Point;
   snapToGrid?: boolean;
 }
 
@@ -36,65 +36,68 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
 }) => {
   const circleRef = useRef<SVGCircleElement>(null);
   const dragDidMove = useRef(false);
+  const parsedRadius =
+    typeof r === 'number' ? r : typeof r === 'string' ? Number.parseFloat(r) : Number.NaN;
 
   // The hook now returns coordinates in SVG User Space (e.g., 0 to 250)
   const { handleMouseDown, isDragging } = useDraggable({
     containerRef,
     onDrag: (svgPoint) => {
-        dragDidMove.current = true;
-        
-        // Normalize from SVG Space (0 -> viewBoxSize) to Unit Space (0 -> 1)
-        // Invert Y axis: Input 0 is Top, Output 0 is Bottom (Graph Math)
-        let unitX = svgPoint.x / viewBoxSize;
-        let unitY = 1 - (svgPoint.y / viewBoxSize);
+      dragDidMove.current = true;
 
-        // Snapping Logic
-        if (snapToGrid) {
-            unitX = Math.round(unitX * 10) / 10;
-            unitY = Math.round(unitY * 10) / 10;
-        }
-        
-        onDrag({ x: parseFloat(unitX.toFixed(3)), y: parseFloat(unitY.toFixed(3)) });
+      // Normalize from SVG Space (0 -> viewBoxSize) to Unit Space (0 -> 1)
+      // Invert Y axis: Input 0 is Top, Output 0 is Bottom (Graph Math)
+      let unitX = svgPoint.x / viewBoxSize;
+      let unitY = 1 - svgPoint.y / viewBoxSize;
+
+      // Snapping Logic
+      if (snapToGrid) {
+        unitX = Math.round(unitX * 10) / 10;
+        unitY = Math.round(unitY * 10) / 10;
+      }
+
+      onDrag({ x: parseFloat(unitX.toFixed(3)), y: parseFloat(unitY.toFixed(3)) });
     },
     onDragStart: () => {
-        dragDidMove.current = false;
-        onDragStart?.();
+      dragDidMove.current = false;
+      onDragStart?.();
     },
     onDragEnd: () => {
-        if (!dragDidMove.current && onSelect) {
-            onSelect();
-        }
-        onDragEnd?.();
+      if (!dragDidMove.current && onSelect) {
+        onSelect();
+      }
+      onDragEnd?.();
     },
     disabled: !isDraggable,
   });
 
   // Calculate visual coordinates for rendering
   const cx = point.x * viewBoxSize;
-  const cy = viewBoxSize - point.y * viewBoxSize; 
+  const cy = viewBoxSize - point.y * viewBoxSize;
 
-  const baseRadius = r || (type === 'anchor' ? 6 : 4);
-  const visualRadius = isDragging ? baseRadius * 1.5 : (isSelected ? baseRadius * 1.25 : baseRadius);
+  const baseRadius = Number.isFinite(parsedRadius) ? parsedRadius : type === 'anchor' ? 6 : 4;
+  const visualRadius = isDragging ? baseRadius * 1.5 : isSelected ? baseRadius * 1.25 : baseRadius;
 
-  const defaultStyles = type === 'anchor'
-    ? 'fill-surface-1 stroke-accent-primary stroke-2 focus:stroke-[3px] focus:fill-accent-primary-bg'
-    : 'fill-surface-1 stroke-text-secondary stroke-2 focus:stroke-accent-primary focus:stroke-[3px]';
+  const defaultStyles =
+    type === 'anchor'
+      ? 'fill-surface-1 stroke-accent-primary stroke-2 focus:stroke-[3px] focus:fill-accent-primary-bg'
+      : 'fill-surface-1 stroke-text-secondary stroke-2 focus:stroke-accent-primary focus:stroke-[3px]';
 
-  const selectedStyles = isSelected 
-    ? 'stroke-[3px] fill-accent-primary-bg shadow-sm' 
-    : '';
+  const selectedStyles = isSelected ? 'stroke-[3px] fill-accent-primary-bg shadow-sm' : '';
 
   const cursorClass = isDraggable
-    ? (isDragging ? 'cursor-grabbing' : 'cursor-grab hover:scale-110')
+    ? isDragging
+      ? 'cursor-grabbing'
+      : 'cursor-grab hover:scale-110'
     : 'cursor-not-allowed opacity-50';
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isDraggable) return;
 
     if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onSelect?.();
-        return;
+      e.preventDefault();
+      onSelect?.();
+      return;
     }
 
     const step = e.shiftKey ? 0.1 : 0.01;
@@ -104,7 +107,7 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
 
     switch (e.key) {
       case 'ArrowUp':
-        newY = point.y + step; 
+        newY = point.y + step;
         changed = true;
         break;
       case 'ArrowDown':
@@ -112,7 +115,7 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
         changed = true;
         break;
       case 'ArrowRight':
-        newX = point.x + step; 
+        newX = point.x + step;
         changed = true;
         break;
       case 'ArrowLeft':
@@ -125,8 +128,8 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
       e.preventDefault();
       e.stopPropagation();
       if (snapToGrid) {
-          newX = Math.round(newX * 10) / 10;
-          newY = Math.round(newY * 10) / 10;
+        newX = Math.round(newX * 10) / 10;
+        newY = Math.round(newY * 10) / 10;
       }
       onDrag({ x: parseFloat(newX.toFixed(3)), y: parseFloat(newY.toFixed(3)) });
     }
@@ -146,13 +149,13 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
 
       {/* Halo effect for selection */}
       {isSelected && (
-          <circle 
-            cx={cx} 
-            cy={cy} 
-            r={baseRadius * 2.2} 
-            fill="transparent" 
-            className="stroke-accent-primary/30 stroke-2 animate-pulse pointer-events-none"
-          />
+        <circle
+          cx={cx}
+          cy={cy}
+          r={baseRadius * 2.2}
+          fill="transparent"
+          className="stroke-accent-primary/30 stroke-2 animate-pulse pointer-events-none"
+        />
       )}
 
       {/* Larger invisible hit area for easier grabbing */}
@@ -163,7 +166,7 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
         fill="transparent"
         className={isDraggable ? 'cursor-grab active:cursor-grabbing touch-none' : ''}
         onMouseDown={handleMouseDown}
-        onTouchStart={handleMouseDown} 
+        onTouchStart={handleMouseDown}
       />
 
       {/* Visual Circle */}
@@ -178,10 +181,10 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
         aria-valuenow={point.y * 100}
         onKeyDown={handleKeyDown}
         className={`transition-all duration-200 outline-none ${defaultStyles} ${selectedStyles} ${cursorClass} ${className}`}
-        style={{ 
-            filter: isDragging ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' : 'none',
-            transformBox: 'fill-box', 
-            transformOrigin: 'center' 
+        style={{
+          filter: isDragging ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' : 'none',
+          transformBox: 'fill-box',
+          transformOrigin: 'center',
         }}
         {...props}
       />
