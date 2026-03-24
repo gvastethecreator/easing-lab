@@ -58,8 +58,11 @@ bun run lint
 bun run format
 bun run test
 bun run coverage
+bun run metrics
 bun run check
 ```
+
+`bun run metrics` analiza `dist/`, genera `logs/metrics.json` y actualiza `docs/METRICAS.md`. Para medir bundle real, ejecútalo después de `bun run build`.
 
 ## 🧰 Tareas de VS Code
 
@@ -72,6 +75,7 @@ El workspace incluye tareas listas en `.vscode/tasks.json`:
 - `🧼 format`
 - `🧪 test`
 - `📊 coverage`
+- `📏 metrics`
 - `✅ check`
 - `👀 preview`
 
@@ -91,6 +95,7 @@ El workspace incluye tareas listas en `.vscode/tasks.json`:
 - [Arquitectura](docs/ARQUITECTURA.md)
 - [Sistema de Diseño](docs/SISTEMA_DISENO.md)
 - [Guía de Componentes](docs/GUIA_COMPONENTES.md)
+- [Métricas](docs/METRICAS.md)
 - [Tareas realizadas](docs/TAREAS_REALIZADAS.md)
 - [Deuda técnica](docs/DEUDA_TECNICA.md)
 

@@ -5,6 +5,7 @@ import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { CustomEase } from 'gsap/CustomEase';
 import App from './App';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { renderWithStartupMetrics } from './utils/performance';
 import './index.css';
 
 // Global GSAP Configuration
@@ -22,10 +23,12 @@ if (!rootElement) {
 }
 
 const root = createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
-  </React.StrictMode>
-);
+renderWithStartupMetrics(() => {
+  root.render(
+    <React.StrictMode>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    </React.StrictMode>
+  );
+});

@@ -1,6 +1,42 @@
 import { gsap } from 'gsap';
 import type { PathPoint } from '../types';
 
+export interface ResolvedGsapEase {
+  easeFunction: gsap.EaseFunction | null;
+  error: Error | null;
+}
+
+export const createFallbackLinearPath = (width: number, height: number) =>
+  `M 0 ${height} L ${width} 0`;
+
+export const createFallbackLinearPoints = (): PathPoint[] => [
+  { x: 0, y: 0, handle2: { x: 0.25, y: 0 } },
+  { x: 1, y: 1, handle1: { x: 0.75, y: 1 } },
+];
+
+export const resolveGsapEaseFunction = (ease: string): ResolvedGsapEase => {
+  try {
+    const parsedEase = gsap.parseEase(ease);
+
+    if (typeof parsedEase !== 'function') {
+      return {
+        easeFunction: null,
+        error: new Error(`GSAP ease did not resolve to a function: ${ease}`),
+      };
+    }
+
+    return {
+      easeFunction: parsedEase,
+      error: null,
+    };
+  } catch (cause) {
+    return {
+      easeFunction: null,
+      error: new Error(`Invalid GSAP ease: ${ease}`, { cause }),
+    };
+  }
+};
+
 /**
  * Generates an SVG path `d` attribute from a GSAP easing string.
  * It samples the easing function at a specified number of points to create a line graph representation.
@@ -17,17 +53,11 @@ export const generateGSAPPath = (
   height: number,
   samples: number = 100
 ): string => {
-  let easeFunction: gsap.EaseFunction | undefined;
-
-  try {
-    easeFunction = gsap.parseEase(ease);
-  } catch (e) {
-    console.warn(`Failed to parse ease: ${ease}`, e);
-  }
+  const { easeFunction } = resolveGsapEaseFunction(ease);
 
   // If the ease string is invalid or the plugin isn't registered, return a fallback diagonal line.
-  if (!easeFunction || typeof easeFunction !== 'function') {
-    return `M 0 ${height} L ${width} 0`;
+  if (!easeFunction) {
+    return createFallbackLinearPath(width, height);
   }
 
   // Optimize: reduce floating point precision overhead in the loop
@@ -57,28 +87,17 @@ export const generateGSAPPath = (
  * @param samples - Number of points to sample.
  */
 export const convertGsapEaseToPoints = (ease: string, samples: number = 12): PathPoint[] => {
-  let easeFunc: gsap.EaseFunction | undefined;
+  const { easeFunction } = resolveGsapEaseFunction(ease);
 
-  try {
-    easeFunc = gsap.parseEase(ease);
-  } catch (e) {
-    console.warn(`Failed to convert ease to points: ${ease}`, e);
-    return [];
-  }
-
-  if (!easeFunc || typeof easeFunc !== 'function') {
-    // Return a basic linear line as fallback
-    return [
-      { x: 0, y: 0, handle2: { x: 0.25, y: 0 } },
-      { x: 1, y: 1, handle1: { x: 0.75, y: 1 } },
-    ];
+  if (!easeFunction) {
+    return createFallbackLinearPoints();
   }
 
   // 1. Sample raw points with high precision
   const rawPoints: { x: number; y: number }[] = [];
   for (let i = 0; i <= samples; i++) {
     const x = i / samples;
-    const y = easeFunc(x);
+    const y = easeFunction(x);
     rawPoints.push({ x, y });
   }
 

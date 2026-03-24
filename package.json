@@ -15,6 +15,7 @@
     "typecheck": "bun ./scripts/run-with-log.mjs typecheck tsc --noEmit",
     "test": "bun ./scripts/run-with-log.mjs test vitest run",
     "coverage": "bun ./scripts/run-with-log.mjs coverage vitest run --coverage",
+    "metrics": "bun ./scripts/run-with-log.mjs metrics bun ./scripts/collect-metrics.mjs",
     "check": "bun ./scripts/run-with-log.mjs check vp check"
   },
   "dependencies": {

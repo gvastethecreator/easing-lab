@@ -1,0 +1,117 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AnimationPreview > mantiene un snapshot estable en su render inicial 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col gap-3"
+  >
+    <div
+      class="flex items-center justify-between flex-wrap gap-2"
+    >
+      <span
+        class="text-[10px] font-bold text-text-secondary uppercase tracking-wider"
+      >
+        Preview
+      </span>
+      <div
+        class="flex gap-2 items-center flex-wrap"
+      >
+        <button
+          class="px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors text-accent-primary bg-accent-primary/10"
+          title="Toggle Motion Trails"
+        >
+          Trails
+        </button>
+        <div
+          class="w-px h-4 bg-border-subtle self-center hidden sm:block"
+        />
+        <div
+          class="flex gap-1"
+        >
+          <button
+            class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border bg-accent-primary text-white border-accent-primary shadow-sm"
+          >
+            Move
+          </button>
+          <button
+            class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border bg-surface-base text-text-secondary border-border-subtle hover:bg-surface-2 hover:text-text-primary"
+          >
+            Scale
+          </button>
+          <button
+            class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border bg-surface-base text-text-secondary border-border-subtle hover:bg-surface-2 hover:text-text-primary"
+          >
+            Rotate
+          </button>
+          <button
+            class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border bg-surface-base text-text-secondary border-border-subtle hover:bg-surface-2 hover:text-text-primary"
+          >
+            Stagger
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="w-full bg-surface-2/30 border border-border-subtle rounded-xl flex flex-col relative overflow-hidden"
+    >
+      <div
+        class="h-28 w-full flex items-center px-6 relative"
+      >
+        <div
+          class="absolute inset-0 opacity-20 pointer-events-none"
+          style="background-image: linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px); background-size: 40px 100%;"
+        />
+        <div
+          class="w-10 h-10 rounded-lg bg-text-secondary/20 absolute left-6 pointer-events-none"
+        />
+        <div
+          class="w-10 h-10 rounded-lg bg-accent-primary/30 absolute left-6 pointer-events-none mix-blend-multiply dark:mix-blend-screen z-0 will-change-transform"
+        />
+        <div
+          class="w-10 h-10 rounded-lg bg-accent-primary/30 absolute left-6 pointer-events-none mix-blend-multiply dark:mix-blend-screen z-0 will-change-transform"
+        />
+        <div
+          class="w-10 h-10 rounded-lg bg-accent-primary/30 absolute left-6 pointer-events-none mix-blend-multiply dark:mix-blend-screen z-0 will-change-transform"
+        />
+        <div
+          class="w-10 h-10 rounded-lg bg-accent-primary/30 absolute left-6 pointer-events-none mix-blend-multiply dark:mix-blend-screen z-0 will-change-transform"
+        />
+        <div
+          class="w-10 h-10 rounded-lg bg-accent-primary/30 absolute left-6 pointer-events-none mix-blend-multiply dark:mix-blend-screen z-0 will-change-transform"
+        />
+        <div
+          class="w-10 h-10 rounded-lg bg-accent-primary/30 absolute left-6 pointer-events-none mix-blend-multiply dark:mix-blend-screen z-0 will-change-transform"
+        />
+        <div
+          class="w-10 h-10 rounded-lg bg-accent-primary shadow-lg relative z-10 flex items-center justify-center will-change-transform"
+        >
+          <div
+            class="w-1.5 h-1.5 bg-white rounded-full opacity-50"
+          />
+        </div>
+      </div>
+      <div
+        class="h-1 w-full bg-surface-2 relative"
+      >
+        <div
+          class="h-full bg-accent-primary origin-left will-change-transform"
+          style="transform: scaleX(0);"
+        />
+      </div>
+    </div>
+    <div
+      class="flex justify-between text-[10px] text-text-placeholder px-1 font-mono"
+    >
+      <span>
+        0.0s
+      </span>
+      <span>
+        Linear vs Eased
+      </span>
+      <span>
+        1.5s
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;

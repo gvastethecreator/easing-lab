@@ -56,6 +56,13 @@
       "problemMatcher": []
     },
     {
+      "label": "📏 metrics",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "metrics"],
+      "problemMatcher": []
+    },
+    {
       "label": "✅ check",
       "type": "shell",
       "command": "bun",

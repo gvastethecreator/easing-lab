@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { GraphGrid } from './GraphGrid';
 import { CopyIcon, CheckIcon } from './Icons';
+import { GRAPH_CARD_VIEWBOX_SIZE } from '../animationConfig';
 
 interface UniversalGraphCardProps {
   id: string;
@@ -46,7 +47,7 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
     const grid = useMemo(
       () => (
         <GraphGrid
-          size={224}
+          size={GRAPH_CARD_VIEWBOX_SIZE}
           subdivisions={4}
           showMidLines={false}
           opacity={0.3}
@@ -197,7 +198,7 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
             <svg
               width="100%"
               height="100%"
-              viewBox="0 0 224 224"
+              viewBox={`0 0 ${GRAPH_CARD_VIEWBOX_SIZE} ${GRAPH_CARD_VIEWBOX_SIZE}`}
               className="absolute inset-0 w-full h-full p-4"
               preserveAspectRatio="none"
               overflow="visible"

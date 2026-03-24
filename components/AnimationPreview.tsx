@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { gsap } from 'gsap';
+import {
+  PREVIEW_ANIMATION_TYPES,
+  PREVIEW_TARGET_TRANSLATE_PERCENT,
+  PREVIEW_TIMELINE_DURATION,
+  PREVIEW_TRAIL_COUNT,
+} from '../animationConfig';
 
-type AnimationType = 'Move' | 'Scale' | 'Rotate' | 'Stagger';
+type AnimationType = (typeof PREVIEW_ANIMATION_TYPES)[number];
 
 interface AnimationPreviewProps {
   ease: string;
@@ -71,7 +77,11 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
         switch (activeAnimation) {
           case 'Move':
           case 'Stagger':
-            return { xPercent: 350 * range, ease: easeVal, opacity: alpha };
+            return {
+              xPercent: PREVIEW_TARGET_TRANSLATE_PERCENT * range,
+              ease: easeVal,
+              opacity: alpha,
+            };
           case 'Scale':
             return { scale: 1 + 1 * range, ease: easeVal, opacity: alpha };
           case 'Rotate':
@@ -83,12 +93,25 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
 
       if (activeAnimation === 'Stagger') {
         items.forEach((item, i) => {
-          tl.to(item, { ...getProps(false), duration: 1, overwrite: 'auto' }, i * 0.1);
+          tl.to(
+            item,
+            { ...getProps(false), duration: PREVIEW_TIMELINE_DURATION, overwrite: 'auto' },
+            i * 0.1
+          );
         });
       } else {
         const [target, ghost] = items;
-        tl.to(target, { ...getProps(false), duration: 1, overwrite: 'auto' }, 0);
-        if (ghost) tl.to(ghost, { ...getProps(true), duration: 1, overwrite: 'auto' }, 0);
+        tl.to(
+          target,
+          { ...getProps(false), duration: PREVIEW_TIMELINE_DURATION, overwrite: 'auto' },
+          0
+        );
+        if (ghost)
+          tl.to(
+            ghost,
+            { ...getProps(true), duration: PREVIEW_TIMELINE_DURATION, overwrite: 'auto' },
+            0
+          );
       }
       tlRef.current = tl;
     });
@@ -117,7 +140,7 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
 
             // Use memoized ease function
             const easedVal = parsedEase(delayedProgress);
-            const xPos = easedVal * (350 * range);
+            const xPos = easedVal * (PREVIEW_TARGET_TRANSLATE_PERCENT * range);
 
             // Direct style manipulation for performance
             trail.style.transform = `translate(${xPos}%, 0) scale(${1 - i * 0.1})`;
@@ -162,7 +185,7 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
           <div className="w-px h-4 bg-border-subtle self-center hidden sm:block"></div>
 
           <div className="flex gap-1">
-            {(['Move', 'Scale', 'Rotate', 'Stagger'] as AnimationType[]).map((type) => (
+            {PREVIEW_ANIMATION_TYPES.map((type) => (
               <PreviewButton
                 key={type}
                 label={type}
@@ -205,7 +228,7 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
                 className="w-10 h-10 rounded-lg bg-text-secondary/20 absolute left-6 pointer-events-none"
               />
               {activeAnimation === 'Move' &&
-                [...Array(5)].map((_, i) => (
+                [...Array(PREVIEW_TRAIL_COUNT)].map((_, i) => (
                   <div
                     key={`trail-${i}`}
                     ref={(el) => {

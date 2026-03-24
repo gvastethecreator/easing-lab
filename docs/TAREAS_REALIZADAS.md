@@ -43,10 +43,30 @@
 
 - Añadidos tests para:
   - `hooks/useHistory.ts`
+  - `hooks/useDraggable.ts`
   - `utils/equality.ts`
   - `utils/gsapUtils.ts`
+- Añadidos tests de integración para:
+  - `components/CurveEditor.tsx`
+  - `components/MultiPointCurveEditor.tsx`
+- Añadidos snapshots / regresión para:
+  - `components/AnimationPreview.tsx`
+  - `components/UniversalGraphCard.tsx`
 - Configuración de cobertura con salida en `coverage/`.
 - Ajuste de Vitest para excluir `node_modules` y evitar ejecución de tests internos de dependencias.
+
+## Arquitectura y mantenibilidad
+
+- Extracción de constantes compartidas de animación a `animationConfig.ts`.
+- Extracción de la orquestación principal a `useMasterProgressAnimation.ts` y `useRegisterCustomEase.ts`.
+- Simplificación de `EasingCard.tsx` y `GSAPCard.tsx` como wrappers sobre `UniversalGraphCard.tsx` para consolidar la abstracción visual.
+
+## Métricas y documentación
+
+- Añadido `utils/performance.ts` para exponer métricas ligeras de arranque en cliente.
+- Añadido `scripts/collect-metrics.mjs` y el script `bun run metrics` para vigilar bundle y transferencias estimadas.
+- Actualización automática de `docs/METRICAS.md` a partir de `dist/`.
+- Mejora de `docs/GUIA_COMPONENTES.md`, `docs/ARQUITECTURA.md` y `components/components.md` con ejemplos mínimos, referencias a tests de snapshot y documentación de la abstracción canónica de tarjetas.
 
 ## Verificaciones ejecutadas
 
