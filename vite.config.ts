@@ -1,7 +1,7 @@
 /// <reference types="vitest/config" />
 
-import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
 
 const config = {
   plugins: [...react(), tailwindcss()],
@@ -15,7 +15,7 @@ const config = {
   },
   build: {
     target: 'es2022',
-    sourcemap: true,
+    sourcemap: false,
     chunkSizeWarningLimit: 900,
     rolldownOptions: {
       output: {
