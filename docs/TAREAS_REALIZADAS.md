@@ -1,5 +1,107 @@
 # Tareas realizadas
 
+## Continuación de deuda técnica (2026-03-31, fase 2)
+
+### Cobertura y regresión de interacción
+
+- Añadidos tests nuevos para:
+  - `components/ScrubbableInput.test.tsx`
+  - `components/DraggableHandle.test.tsx`
+- Cobertura global incrementada hasta **67.07%** (desde ~60%), con mejora en ramas de controles interactivos.
+
+### Bundle y carga inicial
+
+- Implementado lazy-loading de vistas en `App.tsx` con `React.lazy` + `Suspense`:
+  - `views/CubicBezierView`
+  - `views/GSAPView`
+- Resultado: separación efectiva de chunks por vista y reducción del JS del entry principal.
+
+### Métricas y presupuesto
+
+- Extendido `scripts/collect-metrics.mjs` para calcular `JS inicial (entry + modulepreload)`.
+- Actualizado `docs/METRICAS.md` con nuevo check de presupuesto para coste de arranque.
+
+### Verificación ejecutada en esta fase
+
+- `bun run test` ✅ (11 archivos, 28 tests)
+- `bun run coverage` ✅ (67.07% statements global)
+- `bun run build` ✅
+- `bun run metrics` ✅
+- `bun run check` ✅
+- `bun run typecheck` ✅
+
+## Iteración de puesta a punto integral (2026-03-31)
+
+### Auditoría y diagnóstico completo
+
+- Revisión de configuración raíz (`package.json`, `vite.config.ts`, `tsconfig.json`, `.vscode/tasks.json`, `.gitignore`, scripts y docs).
+- Ejecución de validaciones end-to-end para detectar estado real antes de intervenir:
+  - `bun run check`
+  - `bun run typecheck`
+  - `bun run lint`
+  - `bun run test`
+  - `bun run build`
+  - `bun run coverage`
+  - `bun run metrics`
+
+### Correcciones técnicas aplicadas
+
+- Corrección de warnings de lint y tipado inseguro en:
+  - `views/GSAPView.tsx`
+  - `views/CubicBezierView.tsx`
+  - `components/FilterControls.tsx`
+  - `components/ScrubbableInput.tsx`
+  - `components/CurveEditor.tsx`
+  - `components/GSAPCard.tsx`
+  - `components/GSAPGallery.tsx`
+  - `components/Header.tsx`
+  - `hooks/useDraggable.ts`
+  - `hooks/useHistory.ts`
+  - `utils/performance.ts`
+  - `test-utils/mockSvgGeometry.ts`
+  - `hooks/useDraggable.test.tsx`
+  - `scripts/collect-metrics.mjs`
+- Refuerzo de tipado para eventos drag/touch en `useDraggable` (compatible con React y eventos nativos).
+- Eliminación de assertions inseguras `as ...` en rutas críticas de interacción y tests.
+
+### Calidad de código y mantenibilidad
+
+- Formateo integral del repositorio con `vp fmt`.
+- Añadido de documentación interna JSDoc en módulos críticos:
+  - `hooks/useDraggable.ts`
+  - `hooks/useHistory.ts`
+  - `utils/performance.ts`
+  - `scripts/run-with-log.mjs`
+  - `scripts/collect-metrics.mjs`
+
+### Dependencias y baseline técnico
+
+- Actualización de dependencias de desarrollo:
+  - `oxfmt` `^0.41.0` → `^0.42.0`
+  - `typescript` `^5.9.3` → `^6.0.2`
+- Alineación del baseline del proyecto a ES2023:
+  - `tsconfig.json`: `target/lib` a `ES2023`
+  - `vite.config.ts`: `build.target` a `es2023`
+
+### Scripts, tareas y logs
+
+- Alineación de scripts con flujo Vite+ sin romper estabilidad:
+  - `test` ahora usa `vp test`.
+  - `format:check` ahora usa `vp fmt --check`.
+  - `coverage` se mantiene en `vitest run --coverage` para evitar warning de versiones mixtas con `vp test --coverage`.
+- Confirmación de generación de logs claros por script en `logs/*.log`.
+- Creación de `logs/.gitkeep` para conservar estructura del directorio en Git.
+
+### Verificación final de la iteración
+
+- `bun run typecheck` ✅
+- `bun run lint` ✅ (0 warnings / 0 errors)
+- `bun run test` ✅ (8 archivos, 19 tests)
+- `bun run build` ✅
+- `bun run coverage` ✅
+- `bun run check` ✅
+- `bun run metrics` ✅ (actualiza `docs/METRICAS.md` + `logs/metrics.json`)
+
 ## Tooling y plataforma
 
 - Migración del proyecto a **Bun** como package manager.

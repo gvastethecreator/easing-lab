@@ -14,7 +14,7 @@ const config = {
     port: 4173,
   },
   build: {
-    target: 'es2022',
+    target: 'es2023',
     sourcemap: false,
     chunkSizeWarningLimit: 900,
     rolldownOptions: {

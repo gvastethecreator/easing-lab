@@ -343,7 +343,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
   const controls = (
     <>
       <div className="grid grid-cols-2 gap-6">
-        {['p1', 'p2'].map((key) => (
+        {(['p1', 'p2'] as const).map((key) => (
           <div key={key} className="space-y-3">
             <div className="flex items-center justify-between text-[10px] font-bold text-text-secondary uppercase tracking-wider">
               <span>{key === 'p1' ? 'Start Control' : 'End Control'}</span>
@@ -351,15 +351,15 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
             <div className="flex gap-2">
               <ScrubbableInput
                 label="X"
-                value={coords[key as 'p1' | 'p2'].x}
-                onChange={(v) => updateCoordinate(key as 'p1' | 'p2', 'x', v)}
+                value={coords[key].x}
+                onChange={(v) => updateCoordinate(key, 'x', v)}
                 min={0}
                 max={1}
               />
               <ScrubbableInput
                 label="Y"
-                value={coords[key as 'p1' | 'p2'].y}
-                onChange={(v) => updateCoordinate(key as 'p1' | 'p2', 'y', v)}
+                value={coords[key].y}
+                onChange={(v) => updateCoordinate(key, 'y', v)}
                 min={-2}
                 max={2}
               />

@@ -19,6 +19,11 @@ if (!existsSync(distDir)) {
 mkdirSync(logsDir, { recursive: true });
 mkdirSync(docsDir, { recursive: true });
 
+/**
+ * Recorre recursivamente un directorio y devuelve todos los archivos encontrados.
+ * @param {string} directory
+ * @returns {string[]}
+ */
 const collectFiles = (directory) => {
   const entries = readdirSync(directory, { withFileTypes: true });
 
@@ -32,6 +37,10 @@ const collectFiles = (directory) => {
   });
 };
 
+/**
+ * Formatea bytes a KB con dos decimales.
+ * @param {number} value
+ */
 const formatKb = (value) => `${(value / 1024).toFixed(2)} KB`;
 
 const files = collectFiles(distDir);
@@ -52,6 +61,44 @@ const assets = files.map((filePath) => {
 
 const runtimeAssets = assets.filter((asset) => !asset.file.endsWith('.map'));
 
+const distIndexHtmlPath = join(distDir, 'index.html');
+
+/**
+ * Extrae los archivos JS que se cargan en el HTML inicial (script + modulepreload).
+ * @returns {Set<string>}
+ */
+const collectInitialJsAssetFiles = () => {
+  if (!existsSync(distIndexHtmlPath)) {
+    return new Set();
+  }
+
+  const html = readFileSync(distIndexHtmlPath, 'utf8');
+  const initialPaths = new Set();
+
+  for (const match of html.matchAll(/<script[^>]+src=["']([^"']+\.js)["']/g)) {
+    initialPaths.add(match[1]);
+  }
+
+  for (const match of html.matchAll(
+    /<link[^>]+rel=["']modulepreload["'][^>]+href=["']([^"']+\.js)["']/g
+  )) {
+    initialPaths.add(match[1]);
+  }
+
+  const normalizeDistRelativePath = (assetPath) => {
+    const withoutQuery = assetPath.split('?')[0] ?? assetPath;
+    const trimmed = withoutQuery.replace(/^\.?\//, '').replace(/^\//, '');
+    return relative(rootDir, join(distDir, trimmed)).replace(/\\/g, '/');
+  };
+
+  return new Set([...initialPaths].map(normalizeDistRelativePath));
+};
+
+/**
+ * Suma una propiedad numérica en assets que cumplan el predicado.
+ * @param {(asset: (typeof runtimeAssets)[number]) => boolean} predicate
+ * @param {'size' | 'gzip' | 'brotli'} key
+ */
 const sumBy = (predicate, key) =>
   runtimeAssets.filter(predicate).reduce((total, asset) => total + asset[key], 0);
 
@@ -61,11 +108,16 @@ const totalCss = sumBy((asset) => asset.extension === '.css', 'size');
 const totalHtml = sumBy((asset) => asset.extension === '.html', 'size');
 const totalGzip = sumBy(() => true, 'gzip');
 const totalBrotli = sumBy(() => true, 'brotli');
-const largestAsset = [...runtimeAssets].sort((a, b) => b.size - a.size)[0] ?? null;
+const largestAsset = runtimeAssets.toSorted((a, b) => b.size - a.size)[0] ?? null;
+const initialJsAssetFiles = collectInitialJsAssetFiles();
+const initialJs = runtimeAssets
+  .filter((asset) => asset.extension === '.js' && initialJsAssetFiles.has(asset.file))
+  .reduce((total, asset) => total + asset.size, 0);
 
 const metrics = {
   generatedAt: new Date().toISOString(),
   budgets: {
+    initialJsMaxBytes: 220 * 1024,
     totalJsMaxBytes: 250 * 1024,
     largestAssetMaxBytes: 350 * 1024,
     htmlBootstrapMaxBytes: 4 * 1024,
@@ -74,11 +126,13 @@ const metrics = {
     size: totalSize,
     gzip: totalGzip,
     brotli: totalBrotli,
+    initialJs,
     js: totalJs,
     css: totalCss,
     html: totalHtml,
   },
   checks: {
+    initialJsBudgetOk: initialJs <= 220 * 1024,
     jsBudgetOk: totalJs <= 250 * 1024,
     largestAssetBudgetOk: largestAsset ? largestAsset.size <= 350 * 1024 : true,
     htmlBootstrapBudgetOk: totalHtml <= 4 * 1024,
@@ -103,6 +157,7 @@ const markdown = `# Métricas
 ## Bundle generado
 
 - Tamaño total: **${formatKb(totalSize)}**
+- JavaScript inicial (entry + modulepreload): **${formatKb(initialJs)}**
 - JavaScript total: **${formatKb(totalJs)}**
 - CSS total: **${formatKb(totalCss)}**
 - HTML inicial: **${formatKb(totalHtml)}**
@@ -111,6 +166,7 @@ const markdown = `# Métricas
 
 ## Presupuestos simples
 
+- JS inicial < 220 KB: **${metrics.checks.initialJsBudgetOk ? 'OK' : 'REVISAR'}**
 - JS total < 250 KB: **${metrics.checks.jsBudgetOk ? 'OK' : 'REVISAR'}**
 - Asset individual más grande < 350 KB: **${metrics.checks.largestAssetBudgetOk ? 'OK' : 'REVISAR'}**
 - HTML inicial < 4 KB: **${metrics.checks.htmlBootstrapBudgetOk ? 'OK' : 'REVISAR'}**
@@ -161,5 +217,5 @@ if (formatResult.status !== 0) {
 console.log(`Métricas guardadas en ${relative(rootDir, metricsJsonPath)}`);
 console.log(`Resumen Markdown actualizado en ${relative(rootDir, metricsMarkdownPath)}`);
 console.log(
-  `JS total: ${formatKb(totalJs)} | CSS total: ${formatKb(totalCss)} | HTML: ${formatKb(totalHtml)}`
+  `JS inicial: ${formatKb(initialJs)} | JS total: ${formatKb(totalJs)} | CSS: ${formatKb(totalCss)} | HTML: ${formatKb(totalHtml)}`
 );

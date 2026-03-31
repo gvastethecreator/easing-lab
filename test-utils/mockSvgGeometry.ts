@@ -13,7 +13,7 @@ export const installMockSvgGeometry = (svg: SVGSVGElement) => {
   Object.defineProperty(svg, 'getScreenCTM', {
     configurable: true,
     value: () => ({
-      inverse: () => ({}) as DOMMatrix,
+      inverse: () => new DOMMatrix(),
     }),
   });
 };

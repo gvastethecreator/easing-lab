@@ -44,7 +44,7 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
     const allFuncs = [customGSAPEasing, ...GSAP_EASING_FUNCTIONS];
 
     if (activeCategory === GSAPEasingCategory.ALL) {
-      return allFuncs.sort((a, b) => {
+      return allFuncs.toSorted((a, b) => {
         if (a.id === 'custom-bezier') return -1;
         if (b.id === 'custom-bezier') return 1;
         return a.name.localeCompare(b.name);
@@ -53,8 +53,8 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
     if (activeCategory === GSAPEasingCategory.CUSTOM) {
       return [customGSAPEasing];
     }
-    return GSAP_EASING_FUNCTIONS.filter((func) => func.category === activeCategory).sort((a, b) =>
-      a.name.localeCompare(b.name)
+    return GSAP_EASING_FUNCTIONS.filter((func) => func.category === activeCategory).toSorted(
+      (a, b) => a.name.localeCompare(b.name)
     );
   }, [activeCategory, customGSAPEasing]);
 

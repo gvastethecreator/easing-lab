@@ -6,6 +6,17 @@ interface HistoryState<T> {
   future: T[];
 }
 
+/**
+ * Type guard para validar objetos indexables sin usar type assertions inseguras.
+ */
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+/**
+ * Compara dos valores de manera estructural.
+ * Soporta primitivos, arrays y objetos planos.
+ */
 function areValuesEqual(left: unknown, right: unknown): boolean {
   if (Object.is(left, right)) {
     return true;
@@ -33,9 +44,9 @@ function areValuesEqual(left: unknown, right: unknown): boolean {
     return true;
   }
 
-  if (typeof left === 'object' && typeof right === 'object') {
-    const leftObject = left as Record<string, unknown>;
-    const rightObject = right as Record<string, unknown>;
+  if (isRecord(left) && isRecord(right)) {
+    const leftObject = left;
+    const rightObject = right;
     const leftKeys = Object.keys(leftObject);
     const rightKeys = Object.keys(rightObject);
 
@@ -55,6 +66,9 @@ function areValuesEqual(left: unknown, right: unknown): boolean {
   return false;
 }
 
+/**
+ * Hook de historial genérico con soporte de undo/redo y actualizaciones transitorias.
+ */
 export function useHistory<T>(initialState: T, maxHistory = 50) {
   const [state, setState] = useState<HistoryState<T>>({
     past: [],

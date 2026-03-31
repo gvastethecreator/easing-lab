@@ -71,10 +71,6 @@ export const ScrubbableInput: React.FC<ScrubbableInputProps> = ({
     onChange(parseFloat(finalValue.toFixed(2)));
   };
 
-  const handleClickLabel = () => {
-    // If needed, we could focus input here, but drag is priority
-  };
-
   return (
     <div
       className={`relative group flex-1 rounded-md bg-surface-2 transition-colors hover:bg-surface-hover focus-within:ring-1 focus-within:ring-accent-primary ${isDragging ? 'ring-1 ring-accent-primary bg-surface-hover' : ''}`}
@@ -83,7 +79,6 @@ export const ScrubbableInput: React.FC<ScrubbableInputProps> = ({
       <div
         className="absolute left-0 top-0 bottom-0 w-8 flex items-center justify-center cursor-ew-resize z-10"
         onMouseDown={handleMouseDown}
-        onClick={handleClickLabel}
         title="Drag to change value"
       >
         <span

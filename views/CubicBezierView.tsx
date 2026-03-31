@@ -60,7 +60,7 @@ export const CubicBezierView: React.FC<CubicBezierViewProps> = ({
   }, [activeCategory, activeType]);
 
   const functionsWithCustom = useMemo(() => {
-    const sorted = [...filteredFunctions].sort((a, b) => a.name.localeCompare(b.name));
+    const sorted = filteredFunctions.toSorted((a, b) => a.name.localeCompare(b.name));
     return [customEasing, ...sorted];
   }, [customEasing, filteredFunctions]);
 

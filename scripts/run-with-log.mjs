@@ -38,6 +38,11 @@ const child = spawn(command, commandArgs, {
   stdio: ['inherit', 'pipe', 'pipe'],
 });
 
+/**
+ * Duplica la salida de un stream al terminal y al archivo de log.
+ * @param {import('node:stream').Readable} stream
+ * @param {NodeJS.WriteStream} writer
+ */
 const pipeStream = (stream, writer) => {
   stream.on('data', (chunk) => {
     writer.write(chunk);

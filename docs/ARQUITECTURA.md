@@ -3,13 +3,14 @@
 ## 1. Stack Tecnológico
 
 - **Frontend Framework:** React 19.
-- **Lenguaje:** TypeScript. Tipado estricto para `props`, `state` y estructuras de datos de animación.
+- **Lenguaje:** TypeScript 6. Tipado estricto para `props`, `state` y estructuras de datos de animación.
 - **Motor de Animación:** GSAP v3.14.
   - `gsap.core`: Para tweens y timelines.
   - `MotionPathPlugin`: Para visualizar las curvas SVG y mover los marcadores a lo largo de ellas.
   - `CustomEase`: Para interpretar y ejecutar curvas no estándar.
 - **Estilos:** Tailwind CSS 4 con integración local vía Vite.
 - **Tooling:** Vite 8 + Vite+, Rolldown, OXC y Vitest.
+- **Baseline ECMAScript:** ES2023 (alineado en `tsconfig.json` y `vite.config.ts`).
 
 ## 2. Estructura de Directorios
 

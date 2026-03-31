@@ -1,7 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { Suspense, lazy, useRef, useState } from 'react';
 import { Header } from './components/Header';
-import { CubicBezierView } from './views/CubicBezierView';
-import { GSAPView } from './views/GSAPView';
 import { Footer } from './components/Footer';
 import type { View, PathPoint, Point } from './types';
 import {
@@ -14,6 +12,14 @@ import {
 } from './animationConfig';
 import { useMasterProgressAnimation } from './hooks/useMasterProgressAnimation';
 import { useRegisterCustomEase } from './hooks/useRegisterCustomEase';
+
+const CubicBezierView = lazy(() =>
+  import('./views/CubicBezierView').then((module) => ({ default: module.CubicBezierView }))
+);
+
+const GSAPView = lazy(() =>
+  import('./views/GSAPView').then((module) => ({ default: module.GSAPView }))
+);
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>('cubic');
@@ -45,32 +51,40 @@ const App: React.FC = () => {
         isPlaying={isPlaying}
         togglePlay={() => setIsPlaying(!isPlaying)}
       />
-      <main className="p-4 flex-grow w-full max-w-[1920px] mx-auto animate-in fade-in duration-500">
-        {view === 'cubic' && (
-          <CubicBezierView
-            p1={p1}
-            setP1={setP1}
-            p2={p2}
-            setP2={setP2}
-            duration={duration}
-            setDuration={setDuration}
-            range={range}
-            setRange={setRange}
-            progressRef={progressRef}
-          />
-        )}
-        {view === 'gsap' && (
-          <GSAPView
-            customEaseId={customEaseId}
-            points={gsapPoints}
-            setPoints={setGsapPoints}
-            progressRef={progressRef}
-            duration={duration}
-            setDuration={setDuration}
-            range={range}
-            setRange={setRange}
-          />
-        )}
+      <main className="p-4 grow w-full max-w-480 mx-auto animate-in fade-in duration-500">
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center min-h-90 text-text-secondary text-sm">
+              Cargando editor…
+            </div>
+          }
+        >
+          {view === 'cubic' && (
+            <CubicBezierView
+              p1={p1}
+              setP1={setP1}
+              p2={p2}
+              setP2={setP2}
+              duration={duration}
+              setDuration={setDuration}
+              range={range}
+              setRange={setRange}
+              progressRef={progressRef}
+            />
+          )}
+          {view === 'gsap' && (
+            <GSAPView
+              customEaseId={customEaseId}
+              points={gsapPoints}
+              setPoints={setGsapPoints}
+              progressRef={progressRef}
+              duration={duration}
+              setDuration={setDuration}
+              range={range}
+              setRange={setRange}
+            />
+          )}
+        </Suspense>
       </main>
       <Footer />
     </div>

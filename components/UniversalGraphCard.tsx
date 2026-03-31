@@ -191,8 +191,9 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
             ref={cardRef}
             type="button"
             onClick={onSelect}
-            className={`relative w-full h-full rounded-xl border-2 bg-surface-1 dark:bg-surface-1 transition-colors duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-accent-primary/60 dark:focus-visible:ring-offset-surface-base ${isCustom ? 'border-accent-primary' : 'border-border-subtle dark:border-border-subtle'
-              }`}
+            className={`relative w-full h-full rounded-xl border-2 bg-surface-1 dark:bg-surface-1 transition-colors duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-accent-primary/60 dark:focus-visible:ring-offset-surface-base ${
+              isCustom ? 'border-accent-primary' : 'border-border-subtle dark:border-border-subtle'
+            }`}
             aria-label={`Select ${title}`}
           >
             <svg

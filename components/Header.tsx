@@ -46,6 +46,18 @@ const PlayPauseButton: React.FC<{ isPlaying: boolean; onClick: () => void }> = (
 
 const NUM_TRAIL_PARTICLES = 6;
 
+const isDefined = <T,>(value: T | null): value is T => value !== null;
+
+const getNumericGsapProperty = (target: gsap.TweenTarget, property: string): number => {
+  const value = gsap.getProperty(target, property);
+  if (typeof value === 'number') {
+    return value;
+  }
+
+  const numericValue = Number.parseFloat(String(value));
+  return Number.isFinite(numericValue) ? numericValue : 0;
+};
+
 export const Header: React.FC<HeaderProps> = ({
   activeView,
   setView,
@@ -68,7 +80,7 @@ export const Header: React.FC<HeaderProps> = ({
     if (!container || !follower) return;
 
     const ctx = gsap.context(() => {
-      const trail = trailRefs.current.filter(Boolean) as HTMLDivElement[];
+      const trail = trailRefs.current.filter(isDefined);
       const standbyPos = { x: container.offsetWidth - 20, y: container.offsetHeight / 2 };
 
       gsap.set([follower, ...trail], {
@@ -100,8 +112,8 @@ export const Header: React.FC<HeaderProps> = ({
         followerXTo(target.x);
         followerYTo(target.y);
 
-        const leaderX = gsap.getProperty(follower, 'x') as number;
-        const leaderY = gsap.getProperty(follower, 'y') as number;
+        const leaderX = getNumericGsapProperty(follower, 'x');
+        const leaderY = getNumericGsapProperty(follower, 'y');
 
         trail.forEach((_, i) => {
           trailXTo[i](leaderX);
@@ -126,14 +138,14 @@ export const Header: React.FC<HeaderProps> = ({
     const onMouseEnter = () => {
       isInside.current = true;
       gsap.to(follower, { autoAlpha: 1, duration: 0.3 });
-      const trail = trailRefs.current.filter(Boolean);
+      const trail = trailRefs.current.filter(isDefined);
       gsap.to(trail, { autoAlpha: 0.4, scale: (i) => 1 - i * 0.15, duration: 0.3, stagger: 0.05 });
     };
 
     const onMouseLeave = () => {
       isInside.current = false;
       gsap.to(follower, { autoAlpha: 0, duration: 0.5, delay: 0.2 });
-      const trail = trailRefs.current.filter(Boolean);
+      const trail = trailRefs.current.filter(isDefined);
       gsap.to(trail, { autoAlpha: 0, duration: 0.3 });
     };
 
@@ -147,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({
     container.addEventListener('mousemove', onMouseMove);
 
     return () => {
-      gsap.killTweensOf([follower, ...trailRefs.current.filter(Boolean)]);
+      gsap.killTweensOf([follower, ...trailRefs.current.filter(isDefined)]);
       ctx.revert();
       container.removeEventListener('mouseenter', onMouseEnter);
       container.removeEventListener('mouseleave', onMouseLeave);
@@ -193,7 +205,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="md:hidden relative">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="bg-surface-2 text-text-primary text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-2 border border-border-subtle focus:ring-2 focus:ring-accent-primary outline-none min-w-[100px] justify-between"
+                className="bg-surface-2 text-text-primary text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-2 border border-border-subtle focus:ring-2 focus:ring-accent-primary outline-none min-w-25 justify-between"
               >
                 <span>{activeView === 'cubic' ? 'Cubic' : 'GSAP'}</span>
                 <ChevronDownIcon

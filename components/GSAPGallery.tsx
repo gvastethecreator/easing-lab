@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { UniversalGraphCard } from './UniversalGraphCard';
-import type { GSAPEasingFunction } from '../types';
+import { GSAPEasingCategory, type GSAPEasingFunction } from '../types';
 import { generateGSAPPath } from '../utils/gsapUtils';
 
 interface GSAPGalleryProps {
@@ -31,7 +31,7 @@ export const GSAPGallery: React.FC<GSAPGalleryProps> = React.memo(({ functions, 
             animationEase={func.ease}
             copyValue={func.ease}
             onSelect={() => onCardClick(func.ease)}
-            isCustom={func.category === 'Custom'}
+            isCustom={func.category === GSAPEasingCategory.CUSTOM}
           />
         );
       })}

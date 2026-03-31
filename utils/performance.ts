@@ -26,6 +26,13 @@ const getPaintMetric = (name: string): number | null => {
   return roundMetric(entry?.startTime);
 };
 
+const isNavigationTiming = (entry: PerformanceEntry): entry is PerformanceNavigationTiming =>
+  'domContentLoadedEventEnd' in entry && 'loadEventEnd' in entry;
+
+/**
+ * Ejecuta el render de la app y publica métricas ligeras de arranque en
+ * `window.__EASING_LAB_STARTUP_METRICS__` tras el segundo frame.
+ */
 export const renderWithStartupMetrics = (renderApp: () => void) => {
   if (typeof window === 'undefined' || typeof performance === 'undefined') {
     renderApp();
@@ -37,9 +44,7 @@ export const renderWithStartupMetrics = (renderApp: () => void) => {
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      const navigationEntry = performance.getEntriesByType('navigation')[0] as
-        | PerformanceNavigationTiming
-        | undefined;
+      const navigationEntry = performance.getEntriesByType('navigation').find(isNavigationTiming);
 
       const metrics: StartupMetrics = {
         firstFrameMs: Number((performance.now() - renderStart).toFixed(2)),

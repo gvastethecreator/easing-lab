@@ -31,6 +31,21 @@ function FilterButton<T extends string>({
   );
 }
 
+const updateWithTransition = (updateCallback: () => void) => {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!document.startViewTransition || prefersReducedMotion) {
+    updateCallback();
+    return;
+  }
+
+  try {
+    document.startViewTransition(updateCallback);
+  } catch {
+    updateCallback();
+  }
+};
+
 interface FilterControlsProps<T extends string> {
   items: { label: string; value: T }[];
   activeItem: T;
@@ -46,21 +61,6 @@ export const FilterControls = <T extends string>({
   label,
   buttonClassName,
 }: FilterControlsProps<T>) => {
-  const updateWithTransition = (updateCallback: () => void) => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!document.startViewTransition || prefersReducedMotion) {
-      updateCallback();
-      return;
-    }
-
-    try {
-      document.startViewTransition(updateCallback);
-    } catch {
-      updateCallback();
-    }
-  };
-
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {label && (

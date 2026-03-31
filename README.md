@@ -9,7 +9,7 @@
 - Galerías de easings CSS y GSAP con vista previa animada.
 - Sincronización de animaciones con `gsap.ticker` fuera del render de React.
 - Historial local de cambios con `undo` / `redo`.
-- Tema claro/oscuro y color de acento.
+- Tema claro/oscuro y color de acento (modo oscuro por defecto).
 - Scripts con generación automática de logs en `logs/`.
 - Validación con `typecheck`, `lint`, `test`, `coverage`, `build` y `check`.
 
@@ -23,6 +23,14 @@
 - **Lint / format:** OXC (`oxlint`, `oxfmt`)
 - **Testing:** Vitest + Testing Library + `happy-dom`
 - **Estilos:** Tailwind CSS 4 con entrada local en `index.css`
+
+Versiones relevantes verificadas en esta iteración:
+
+- `typescript@6.0.2`
+- `oxfmt@0.42.0`
+- `vite-plus@0.1.14`
+- `vite@8.x`
+- `vitest@4.1.2`
 
 ## 🚀 Puesta en marcha
 
@@ -60,6 +68,7 @@ bun run test
 bun run coverage
 bun run metrics
 bun run check
+bun run format:check
 ```
 
 `bun run metrics` analiza `dist/`, genera `logs/metrics.json` y actualiza `docs/METRICAS.md`. Para medir bundle real, ejecútalo después de `bun run build`.
@@ -96,12 +105,13 @@ El workspace incluye tareas listas en `.vscode/tasks.json`:
 - [Sistema de Diseño](docs/SISTEMA_DISENO.md)
 - [Guía de Componentes](docs/GUIA_COMPONENTES.md)
 - [Métricas](docs/METRICAS.md)
+- [Revisión General](docs/REVISION_GENERAL.md)
 - [Tareas realizadas](docs/TAREAS_REALIZADAS.md)
 - [Deuda técnica](docs/DEUDA_TECNICA.md)
 
 ## ✅ Estado verificado
 
-Validado en esta sesión:
+Validado en la sesión del **31-03-2026**:
 
 - `bun run typecheck`
 - `bun run lint`
@@ -109,5 +119,6 @@ Validado en esta sesión:
 - `bun run coverage`
 - `bun run build`
 - `bun run check`
+- `bun run metrics`
 
 En resumen: menos magia implícita, más tooling moderno, y bastantes menos gremlins.
