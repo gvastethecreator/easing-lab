@@ -1,5 +1,5 @@
-import { gsap } from 'gsap';
-import type { PathPoint } from '../types';
+import { gsap } from "gsap";
+import type { PathPoint } from "../types";
 
 export interface ResolvedGsapEase {
   easeFunction: gsap.EaseFunction | null;
@@ -18,7 +18,7 @@ export const resolveGsapEaseFunction = (ease: string): ResolvedGsapEase => {
   try {
     const parsedEase = gsap.parseEase(ease);
 
-    if (typeof parsedEase !== 'function') {
+    if (typeof parsedEase !== "function") {
       return {
         easeFunction: null,
         error: new Error(`GSAP ease did not resolve to a function: ${ease}`),
@@ -51,7 +51,7 @@ export const generateGSAPPath = (
   ease: string,
   width: number,
   height: number,
-  samples: number = 100
+  samples: number = 100,
 ): string => {
   const { easeFunction } = resolveGsapEaseFunction(ease);
 
@@ -76,7 +76,7 @@ export const generateGSAPPath = (
     points.push(`L ${x} ${y}`);
   }
 
-  return points.join(' ');
+  return points.join(" ");
 };
 
 /**

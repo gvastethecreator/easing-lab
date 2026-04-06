@@ -82,7 +82,7 @@ Tarjeta de presentación polimórfica para cualquier easing.
   pathData={pathData}
   animationEase="power2.out"
   copyValue="power2.out"
-  onSelect={() => setEase('power2.out')}
+  onSelect={() => setEase("power2.out")}
 />
 ```
 

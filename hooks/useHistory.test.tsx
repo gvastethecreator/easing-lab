@@ -1,9 +1,9 @@
-import { act, renderHook } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { useHistory } from './useHistory';
+import { act, renderHook } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { useHistory } from "./useHistory";
 
-describe('useHistory', () => {
-  it('registra cambios confirmados y permite undo/redo', () => {
+describe("useHistory", () => {
+  it("registra cambios confirmados y permite undo/redo", () => {
     const { result } = renderHook(() => useHistory({ value: 1 }));
 
     act(() => {
@@ -29,7 +29,7 @@ describe('useHistory', () => {
     expect(result.current.state).toEqual({ value: 3 });
   });
 
-  it('no agrega historial en cambios transitorios', () => {
+  it("no agrega historial en cambios transitorios", () => {
     const { result } = renderHook(() => useHistory({ value: 1 }));
 
     act(() => {
@@ -41,7 +41,7 @@ describe('useHistory', () => {
     expect(result.current.canUndo).toBe(false);
   });
 
-  it('ignora estados equivalentes y respeta el límite de historial', () => {
+  it("ignora estados equivalentes y respeta el límite de historial", () => {
     const { result } = renderHook(() => useHistory({ value: 0 }, 2));
 
     act(() => {

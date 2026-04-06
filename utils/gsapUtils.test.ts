@@ -1,22 +1,22 @@
-import { describe, expect, it } from 'vitest';
-import { convertGsapEaseToPoints, generateGSAPPath } from './gsapUtils';
+import { describe, expect, it } from "vitest";
+import { convertGsapEaseToPoints, generateGSAPPath } from "./gsapUtils";
 
-describe('gsapUtils', () => {
-  it('genera un path SVG utilizable para easings válidos', () => {
-    const path = generateGSAPPath('power1.out', 100, 100, 4);
+describe("gsapUtils", () => {
+  it("genera un path SVG utilizable para easings válidos", () => {
+    const path = generateGSAPPath("power1.out", 100, 100, 4);
 
-    expect(path.startsWith('M 0 100')).toBe(true);
-    expect(path).toContain('L 100.00');
+    expect(path.startsWith("M 0 100")).toBe(true);
+    expect(path).toContain("L 100.00");
   });
 
-  it('devuelve una diagonal de fallback para easings inválidos', () => {
-    const path = generateGSAPPath('ease.que.no.existe', 120, 80, 4);
+  it("devuelve una diagonal de fallback para easings inválidos", () => {
+    const path = generateGSAPPath("ease.que.no.existe", 120, 80, 4);
 
-    expect(path).toBe('M 0 80 L 120 0');
+    expect(path).toBe("M 0 80 L 120 0");
   });
 
-  it('convierte un easing en puntos editables con endpoints estables', () => {
-    const points = convertGsapEaseToPoints('linear', 4);
+  it("convierte un easing en puntos editables con endpoints estables", () => {
+    const points = convertGsapEaseToPoints("linear", 4);
 
     expect(points).toHaveLength(5);
     expect(points[0]).toMatchObject({ x: 0, y: 0 });
@@ -25,8 +25,8 @@ describe('gsapUtils', () => {
     expect(points.at(-1)?.handle1).toBeDefined();
   });
 
-  it('usa un fallback lineal al convertir un easing inválido', () => {
-    const points = convertGsapEaseToPoints('ease.que.no.existe');
+  it("usa un fallback lineal al convertir un easing inválido", () => {
+    const points = convertGsapEaseToPoints("ease.que.no.existe");
 
     expect(points).toEqual([
       { x: 0, y: 0, handle2: { x: 0.25, y: 0 } },

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 
 interface ScrubbableInputProps {
   value: number;
@@ -27,11 +27,11 @@ export const ScrubbableInput: React.FC<ScrubbableInputProps> = ({
     setIsDragging(true);
     startX.current = e.clientX;
     startValue.current = value;
-    document.body.style.cursor = 'ew-resize';
-    document.body.style.userSelect = 'none';
+    document.body.style.cursor = "ew-resize";
+    document.body.style.userSelect = "none";
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -49,10 +49,10 @@ export const ScrubbableInput: React.FC<ScrubbableInputProps> = ({
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    document.body.style.cursor = '';
-    document.body.style.userSelect = '';
-    window.removeEventListener('mousemove', handleMouseMove);
-    window.removeEventListener('mouseup', handleMouseUp);
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mouseup", handleMouseUp);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +73,7 @@ export const ScrubbableInput: React.FC<ScrubbableInputProps> = ({
 
   return (
     <div
-      className={`relative group flex-1 rounded-md bg-surface-2 transition-colors hover:bg-surface-hover focus-within:ring-1 focus-within:ring-accent-primary ${isDragging ? 'ring-1 ring-accent-primary bg-surface-hover' : ''}`}
+      className={`relative group flex-1 rounded-md bg-surface-2 transition-colors hover:bg-surface-hover focus-within:ring-1 focus-within:ring-accent-primary ${isDragging ? "ring-1 ring-accent-primary bg-surface-hover" : ""}`}
     >
       {/* Label / Scrubber */}
       <div
@@ -82,7 +82,7 @@ export const ScrubbableInput: React.FC<ScrubbableInputProps> = ({
         title="Drag to change value"
       >
         <span
-          className={`text-[10px] font-mono select-none transition-colors ${isDragging ? 'text-accent-primary font-bold' : 'text-text-placeholder group-hover:text-text-secondary'}`}
+          className={`text-[10px] font-mono select-none transition-colors ${isDragging ? "text-accent-primary font-bold" : "text-text-placeholder group-hover:text-text-secondary"}`}
         >
           {label}
         </span>

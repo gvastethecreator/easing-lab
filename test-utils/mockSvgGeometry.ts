@@ -1,5 +1,5 @@
 export const installMockSvgGeometry = (svg: SVGSVGElement) => {
-  Object.defineProperty(svg, 'createSVGPoint', {
+  Object.defineProperty(svg, "createSVGPoint", {
     configurable: true,
     value: () => ({
       x: 0,
@@ -10,7 +10,7 @@ export const installMockSvgGeometry = (svg: SVGSVGElement) => {
     }),
   });
 
-  Object.defineProperty(svg, 'getScreenCTM', {
+  Object.defineProperty(svg, "getScreenCTM", {
     configurable: true,
     value: () => ({
       inverse: () => new DOMMatrix(),

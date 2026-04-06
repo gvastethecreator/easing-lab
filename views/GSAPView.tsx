@@ -1,10 +1,10 @@
-import React, { useState, useMemo } from 'react';
-import { GSAP_EASING_FUNCTIONS } from '../gsapConstants';
-import { GSAPEasingCategory, GSAPEasingFunction, PathPoint } from '../types';
-import { GSAPGallery } from '../components/GSAPGallery';
-import { FilterControls } from '../components/FilterControls';
-import { MultiPointCurveEditor } from '../components/MultiPointCurveEditor';
-import { convertGsapEaseToPoints } from '../utils/gsapUtils';
+import React, { useState, useMemo } from "react";
+import { GSAP_EASING_FUNCTIONS } from "../gsapConstants";
+import { GSAPEasingCategory, GSAPEasingFunction, PathPoint } from "../types";
+import { GSAPGallery } from "../components/GSAPGallery";
+import { FilterControls } from "../components/FilterControls";
+import { MultiPointCurveEditor } from "../components/MultiPointCurveEditor";
+import { convertGsapEaseToPoints } from "../utils/gsapUtils";
 
 interface GSAPViewProps {
   customEaseId: string;
@@ -31,13 +31,13 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
 
   const customGSAPEasing = useMemo<GSAPEasingFunction>(
     () => ({
-      id: 'custom-bezier',
-      name: 'Custom Ease',
+      id: "custom-bezier",
+      name: "Custom Ease",
       category: GSAPEasingCategory.CUSTOM,
       ease: customEaseId,
-      description: 'Your custom ease created in the editor.',
+      description: "Your custom ease created in the editor.",
     }),
-    [customEaseId]
+    [customEaseId],
   );
 
   const functionsToDisplay = useMemo(() => {
@@ -45,8 +45,8 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
 
     if (activeCategory === GSAPEasingCategory.ALL) {
       return allFuncs.toSorted((a, b) => {
-        if (a.id === 'custom-bezier') return -1;
-        if (b.id === 'custom-bezier') return 1;
+        if (a.id === "custom-bezier") return -1;
+        if (b.id === "custom-bezier") return 1;
         return a.name.localeCompare(b.name);
       });
     }
@@ -54,7 +54,7 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
       return [customGSAPEasing];
     }
     return GSAP_EASING_FUNCTIONS.filter((func) => func.category === activeCategory).toSorted(
-      (a, b) => a.name.localeCompare(b.name)
+      (a, b) => a.name.localeCompare(b.name),
     );
   }, [activeCategory, customGSAPEasing]);
 
@@ -64,7 +64,7 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
         label: c,
         value: c,
       })),
-    []
+    [],
   );
 
   const handleCardClick = (ease: string) => {
@@ -74,7 +74,7 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
     if (newPoints.length > 0) {
       setPoints(newPoints);
       if (window.innerWidth < 1024) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
   };

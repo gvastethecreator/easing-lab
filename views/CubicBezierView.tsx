@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
-import { EasingGallery } from '../components/EasingGallery';
-import { FilterControls } from '../components/FilterControls';
-import { CurveEditor } from '../components/CurveEditor';
-import { EASING_FUNCTIONS } from '../constants';
-import { EasingCategory, EasingType, EasingFunction } from '../types';
+import React, { useState, useMemo } from "react";
+import { EasingGallery } from "../components/EasingGallery";
+import { FilterControls } from "../components/FilterControls";
+import { CurveEditor } from "../components/CurveEditor";
+import { EASING_FUNCTIONS } from "../constants";
+import { EasingCategory, EasingType, EasingFunction } from "../types";
 
 type Point = { x: number; y: number };
 
@@ -35,14 +35,14 @@ export const CubicBezierView: React.FC<CubicBezierViewProps> = ({
 
   const customEasing = useMemo<EasingFunction>(
     () => ({
-      id: 'custom',
-      name: 'Custom Easing',
+      id: "custom",
+      name: "Custom Easing",
       category: EasingCategory.CUBIC,
       type: EasingType.OTHER,
       bezier: [p1.x, p1.y, p2.x, p2.y],
       path: `M0,224 C${p1.x * 224},${224 - p1.y * 224} ${p2.x * 224},${224 - p2.y * 224} 224,0`,
     }),
-    [p1, p2]
+    [p1, p2],
   );
 
   const filteredFunctions = useMemo(() => {
@@ -69,17 +69,17 @@ export const CubicBezierView: React.FC<CubicBezierViewProps> = ({
     setP2({ x: bezier[2], y: bezier[3] });
     // Smooth scroll to top on mobile when selecting
     if (window.innerWidth < 1024) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   const categoryItems = useMemo(
     () => (Object.values(EasingCategory) as EasingCategory[]).map((c) => ({ label: c, value: c })),
-    []
+    [],
   );
   const typeItems = useMemo(
     () => (Object.values(EasingType) as EasingType[]).map((t) => ({ label: t, value: t })),
-    []
+    [],
   );
 
   return (

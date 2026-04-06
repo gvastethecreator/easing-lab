@@ -1,5 +1,5 @@
-import React from 'react';
-import { CopyIcon } from './Icons';
+import React from "react";
+import { CopyIcon } from "./Icons";
 
 interface EditorLayoutProps {
   title: React.ReactNode;

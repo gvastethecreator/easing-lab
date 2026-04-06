@@ -1,7 +1,7 @@
-import React, { Suspense, lazy, useRef, useState } from 'react';
-import { Header } from './components/Header';
-import { Footer } from './components/Footer';
-import type { View, PathPoint, Point } from './types';
+import React, { Suspense, lazy, useRef, useState } from "react";
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
+import type { View, PathPoint, Point } from "./types";
 import {
   createDefaultBezierP1,
   createDefaultBezierP2,
@@ -9,20 +9,20 @@ import {
   CUSTOM_GSAP_EASE_ID,
   DEFAULT_DURATION,
   DEFAULT_RANGE,
-} from './animationConfig';
-import { useMasterProgressAnimation } from './hooks/useMasterProgressAnimation';
-import { useRegisterCustomEase } from './hooks/useRegisterCustomEase';
+} from "./animationConfig";
+import { useMasterProgressAnimation } from "./hooks/useMasterProgressAnimation";
+import { useRegisterCustomEase } from "./hooks/useRegisterCustomEase";
 
 const CubicBezierView = lazy(() =>
-  import('./views/CubicBezierView').then((module) => ({ default: module.CubicBezierView }))
+  import("./views/CubicBezierView").then((module) => ({ default: module.CubicBezierView })),
 );
 
 const GSAPView = lazy(() =>
-  import('./views/GSAPView').then((module) => ({ default: module.GSAPView }))
+  import("./views/GSAPView").then((module) => ({ default: module.GSAPView })),
 );
 
 const App: React.FC = () => {
-  const [view, setView] = useState<View>('cubic');
+  const [view, setView] = useState<View>("cubic");
   const [isPlaying, setIsPlaying] = useState(true);
 
   // Centralized state for cubic bezier and animation params
@@ -59,7 +59,7 @@ const App: React.FC = () => {
             </div>
           }
         >
-          {view === 'cubic' && (
+          {view === "cubic" && (
             <CubicBezierView
               p1={p1}
               setP1={setP1}
@@ -72,7 +72,7 @@ const App: React.FC = () => {
               progressRef={progressRef}
             />
           )}
-          {view === 'gsap' && (
+          {view === "gsap" && (
             <GSAPView
               customEaseId={customEaseId}
               points={gsapPoints}

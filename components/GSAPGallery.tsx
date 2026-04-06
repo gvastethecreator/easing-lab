@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
-import { UniversalGraphCard } from './UniversalGraphCard';
-import { GSAPEasingCategory, type GSAPEasingFunction } from '../types';
-import { generateGSAPPath } from '../utils/gsapUtils';
+import React, { useMemo } from "react";
+import { UniversalGraphCard } from "./UniversalGraphCard";
+import { GSAPEasingCategory, type GSAPEasingFunction } from "../types";
+import { generateGSAPPath } from "../utils/gsapUtils";
 
 interface GSAPGalleryProps {
   functions: GSAPEasingFunction[];
@@ -15,7 +15,7 @@ export const GSAPGallery: React.FC<GSAPGalleryProps> = React.memo(({ functions, 
         ...func,
         pathData: generateGSAPPath(func.ease, 224, 224),
       })),
-    [functions]
+    [functions],
   );
   return (
     <div className="grid grid-cols-2 min-[450px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
@@ -39,4 +39,4 @@ export const GSAPGallery: React.FC<GSAPGalleryProps> = React.memo(({ functions, 
   );
 });
 
-GSAPGallery.displayName = 'GSAPGallery';
+GSAPGallery.displayName = "GSAPGallery";

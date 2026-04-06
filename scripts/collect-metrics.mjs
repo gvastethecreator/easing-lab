@@ -1,16 +1,16 @@
-import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { join, relative, resolve, extname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { brotliCompressSync, gzipSync } from 'node:zlib';
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { join, relative, resolve, extname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { brotliCompressSync, gzipSync } from "node:zlib";
 
-const scriptDir = fileURLToPath(new URL('.', import.meta.url));
-const rootDir = resolve(scriptDir, '..');
-const distDir = join(rootDir, 'dist');
-const logsDir = join(rootDir, 'logs');
-const docsDir = join(rootDir, 'docs');
-const metricsJsonPath = join(logsDir, 'metrics.json');
-const metricsMarkdownPath = join(docsDir, 'METRICAS.md');
+const scriptDir = fileURLToPath(new URL(".", import.meta.url));
+const rootDir = resolve(scriptDir, "..");
+const distDir = join(rootDir, "dist");
+const logsDir = join(rootDir, "logs");
+const docsDir = join(rootDir, "docs");
+const metricsJsonPath = join(logsDir, "metrics.json");
+const metricsMarkdownPath = join(docsDir, "METRICAS.md");
 
 if (!existsSync(distDir)) {
   throw new Error('No se encontró la carpeta dist. Ejecuta primero "bun run build".');
@@ -47,21 +47,21 @@ const files = collectFiles(distDir);
 
 const assets = files.map((filePath) => {
   const buffer = readFileSync(filePath);
-  const relativePath = relative(rootDir, filePath).replace(/\\/g, '/');
+  const relativePath = relative(rootDir, filePath).replace(/\\/g, "/");
   const size = statSync(filePath).size;
 
   return {
     file: relativePath,
-    extension: extname(filePath) || 'none',
+    extension: extname(filePath) || "none",
     size,
     gzip: gzipSync(buffer).byteLength,
     brotli: brotliCompressSync(buffer).byteLength,
   };
 });
 
-const runtimeAssets = assets.filter((asset) => !asset.file.endsWith('.map'));
+const runtimeAssets = assets.filter((asset) => !asset.file.endsWith(".map"));
 
-const distIndexHtmlPath = join(distDir, 'index.html');
+const distIndexHtmlPath = join(distDir, "index.html");
 
 /**
  * Extrae los archivos JS que se cargan en el HTML inicial (script + modulepreload).
@@ -72,7 +72,7 @@ const collectInitialJsAssetFiles = () => {
     return new Set();
   }
 
-  const html = readFileSync(distIndexHtmlPath, 'utf8');
+  const html = readFileSync(distIndexHtmlPath, "utf8");
   const initialPaths = new Set();
 
   for (const match of html.matchAll(/<script[^>]+src=["']([^"']+\.js)["']/g)) {
@@ -80,15 +80,15 @@ const collectInitialJsAssetFiles = () => {
   }
 
   for (const match of html.matchAll(
-    /<link[^>]+rel=["']modulepreload["'][^>]+href=["']([^"']+\.js)["']/g
+    /<link[^>]+rel=["']modulepreload["'][^>]+href=["']([^"']+\.js)["']/g,
   )) {
     initialPaths.add(match[1]);
   }
 
   const normalizeDistRelativePath = (assetPath) => {
-    const withoutQuery = assetPath.split('?')[0] ?? assetPath;
-    const trimmed = withoutQuery.replace(/^\.?\//, '').replace(/^\//, '');
-    return relative(rootDir, join(distDir, trimmed)).replace(/\\/g, '/');
+    const withoutQuery = assetPath.split("?")[0] ?? assetPath;
+    const trimmed = withoutQuery.replace(/^\.?\//, "").replace(/^\//, "");
+    return relative(rootDir, join(distDir, trimmed)).replace(/\\/g, "/");
   };
 
   return new Set([...initialPaths].map(normalizeDistRelativePath));
@@ -102,16 +102,16 @@ const collectInitialJsAssetFiles = () => {
 const sumBy = (predicate, key) =>
   runtimeAssets.filter(predicate).reduce((total, asset) => total + asset[key], 0);
 
-const totalSize = sumBy(() => true, 'size');
-const totalJs = sumBy((asset) => asset.extension === '.js', 'size');
-const totalCss = sumBy((asset) => asset.extension === '.css', 'size');
-const totalHtml = sumBy((asset) => asset.extension === '.html', 'size');
-const totalGzip = sumBy(() => true, 'gzip');
-const totalBrotli = sumBy(() => true, 'brotli');
+const totalSize = sumBy(() => true, "size");
+const totalJs = sumBy((asset) => asset.extension === ".js", "size");
+const totalCss = sumBy((asset) => asset.extension === ".css", "size");
+const totalHtml = sumBy((asset) => asset.extension === ".html", "size");
+const totalGzip = sumBy(() => true, "gzip");
+const totalBrotli = sumBy(() => true, "brotli");
 const largestAsset = runtimeAssets.toSorted((a, b) => b.size - a.size)[0] ?? null;
 const initialJsAssetFiles = collectInitialJsAssetFiles();
 const initialJs = runtimeAssets
-  .filter((asset) => asset.extension === '.js' && initialJsAssetFiles.has(asset.file))
+  .filter((asset) => asset.extension === ".js" && initialJsAssetFiles.has(asset.file))
   .reduce((total, asset) => total + asset.size, 0);
 
 const metrics = {
@@ -141,14 +141,14 @@ const metrics = {
   assets: runtimeAssets,
 };
 
-writeFileSync(metricsJsonPath, `${JSON.stringify(metrics, null, 2)}\n`, 'utf8');
+writeFileSync(metricsJsonPath, `${JSON.stringify(metrics, null, 2)}\n`, "utf8");
 
 const assetRows = runtimeAssets
   .map(
     (asset) =>
-      `| \`${asset.file}\` | ${formatKb(asset.size)} | ${formatKb(asset.gzip)} | ${formatKb(asset.brotli)} |`
+      `| \`${asset.file}\` | ${formatKb(asset.size)} | ${formatKb(asset.gzip)} | ${formatKb(asset.brotli)} |`,
   )
-  .join('\n');
+  .join("\n");
 
 const markdown = `# Métricas
 
@@ -166,17 +166,17 @@ const markdown = `# Métricas
 
 ## Presupuestos simples
 
-- JS inicial < 220 KB: **${metrics.checks.initialJsBudgetOk ? 'OK' : 'REVISAR'}**
-- JS total < 250 KB: **${metrics.checks.jsBudgetOk ? 'OK' : 'REVISAR'}**
-- Asset individual más grande < 350 KB: **${metrics.checks.largestAssetBudgetOk ? 'OK' : 'REVISAR'}**
-- HTML inicial < 4 KB: **${metrics.checks.htmlBootstrapBudgetOk ? 'OK' : 'REVISAR'}**
+- JS inicial < 220 KB: **${metrics.checks.initialJsBudgetOk ? "OK" : "REVISAR"}**
+- JS total < 250 KB: **${metrics.checks.jsBudgetOk ? "OK" : "REVISAR"}**
+- Asset individual más grande < 350 KB: **${metrics.checks.largestAssetBudgetOk ? "OK" : "REVISAR"}**
+- HTML inicial < 4 KB: **${metrics.checks.htmlBootstrapBudgetOk ? "OK" : "REVISAR"}**
 
 ## Asset más pesado
 
 ${
   largestAsset
     ? `- \`${largestAsset.file}\` — **${formatKb(largestAsset.size)}** (${formatKb(largestAsset.gzip)} gzip)`
-    : '- Sin assets detectados.'
+    : "- Sin assets detectados."
 }
 
 ## Arranque en cliente
@@ -198,24 +198,24 @@ En desarrollo también se muestran por consola para inspección rápida.
 ${assetRows}
 `;
 
-writeFileSync(metricsMarkdownPath, markdown, 'utf8');
+writeFileSync(metricsMarkdownPath, markdown, "utf8");
 
 const formatResult = spawnSync(
   process.execPath,
-  ['x', 'oxfmt', metricsJsonPath, metricsMarkdownPath],
+  ["x", "oxfmt", metricsJsonPath, metricsMarkdownPath],
   {
     cwd: rootDir,
-    stdio: 'inherit',
+    stdio: "inherit",
     shell: false,
-  }
+  },
 );
 
 if (formatResult.status !== 0) {
-  throw new Error('No se pudieron formatear los archivos de métricas generados.');
+  throw new Error("No se pudieron formatear los archivos de métricas generados.");
 }
 
 console.log(`Métricas guardadas en ${relative(rootDir, metricsJsonPath)}`);
 console.log(`Resumen Markdown actualizado en ${relative(rootDir, metricsMarkdownPath)}`);
 console.log(
-  `JS inicial: ${formatKb(initialJs)} | JS total: ${formatKb(totalJs)} | CSS: ${formatKb(totalCss)} | HTML: ${formatKb(totalHtml)}`
+  `JS inicial: ${formatKb(initialJs)} | JS total: ${formatKb(totalJs)} | CSS: ${formatKb(totalCss)} | HTML: ${formatKb(totalHtml)}`,
 );

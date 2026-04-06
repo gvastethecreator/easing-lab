@@ -1,4 +1,4 @@
-import type { PathPoint, Point } from '../types';
+import type { PathPoint, Point } from "../types";
 
 export const FLOAT_TOLERANCE = 0.001;
 
@@ -10,7 +10,7 @@ export interface BezierCoords {
 export function isPointEqual(
   left?: Point,
   right?: Point,
-  tolerance: number = FLOAT_TOLERANCE
+  tolerance: number = FLOAT_TOLERANCE,
 ): boolean {
   if (!left && !right) {
     return true;
@@ -26,7 +26,7 @@ export function isPointEqual(
 export function areBezierCoordsEqual(
   left: BezierCoords,
   right: BezierCoords,
-  tolerance: number = FLOAT_TOLERANCE
+  tolerance: number = FLOAT_TOLERANCE,
 ): boolean {
   return isPointEqual(left.p1, right.p1, tolerance) && isPointEqual(left.p2, right.p2, tolerance);
 }
@@ -34,7 +34,7 @@ export function areBezierCoordsEqual(
 export function arePathPointsEqual(
   left: PathPoint[],
   right: PathPoint[],
-  tolerance: number = FLOAT_TOLERANCE
+  tolerance: number = FLOAT_TOLERANCE,
 ): boolean {
   if (left === right) {
     return true;

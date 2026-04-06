@@ -13,7 +13,7 @@ declare global {
 }
 
 const roundMetric = (value: number | null | undefined): number | null => {
-  if (typeof value !== 'number' || Number.isNaN(value)) {
+  if (typeof value !== "number" || Number.isNaN(value)) {
     return null;
   }
 
@@ -21,20 +21,20 @@ const roundMetric = (value: number | null | undefined): number | null => {
 };
 
 const getPaintMetric = (name: string): number | null => {
-  const entry = performance.getEntriesByType('paint').find((item) => item.name === name);
+  const entry = performance.getEntriesByType("paint").find((item) => item.name === name);
 
   return roundMetric(entry?.startTime);
 };
 
 const isNavigationTiming = (entry: PerformanceEntry): entry is PerformanceNavigationTiming =>
-  'domContentLoadedEventEnd' in entry && 'loadEventEnd' in entry;
+  "domContentLoadedEventEnd" in entry && "loadEventEnd" in entry;
 
 /**
  * Ejecuta el render de la app y publica métricas ligeras de arranque en
  * `window.__EASING_LAB_STARTUP_METRICS__` tras el segundo frame.
  */
 export const renderWithStartupMetrics = (renderApp: () => void) => {
-  if (typeof window === 'undefined' || typeof performance === 'undefined') {
+  if (typeof window === "undefined" || typeof performance === "undefined") {
     renderApp();
     return;
   }
@@ -44,20 +44,20 @@ export const renderWithStartupMetrics = (renderApp: () => void) => {
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      const navigationEntry = performance.getEntriesByType('navigation').find(isNavigationTiming);
+      const navigationEntry = performance.getEntriesByType("navigation").find(isNavigationTiming);
 
       const metrics: StartupMetrics = {
         firstFrameMs: Number((performance.now() - renderStart).toFixed(2)),
         domContentLoadedMs: roundMetric(navigationEntry?.domContentLoadedEventEnd),
         loadEventMs: roundMetric(navigationEntry?.loadEventEnd),
-        firstPaintMs: getPaintMetric('first-paint'),
-        firstContentfulPaintMs: getPaintMetric('first-contentful-paint'),
+        firstPaintMs: getPaintMetric("first-paint"),
+        firstContentfulPaintMs: getPaintMetric("first-contentful-paint"),
       };
 
       window.__EASING_LAB_STARTUP_METRICS__ = metrics;
 
       if (import.meta.env.DEV) {
-        console.info('[easing-lab] startup metrics', metrics);
+        console.info("[easing-lab] startup metrics", metrics);
       }
     });
   });

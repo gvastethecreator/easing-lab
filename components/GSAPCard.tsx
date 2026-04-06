@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
-import { UniversalGraphCard } from './UniversalGraphCard';
-import { GSAPEasingCategory, type GSAPEasingFunction } from '../types';
-import { generateGSAPPath } from '../utils/gsapUtils';
+import React, { useMemo } from "react";
+import { UniversalGraphCard } from "./UniversalGraphCard";
+import { GSAPEasingCategory, type GSAPEasingFunction } from "../types";
+import { generateGSAPPath } from "../utils/gsapUtils";
 
 interface GSAPCardProps {
   easing: GSAPEasingFunction;
