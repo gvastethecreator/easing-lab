@@ -1,21 +1,15 @@
-import React, { useState, useMemo } from "react";
-import { EasingGallery } from "../components/EasingGallery";
-import { FilterControls } from "../components/FilterControls";
-import { CurveEditor } from "../components/CurveEditor";
-import { EASING_FUNCTIONS } from "../constants";
-import { EasingCategory, EasingType, EasingFunction } from "../types";
-
-type Point = { x: number; y: number };
+import React from "react";
+import type { Point } from "../types";
 
 interface CubicBezierViewProps {
   p1: Point;
-  setP1: (p: Point) => void;
+  setP1: React.Dispatch<React.SetStateAction<Point>>;
   p2: Point;
-  setP2: (p: Point) => void;
+  setP2: React.Dispatch<React.SetStateAction<Point>>;
   duration: number;
-  setDuration: (d: number) => void;
+  setDuration: React.Dispatch<React.SetStateAction<number>>;
   range: number;
-  setRange: (r: number) => void;
+  setRange: React.Dispatch<React.SetStateAction<number>>;
   progressRef: React.MutableRefObject<{ progress: number }>;
 }
 
@@ -30,97 +24,33 @@ export const CubicBezierView: React.FC<CubicBezierViewProps> = ({
   setRange,
   progressRef,
 }) => {
-  const [activeCategory, setActiveCategory] = useState<EasingCategory>(EasingCategory.ALL);
-  const [activeType, setActiveType] = useState<EasingType>(EasingType.ALL);
-
-  const customEasing = useMemo<EasingFunction>(
-    () => ({
-      id: "custom",
-      name: "Custom Easing",
-      category: EasingCategory.CUBIC,
-      type: EasingType.OTHER,
-      bezier: [p1.x, p1.y, p2.x, p2.y],
-      path: `M0,224 C${p1.x * 224},${224 - p1.y * 224} ${p2.x * 224},${224 - p2.y * 224} 224,0`,
-    }),
-    [p1, p2],
-  );
-
-  const filteredFunctions = useMemo(() => {
-    return EASING_FUNCTIONS.filter((func) => {
-      const categoryMatch =
-        activeCategory === EasingCategory.ALL || func.category === activeCategory;
-      const typeMatch = activeType === EasingType.ALL || func.type === activeType;
-      const isOtherAndFiltered =
-        func.type === EasingType.OTHER &&
-        activeType !== EasingType.ALL &&
-        activeType !== EasingType.OTHER;
-
-      return categoryMatch && typeMatch && !isOtherAndFiltered;
-    });
-  }, [activeCategory, activeType]);
-
-  const functionsWithCustom = useMemo(() => {
-    const sorted = filteredFunctions.toSorted((a, b) => a.name.localeCompare(b.name));
-    return [customEasing, ...sorted];
-  }, [customEasing, filteredFunctions]);
-
-  const handleCardClick = (bezier: [number, number, number, number]) => {
-    setP1({ x: bezier[0], y: bezier[1] });
-    setP2({ x: bezier[2], y: bezier[3] });
-    // Smooth scroll to top on mobile when selecting
-    if (window.innerWidth < 1024) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+  const resetPreview = () => {
+    setP1({ x: 0.25, y: 0.1 });
+    setP2({ x: 0.25, y: 1 });
+    setDuration(1.2);
+    setRange(1);
+    progressRef.current.progress = 0;
   };
 
-  const categoryItems = useMemo(
-    () => (Object.values(EasingCategory) as EasingCategory[]).map((c) => ({ label: c, value: c })),
-    [],
-  );
-  const typeItems = useMemo(
-    () => (Object.values(EasingType) as EasingType[]).map((t) => ({ label: t, value: t })),
-    [],
-  );
-
   return (
-    <div className="max-w-7xl w-full mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12">
-        <aside className="lg:col-span-1">
-          <div className="lg:sticky lg:top-28">
-            <CurveEditor
-              p1={p1}
-              setP1={setP1}
-              p2={p2}
-              setP2={setP2}
-              duration={duration}
-              setDuration={setDuration}
-              range={range}
-              setRange={setRange}
-              progressRef={progressRef}
-            />
-          </div>
-        </aside>
-        <main className="lg:col-span-2">
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col sm:flex-row gap-4 w-full">
-              <FilterControls
-                items={categoryItems}
-                activeItem={activeCategory}
-                setActiveItem={(value) => setActiveCategory(value)}
-                buttonClassName="text-sm font-medium"
-              />
-              <FilterControls
-                items={typeItems}
-                activeItem={activeType}
-                setActiveItem={(value) => setActiveType(value)}
-                label="Type:"
-                buttonClassName="text-xs font-medium"
-              />
-            </div>
-            <EasingGallery functions={functionsWithCustom} onCardClick={handleCardClick} />
-          </div>
-        </main>
+    <section className="rounded-xl border border-zinc-700/60 bg-zinc-900/30 p-4 text-zinc-200">
+      <h2 className="mb-2 text-sm font-semibold">Cubic Bézier (modo básico)</h2>
+      <p className="mb-3 text-xs text-zinc-400">
+        Vista temporal para mantener el build estable mientras se restauran los módulos de editor.
+      </p>
+      <div className="space-y-1 text-xs text-zinc-300">
+        <div>p1: ({p1.x.toFixed(2)}, {p1.y.toFixed(2)})</div>
+        <div>p2: ({p2.x.toFixed(2)}, {p2.y.toFixed(2)})</div>
+        <div>duration: {duration.toFixed(2)}s</div>
+        <div>range: {range.toFixed(2)}</div>
       </div>
-    </div>
+      <button
+        type="button"
+        className="mt-3 rounded-lg border border-zinc-600 px-3 py-1.5 text-xs hover:bg-zinc-800"
+        onClick={resetPreview}
+      >
+        Reset preview
+      </button>
+    </section>
   );
 };

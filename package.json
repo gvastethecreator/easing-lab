@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun ./scripts/run-with-log.mjs dev vp dev",
-    "build": "bun ./scripts/run-with-log.mjs build vp build",
+    "build": "vp build",
     "preview": "bun ./scripts/run-with-log.mjs preview vp preview",
     "lint": "bun ./scripts/run-with-log.mjs lint vp lint",
     "lint:fix": "bun ./scripts/run-with-log.mjs lint-fix vp lint --fix",
@@ -19,9 +19,9 @@
     "check": "bun ./scripts/run-with-log.mjs check vp check"
   },
   "dependencies": {
-    "gsap": "^3.14.2",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "gsap": "^3.15.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.2",
@@ -29,19 +29,19 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "@vitest/coverage-v8": "^4.1.2",
-    "happy-dom": "^20.8.9",
-    "oxfmt": "^0.42.0",
-    "oxlint": "^1.57.0",
+    "@vitest/coverage-v8": "^4.1.4",
+    "happy-dom": "^20.9.0",
+    "oxfmt": "^0.45.0",
+    "oxlint": "^1.60.0",
     "tailwindcss": "^4.2.2",
-    "typescript": "^6.0.2",
-    "vite": "^8.0.3",
-    "vite-plus": "^0.1.14",
-    "vitest": "^4.1.2"
+    "typescript": "^6.0.3",
+    "vite": "^8.0.8",
+    "vite-plus": "^0.1.18",
+    "vitest": "^4.1.4"
   },
   "engines": {
     "bun": ">=1.3.11",

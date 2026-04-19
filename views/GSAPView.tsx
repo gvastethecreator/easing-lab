@@ -1,20 +1,15 @@
-import React, { useState, useMemo } from "react";
-import { GSAP_EASING_FUNCTIONS } from "../gsapConstants";
-import { GSAPEasingCategory, GSAPEasingFunction, PathPoint } from "../types";
-import { GSAPGallery } from "../components/GSAPGallery";
-import { FilterControls } from "../components/FilterControls";
-import { MultiPointCurveEditor } from "../components/MultiPointCurveEditor";
-import { convertGsapEaseToPoints } from "../utils/gsapUtils";
+import React from "react";
+import type { PathPoint } from "../types";
 
 interface GSAPViewProps {
   customEaseId: string;
   points: PathPoint[];
-  setPoints: (p: PathPoint[]) => void;
+  setPoints: React.Dispatch<React.SetStateAction<PathPoint[]>>;
   progressRef: React.MutableRefObject<{ progress: number }>;
   duration: number;
-  setDuration: (d: number) => void;
+  setDuration: React.Dispatch<React.SetStateAction<number>>;
   range: number;
-  setRange: (r: number) => void;
+  setRange: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const GSAPView: React.FC<GSAPViewProps> = ({
@@ -27,89 +22,40 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
   range,
   setRange,
 }) => {
-  const [activeCategory, setActiveCategory] = useState<GSAPEasingCategory>(GSAPEasingCategory.ALL);
-
-  const customGSAPEasing = useMemo<GSAPEasingFunction>(
-    () => ({
-      id: "custom-bezier",
-      name: "Custom Ease",
-      category: GSAPEasingCategory.CUSTOM,
-      ease: customEaseId,
-      description: "Your custom ease created in the editor.",
-    }),
-    [customEaseId],
-  );
-
-  const functionsToDisplay = useMemo(() => {
-    const allFuncs = [customGSAPEasing, ...GSAP_EASING_FUNCTIONS];
-
-    if (activeCategory === GSAPEasingCategory.ALL) {
-      return allFuncs.toSorted((a, b) => {
-        if (a.id === "custom-bezier") return -1;
-        if (b.id === "custom-bezier") return 1;
-        return a.name.localeCompare(b.name);
-      });
-    }
-    if (activeCategory === GSAPEasingCategory.CUSTOM) {
-      return [customGSAPEasing];
-    }
-    return GSAP_EASING_FUNCTIONS.filter((func) => func.category === activeCategory).toSorted(
-      (a, b) => a.name.localeCompare(b.name),
-    );
-  }, [activeCategory, customGSAPEasing]);
-
-  const categoryItems = useMemo(
-    () =>
-      (Object.values(GSAPEasingCategory) as GSAPEasingCategory[]).map((c) => ({
-        label: c,
-        value: c,
-      })),
-    [],
-  );
-
-  const handleCardClick = (ease: string) => {
-    if (ease === customEaseId) return;
-
-    const newPoints = convertGsapEaseToPoints(ease);
-    if (newPoints.length > 0) {
-      setPoints(newPoints);
-      if (window.innerWidth < 1024) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }
+  const addPoint = () => {
+    setPoints((prev) => [...prev, { x: 1, y: 1 }]);
+    progressRef.current.progress = 0;
   };
 
   return (
-    <div className="max-w-7xl w-full mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12">
-        <aside className="lg:col-span-1">
-          <div className="lg:sticky lg:top-28">
-            <MultiPointCurveEditor
-              points={points}
-              setPoints={setPoints}
-              customEaseId={customEaseId}
-              duration={duration}
-              setDuration={setDuration}
-              range={range}
-              setRange={setRange}
-              progressRef={progressRef}
-            />
-          </div>
-        </aside>
-        <main className="lg:col-span-2">
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-row items-center justify-start gap-4">
-              <FilterControls
-                items={categoryItems}
-                activeItem={activeCategory}
-                setActiveItem={(value) => setActiveCategory(value)}
-                buttonClassName="text-sm font-medium"
-              />
-            </div>
-            <GSAPGallery functions={functionsToDisplay} onCardClick={handleCardClick} />
-          </div>
-        </main>
+    <section className="rounded-xl border border-zinc-700/60 bg-zinc-900/30 p-4 text-zinc-200">
+      <h2 className="mb-2 text-sm font-semibold">GSAP (modo básico)</h2>
+      <p className="mb-3 text-xs text-zinc-400">customEaseId: {customEaseId}</p>
+      <div className="space-y-1 text-xs text-zinc-300">
+        <div>points: {points.length}</div>
+        <div>duration: {duration.toFixed(2)}s</div>
+        <div>range: {range.toFixed(2)}</div>
       </div>
-    </div>
+      <div className="mt-3 flex gap-2">
+        <button
+          type="button"
+          className="rounded-lg border border-zinc-600 px-3 py-1.5 text-xs hover:bg-zinc-800"
+          onClick={addPoint}
+        >
+          Add point
+        </button>
+        <button
+          type="button"
+          className="rounded-lg border border-zinc-600 px-3 py-1.5 text-xs hover:bg-zinc-800"
+          onClick={() => {
+            setDuration(1);
+            setRange(1);
+            progressRef.current.progress = 0;
+          }}
+        >
+          Reset timing
+        </button>
+      </div>
+    </section>
   );
 };
