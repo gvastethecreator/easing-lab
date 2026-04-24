@@ -39,8 +39,12 @@ export const CubicBezierView: React.FC<CubicBezierViewProps> = ({
         Vista temporal para mantener el build estable mientras se restauran los módulos de editor.
       </p>
       <div className="space-y-1 text-xs text-zinc-300">
-        <div>p1: ({p1.x.toFixed(2)}, {p1.y.toFixed(2)})</div>
-        <div>p2: ({p2.x.toFixed(2)}, {p2.y.toFixed(2)})</div>
+        <div>
+          p1: ({p1.x.toFixed(2)}, {p1.y.toFixed(2)})
+        </div>
+        <div>
+          p2: ({p2.x.toFixed(2)}, {p2.y.toFixed(2)})
+        </div>
         <div>duration: {duration.toFixed(2)}s</div>
         <div>range: {range.toFixed(2)}</div>
       </div>
