@@ -5,7 +5,7 @@
   "description": "Laboratorio interactivo de easing con React, GSAP, Tailwind CSS y Vite+.",
   "type": "module",
   "scripts": {
-    "dev": "bun ./scripts/run-with-log.mjs dev vp dev",
+    "dev": "vp dev",
     "build": "vp build",
     "preview": "bun ./scripts/run-with-log.mjs preview vp preview",
     "lint": "bun ./scripts/run-with-log.mjs lint vp lint",
