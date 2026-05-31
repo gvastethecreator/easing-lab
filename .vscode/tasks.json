@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "⚡ dev",
+      "label": "🚀 Dev",
       "type": "shell",
       "command": "bun",
       "args": ["run", "dev"],
@@ -10,7 +10,7 @@
       "problemMatcher": []
     },
     {
-      "label": "🏗️ build",
+      "label": "🏗️ Build",
       "type": "shell",
       "command": "bun",
       "args": ["run", "build"],
@@ -18,7 +18,14 @@
       "problemMatcher": []
     },
     {
-      "label": "🧠 typecheck",
+      "label": "✅ Check",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "check"],
+      "problemMatcher": []
+    },
+    {
+      "label": "🧠 Typecheck",
       "type": "shell",
       "command": "bun",
       "args": ["run", "typecheck"],
@@ -26,7 +33,7 @@
       "problemMatcher": ["$tsc"]
     },
     {
-      "label": "🔍 lint",
+      "label": "🧹 Lint",
       "type": "shell",
       "command": "bun",
       "args": ["run", "lint"],
@@ -34,14 +41,14 @@
       "problemMatcher": []
     },
     {
-      "label": "🧼 format",
+      "label": "✨ Format",
       "type": "shell",
       "command": "bun",
       "args": ["run", "format"],
       "problemMatcher": []
     },
     {
-      "label": "🧪 test",
+      "label": "🧪 Test",
       "type": "shell",
       "command": "bun",
       "args": ["run", "test"],
@@ -49,31 +56,24 @@
       "problemMatcher": []
     },
     {
-      "label": "📊 coverage",
+      "label": "📊 Coverage",
       "type": "shell",
       "command": "bun",
       "args": ["run", "coverage"],
       "problemMatcher": []
     },
     {
-      "label": "📏 metrics",
-      "type": "shell",
-      "command": "bun",
-      "args": ["run", "metrics"],
-      "problemMatcher": []
-    },
-    {
-      "label": "✅ check",
-      "type": "shell",
-      "command": "bun",
-      "args": ["run", "check"],
-      "problemMatcher": []
-    },
-    {
-      "label": "👀 preview",
+      "label": "👁️ Preview",
       "type": "shell",
       "command": "bun",
       "args": ["run", "preview"],
+      "problemMatcher": []
+    },
+    {
+      "label": "📏 Metrics",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "metrics"],
       "problemMatcher": []
     }
   ]
