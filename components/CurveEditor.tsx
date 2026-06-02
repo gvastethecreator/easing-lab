@@ -9,8 +9,21 @@ import { useHistory } from "../hooks/useHistory";
 import { EditorLayout } from "./EditorLayout";
 import { UndoIcon, RedoIcon, ResetIcon, MagnetIcon } from "./Icons";
 import type { Point } from "../types";
-import { areBezierCoordsEqual } from "../utils/equality";
 import { CURVE_EDITOR_VIEWBOX_SIZE } from "../animationConfig";
+
+const FLOAT_TOLERANCE = 0.001;
+
+const isPointEqual = (left?: Point, right?: Point, tolerance: number = FLOAT_TOLERANCE): boolean => {
+  if (!left && !right) return true;
+  if (!left || !right) return false;
+  return Math.abs(left.x - right.x) <= tolerance && Math.abs(left.y - right.y) <= tolerance;
+};
+
+const areBezierCoordsEqual = (
+  left: { p1: Point; p2: Point },
+  right: { p1: Point; p2: Point },
+  tolerance: number = FLOAT_TOLERANCE,
+): boolean => isPointEqual(left.p1, right.p1, tolerance) && isPointEqual(left.p2, right.p2, tolerance);
 
 interface CurveEditorProps {
   p1: Point;

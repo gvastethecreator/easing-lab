@@ -1,8 +1,27 @@
 import { act, renderHook } from "@testing-library/react";
 import type { RefObject } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { installMockSvgGeometry } from "../test-utils/mockSvgGeometry";
 import { useDraggable } from "./useDraggable";
+
+const installMockSvgGeometry = (svg: SVGSVGElement) => {
+  Object.defineProperty(svg, "createSVGPoint", {
+    configurable: true,
+    value: () => ({
+      x: 0,
+      y: 0,
+      matrixTransform() {
+        return { x: this.x, y: this.y };
+      },
+    }),
+  });
+
+  Object.defineProperty(svg, "getScreenCTM", {
+    configurable: true,
+    value: () => ({
+      inverse: () => new DOMMatrix(),
+    }),
+  });
+};
 
 describe("useDraggable", () => {
   beforeEach(() => {
