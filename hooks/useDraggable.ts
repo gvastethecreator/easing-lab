@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
-import type { RefObject } from "react";
-import type { Point } from "../types";
+import { useCallback, useState } from 'react';
+import type { RefObject } from 'react';
+import type { Point } from '../types';
 
 interface UseDraggableParams {
   containerRef: RefObject<SVGSVGElement | null>;
@@ -12,7 +12,7 @@ interface UseDraggableParams {
 
 type DraggableMouseStartEvent = Pick<
   MouseEvent,
-  "button" | "clientX" | "clientY" | "preventDefault" | "stopPropagation"
+  'button' | 'clientX' | 'clientY' | 'preventDefault' | 'stopPropagation'
 >;
 
 interface TouchLike {
@@ -33,14 +33,14 @@ type DraggableTouchStartEvent = {
 };
 
 type DraggableStartEvent = DraggableMouseStartEvent | DraggableTouchStartEvent;
-type DraggableMoveEvent = Pick<MouseEvent, "clientX" | "clientY"> | { touches: TouchListLike };
+type DraggableMoveEvent = Pick<MouseEvent, 'clientX' | 'clientY'> | { touches: TouchListLike };
 
 /**
  * Type guard para distinguir eventos táctiles de eventos de mouse.
  */
 const isTouchLikeEvent = (
-  event: DraggableStartEvent | DraggableMoveEvent,
-): event is { touches: TouchListLike } => "touches" in event;
+  event: DraggableStartEvent | DraggableMoveEvent
+): event is { touches: TouchListLike } => 'touches' in event;
 
 /**
  * Hook reusable para arrastrar handles sobre un SVG y convertir coordenadas de pantalla
@@ -89,11 +89,11 @@ export const useDraggable = ({
         const svgPoint = pt.matrixTransform(screenCTM.inverse());
         return { x: svgPoint.x, y: svgPoint.y };
       } catch (error) {
-        console.warn("SVG Matrix Transform failed", error);
+        console.warn('SVG Matrix Transform failed', error);
         return null;
       }
     },
-    [containerRef],
+    [containerRef]
   );
 
   const handleMouseDown = useCallback(
@@ -102,7 +102,7 @@ export const useDraggable = ({
         return;
       }
 
-      if ("button" in event && event.button !== 0) {
+      if ('button' in event && event.button !== 0) {
         return;
       }
 
@@ -123,18 +123,18 @@ export const useDraggable = ({
         setIsDragging(false);
         onDragEnd?.();
 
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("mouseup", handleMouseUp);
-        window.removeEventListener("touchmove", handleMouseMove);
-        window.removeEventListener("touchend", handleMouseUp);
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+        window.removeEventListener('touchmove', handleMouseMove);
+        window.removeEventListener('touchend', handleMouseUp);
       };
 
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-      window.addEventListener("touchmove", handleMouseMove, { passive: false });
-      window.addEventListener("touchend", handleMouseUp);
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('touchmove', handleMouseMove, { passive: false });
+      window.addEventListener('touchend', handleMouseUp);
     },
-    [disabled, getSVGPoint, onDrag, onDragEnd, onDragStart],
+    [disabled, getSVGPoint, onDrag, onDragEnd, onDragStart]
   );
 
   return {

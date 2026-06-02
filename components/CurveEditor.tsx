@@ -1,19 +1,23 @@
-import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
-import { gsap } from "gsap";
-import { MotionPathPlugin } from "gsap/MotionPathPlugin";
-import { AnimationPreview } from "./AnimationPreview";
-import { DraggableHandle } from "./DraggableHandle";
-import { GraphGrid } from "./GraphGrid";
-import { ScrubbableInput } from "./ScrubbableInput";
-import { useHistory } from "../hooks/useHistory";
-import { EditorLayout } from "./EditorLayout";
-import { UndoIcon, RedoIcon, ResetIcon, MagnetIcon } from "./Icons";
-import type { Point } from "../types";
-import { CURVE_EDITOR_VIEWBOX_SIZE } from "../animationConfig";
+import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
+import { gsap } from 'gsap';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+import { AnimationPreview } from './AnimationPreview';
+import { DraggableHandle } from './DraggableHandle';
+import { GraphGrid } from './GraphGrid';
+import { ScrubbableInput } from './ScrubbableInput';
+import { useHistory } from '../hooks/useHistory';
+import { EditorLayout } from './EditorLayout';
+import { UndoIcon, RedoIcon, ResetIcon, MagnetIcon } from './Icons';
+import type { Point } from '../types';
+import { CURVE_EDITOR_VIEWBOX_SIZE } from '../animationConfig';
 
 const FLOAT_TOLERANCE = 0.001;
 
-const isPointEqual = (left?: Point, right?: Point, tolerance: number = FLOAT_TOLERANCE): boolean => {
+const isPointEqual = (
+  left?: Point,
+  right?: Point,
+  tolerance: number = FLOAT_TOLERANCE
+): boolean => {
   if (!left && !right) return true;
   if (!left || !right) return false;
   return Math.abs(left.x - right.x) <= tolerance && Math.abs(left.y - right.y) <= tolerance;
@@ -22,8 +26,9 @@ const isPointEqual = (left?: Point, right?: Point, tolerance: number = FLOAT_TOL
 const areBezierCoordsEqual = (
   left: { p1: Point; p2: Point },
   right: { p1: Point; p2: Point },
-  tolerance: number = FLOAT_TOLERANCE,
-): boolean => isPointEqual(left.p1, right.p1, tolerance) && isPointEqual(left.p2, right.p2, tolerance);
+  tolerance: number = FLOAT_TOLERANCE
+): boolean =>
+  isPointEqual(left.p1, right.p1, tolerance) && isPointEqual(left.p2, right.p2, tolerance);
 
 interface CurveEditorProps {
   p1: Point;
@@ -93,7 +98,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
       setP1(newCoords.p1);
       setP2(newCoords.p2);
     },
-    [setP1, setP2],
+    [setP1, setP2]
   );
 
   // When UNDO/REDO happens, we must sync to parent
@@ -121,7 +126,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
         if (rawPath) {
           const pointOnPath = MotionPathPlugin.getPositionOnPath(
             rawPath,
-            progressRef.current.progress,
+            progressRef.current.progress
           );
           gsap.set(marker, { x: pointOnPath.x, y: pointOnPath.y });
         }
@@ -164,26 +169,26 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
     updateParent(newCoords);
   };
 
-  const updateCoordinate = (key: "p1" | "p2", axis: "x" | "y", value: number) => {
+  const updateCoordinate = (key: 'p1' | 'p2', axis: 'x' | 'y', value: number) => {
     const newPoint = { ...coords[key], [axis]: value };
     const newCoords = { ...coords, [key]: newPoint };
     setCoords(newCoords, true); // Commit immediately for inputs
     updateParent(newCoords);
   };
 
-  const applyPreset = (type: "linear" | "easeIn" | "easeOut" | "easeInOut") => {
+  const applyPreset = (type: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut') => {
     let newState = { p1: { x: 0, y: 0 }, p2: { x: 1, y: 1 } };
     switch (type) {
-      case "linear":
+      case 'linear':
         newState = { p1: { x: 0, y: 0 }, p2: { x: 1, y: 1 } };
         break;
-      case "easeIn":
+      case 'easeIn':
         newState = { p1: { x: 0.42, y: 0 }, p2: { x: 1, y: 1 } };
         break;
-      case "easeOut":
+      case 'easeOut':
         newState = { p1: { x: 0, y: 0 }, p2: { x: 0.58, y: 1 } };
         break;
-      case "easeInOut":
+      case 'easeInOut':
         newState = { p1: { x: 0.42, y: 0 }, p2: { x: 0.58, y: 1 } };
         break;
     }
@@ -223,7 +228,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
     <>
       <button
         onClick={() => setSnapEnabled(!snapEnabled)}
-        className={`p-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary ${snapEnabled ? "bg-accent-primary text-white" : "hover:bg-surface-2 text-text-secondary"}`}
+        className={`p-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary ${snapEnabled ? 'bg-accent-primary text-white' : 'hover:bg-surface-2 text-text-secondary'}`}
         title="Toggle Snap to Grid"
       >
         <MagnetIcon />
@@ -247,7 +252,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
       </button>
       <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
       <button
-        onClick={() => applyPreset("linear")}
+        onClick={() => applyPreset('linear')}
         className="p-1.5 rounded-md hover:bg-surface-2 text-text-secondary transition-colors"
         title="Reset to Linear"
       >
@@ -356,23 +361,23 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
   const controls = (
     <>
       <div className="grid grid-cols-2 gap-6">
-        {(["p1", "p2"] as const).map((key) => (
+        {(['p1', 'p2'] as const).map((key) => (
           <div key={key} className="space-y-3">
             <div className="flex items-center justify-between text-[10px] font-bold text-text-secondary uppercase tracking-wider">
-              <span>{key === "p1" ? "Start Control" : "End Control"}</span>
+              <span>{key === 'p1' ? 'Start Control' : 'End Control'}</span>
             </div>
             <div className="flex gap-2">
               <ScrubbableInput
                 label="X"
                 value={coords[key].x}
-                onChange={(v) => updateCoordinate(key, "x", v)}
+                onChange={(v) => updateCoordinate(key, 'x', v)}
                 min={0}
                 max={1}
               />
               <ScrubbableInput
                 label="Y"
                 value={coords[key].y}
-                onChange={(v) => updateCoordinate(key, "y", v)}
+                onChange={(v) => updateCoordinate(key, 'y', v)}
                 min={-2}
                 max={2}
               />
@@ -382,13 +387,13 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
       </div>
 
       <div className="flex gap-2 justify-center">
-        {(["linear", "easeIn", "easeOut", "easeInOut"] as const).map((p) => (
+        {(['linear', 'easeIn', 'easeOut', 'easeInOut'] as const).map((p) => (
           <button
             key={p}
             onClick={() => applyPreset(p)}
             className="px-2 py-1 rounded bg-surface-2 hover:bg-surface-hover text-[10px] text-text-secondary font-medium uppercase tracking-wide transition-colors focus:ring-2 focus:ring-accent-primary focus:outline-none"
           >
-            {p.replace(/([A-Z])/g, " $1").trim()}
+            {p.replace(/([A-Z])/g, ' $1').trim()}
           </button>
         ))}
       </div>

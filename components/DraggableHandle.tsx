@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
-import { useDraggable } from "../hooks/useDraggable";
-import type { Point } from "../types";
+import React, { useRef } from 'react';
+import { useDraggable } from '../hooks/useDraggable';
+import type { Point } from '../types';
 
-interface DraggableHandleProps extends Omit<React.SVGProps<SVGCircleElement>, "onDrag"> {
+interface DraggableHandleProps extends Omit<React.SVGProps<SVGCircleElement>, 'onDrag'> {
   point: Point;
   onDrag: (p: Point) => void;
   onDragStart?: () => void;
@@ -12,7 +12,7 @@ interface DraggableHandleProps extends Omit<React.SVGProps<SVGCircleElement>, "o
   viewBoxSize: number;
   containerRef: React.RefObject<SVGSVGElement | null>;
   isDraggable?: boolean;
-  type?: "anchor" | "handle";
+  type?: 'anchor' | 'handle';
   connectedTo?: Point;
   snapToGrid?: boolean;
 }
@@ -27,17 +27,17 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
   viewBoxSize,
   containerRef,
   isDraggable = true,
-  type = "anchor",
+  type = 'anchor',
   connectedTo,
   snapToGrid = false,
-  className = "",
+  className = '',
   r,
   ...props
 }) => {
   const circleRef = useRef<SVGCircleElement>(null);
   const dragDidMove = useRef(false);
   const parsedRadius =
-    typeof r === "number" ? r : typeof r === "string" ? Number.parseFloat(r) : Number.NaN;
+    typeof r === 'number' ? r : typeof r === 'string' ? Number.parseFloat(r) : Number.NaN;
 
   // The hook now returns coordinates in SVG User Space (e.g., 0 to 250)
   const { handleMouseDown, isDragging } = useDraggable({
@@ -75,26 +75,26 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
   const cx = point.x * viewBoxSize;
   const cy = viewBoxSize - point.y * viewBoxSize;
 
-  const baseRadius = Number.isFinite(parsedRadius) ? parsedRadius : type === "anchor" ? 6 : 4;
+  const baseRadius = Number.isFinite(parsedRadius) ? parsedRadius : type === 'anchor' ? 6 : 4;
   const visualRadius = isDragging ? baseRadius * 1.5 : isSelected ? baseRadius * 1.25 : baseRadius;
 
   const defaultStyles =
-    type === "anchor"
-      ? "fill-surface-1 stroke-accent-primary stroke-2 focus:stroke-[3px] focus:fill-accent-primary-bg"
-      : "fill-surface-1 stroke-text-secondary stroke-2 focus:stroke-accent-primary focus:stroke-[3px]";
+    type === 'anchor'
+      ? 'fill-surface-1 stroke-accent-primary stroke-2 focus:stroke-[3px] focus:fill-accent-primary-bg'
+      : 'fill-surface-1 stroke-text-secondary stroke-2 focus:stroke-accent-primary focus:stroke-[3px]';
 
-  const selectedStyles = isSelected ? "stroke-[3px] fill-accent-primary-bg shadow-sm" : "";
+  const selectedStyles = isSelected ? 'stroke-[3px] fill-accent-primary-bg shadow-sm' : '';
 
   const cursorClass = isDraggable
     ? isDragging
-      ? "cursor-grabbing"
-      : "cursor-grab hover:scale-110"
-    : "cursor-not-allowed opacity-50";
+      ? 'cursor-grabbing'
+      : 'cursor-grab hover:scale-110'
+    : 'cursor-not-allowed opacity-50';
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isDraggable) return;
 
-    if (e.key === "Enter" || e.key === " ") {
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       onSelect?.();
       return;
@@ -106,19 +106,19 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
     let changed = false;
 
     switch (e.key) {
-      case "ArrowUp":
+      case 'ArrowUp':
         newY = point.y + step;
         changed = true;
         break;
-      case "ArrowDown":
+      case 'ArrowDown':
         newY = point.y - step;
         changed = true;
         break;
-      case "ArrowRight":
+      case 'ArrowRight':
         newX = point.x + step;
         changed = true;
         break;
-      case "ArrowLeft":
+      case 'ArrowLeft':
         newX = point.x - step;
         changed = true;
         break;
@@ -137,13 +137,13 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
 
   return (
     <g className="group/handle">
-      {type === "handle" && connectedTo && (
+      {type === 'handle' && connectedTo && (
         <line
           x1={cx}
           y1={cy}
           x2={connectedTo.x * viewBoxSize}
           y2={viewBoxSize - connectedTo.y * viewBoxSize}
-          className={`stroke-1 stroke-dashed pointer-events-none transition-opacity duration-200 ${isSelected ? "stroke-accent-primary opacity-100" : "stroke-text-placeholder opacity-50"}`}
+          className={`stroke-1 stroke-dashed pointer-events-none transition-opacity duration-200 ${isSelected ? 'stroke-accent-primary opacity-100' : 'stroke-text-placeholder opacity-50'}`}
         />
       )}
 
@@ -164,7 +164,7 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
         cy={cy}
         r={Math.max(baseRadius * 3, 20)} // Ensure minimum 40x40px touch target
         fill="transparent"
-        className={isDraggable ? "cursor-grab active:cursor-grabbing touch-none" : ""}
+        className={isDraggable ? 'cursor-grab active:cursor-grabbing touch-none' : ''}
         onMouseDown={handleMouseDown}
         onTouchStart={handleMouseDown}
       />
@@ -177,14 +177,14 @@ export const DraggableHandle: React.FC<DraggableHandleProps> = ({
         r={visualRadius}
         tabIndex={isDraggable ? 0 : -1}
         role="slider"
-        aria-label={`${type === "anchor" ? "Anchor Point" : "Control Handle"} at ${point.x.toFixed(2)}, ${point.y.toFixed(2)}`}
+        aria-label={`${type === 'anchor' ? 'Anchor Point' : 'Control Handle'} at ${point.x.toFixed(2)}, ${point.y.toFixed(2)}`}
         aria-valuenow={point.y * 100}
         onKeyDown={handleKeyDown}
         className={`transition-all duration-200 outline-none ${defaultStyles} ${selectedStyles} ${cursorClass} ${className}`}
         style={{
-          filter: isDragging ? "drop-shadow(0 2px 4px rgba(0,0,0,0.2))" : "none",
-          transformBox: "fill-box",
-          transformOrigin: "center",
+          filter: isDragging ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' : 'none',
+          transformBox: 'fill-box',
+          transformOrigin: 'center',
         }}
         {...props}
       />

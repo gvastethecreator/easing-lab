@@ -1,16 +1,20 @@
-import React, { useMemo } from "react";
-import { gsap } from "gsap";
-import { UniversalGraphCard } from "./UniversalGraphCard";
-import { GSAPEasingCategory, type GSAPEasingFunction } from "../types";
+import React, { useMemo } from 'react';
+import { gsap } from 'gsap';
+import { UniversalGraphCard } from './UniversalGraphCard';
+import { GSAPEasingCategory, type GSAPEasingFunction } from '../types';
 
-const createFallbackLinearPath = (width: number, height: number) =>
-  `M 0 ${height} L ${width} 0`;
+const createFallbackLinearPath = (width: number, height: number) => `M 0 ${height} L ${width} 0`;
 
-const generateGSAPPath = (ease: string, width: number, height: number, samples: number = 100): string => {
+const generateGSAPPath = (
+  ease: string,
+  width: number,
+  height: number,
+  samples: number = 100
+): string => {
   let easeFunction: gsap.EaseFunction | null = null;
   try {
     const parsed = gsap.parseEase(ease);
-    if (typeof parsed === "function") {
+    if (typeof parsed === 'function') {
       easeFunction = parsed;
     }
   } catch {
@@ -30,7 +34,7 @@ const generateGSAPPath = (ease: string, width: number, height: number, samples: 
     const y = (height - easedValue * height).toFixed(precision);
     points.push(`L ${x} ${y}`);
   }
-  return points.join(" ");
+  return points.join(' ');
 };
 
 interface GSAPCardProps {

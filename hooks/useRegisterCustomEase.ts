@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { CustomEase } from "gsap/CustomEase";
-import type { PathPoint } from "../types";
+import { useEffect } from 'react';
+import { CustomEase } from 'gsap/CustomEase';
+import type { PathPoint } from '../types';
 
 interface UseRegisterCustomEaseParams {
   customEaseId: string;
@@ -21,13 +21,13 @@ export const useRegisterCustomEase = ({ customEaseId, points }: UseRegisterCusto
 
       if (start.handle2 && end.handle1) {
         pathParts.push(
-          `C ${start.handle2.x},${start.handle2.y} ${end.handle1.x},${end.handle1.y} ${end.x},${end.y}`,
+          `C ${start.handle2.x},${start.handle2.y} ${end.handle1.x},${end.handle1.y} ${end.x},${end.y}`
         );
       } else {
         pathParts.push(`L ${end.x},${end.y}`);
       }
     }
 
-    CustomEase.create(customEaseId, pathParts.join(" "));
+    CustomEase.create(customEaseId, pathParts.join(' '));
   }, [customEaseId, points]);
 };

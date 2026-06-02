@@ -1,10 +1,10 @@
-import { act, renderHook } from "@testing-library/react";
-import type { RefObject } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useDraggable } from "./useDraggable";
+import { act, renderHook } from '@testing-library/react';
+import type { RefObject } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { useDraggable } from './useDraggable';
 
 const installMockSvgGeometry = (svg: SVGSVGElement) => {
-  Object.defineProperty(svg, "createSVGPoint", {
+  Object.defineProperty(svg, 'createSVGPoint', {
     configurable: true,
     value: () => ({
       x: 0,
@@ -15,7 +15,7 @@ const installMockSvgGeometry = (svg: SVGSVGElement) => {
     }),
   });
 
-  Object.defineProperty(svg, "getScreenCTM", {
+  Object.defineProperty(svg, 'getScreenCTM', {
     configurable: true,
     value: () => ({
       inverse: () => new DOMMatrix(),
@@ -23,19 +23,19 @@ const installMockSvgGeometry = (svg: SVGSVGElement) => {
   });
 };
 
-describe("useDraggable", () => {
+describe('useDraggable', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("convierte mousemove en coordenadas SVG durante un drag", () => {
+  it('convierte mousemove en coordenadas SVG durante un drag', () => {
     const listeners = new Map<string, EventListenerOrEventListenerObject>();
 
-    vi.spyOn(window, "addEventListener").mockImplementation((type, listener) => {
+    vi.spyOn(window, 'addEventListener').mockImplementation((type, listener) => {
       listeners.set(type, listener);
     });
 
-    vi.spyOn(window, "removeEventListener").mockImplementation((type) => {
+    vi.spyOn(window, 'removeEventListener').mockImplementation((type) => {
       listeners.delete(type);
     });
 
@@ -43,7 +43,7 @@ describe("useDraggable", () => {
     const onDragStart = vi.fn();
     const onDragEnd = vi.fn();
 
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     installMockSvgGeometry(svg);
 
     const containerRef: RefObject<SVGSVGElement | null> = { current: svg };
@@ -54,7 +54,7 @@ describe("useDraggable", () => {
         onDrag,
         onDragStart,
         onDragEnd,
-      }),
+      })
     );
 
     act(() => {
@@ -67,17 +67,17 @@ describe("useDraggable", () => {
       });
     });
 
-    const mouseMoveListener = listeners.get("mousemove");
-    if (typeof mouseMoveListener === "function") {
+    const mouseMoveListener = listeners.get('mousemove');
+    if (typeof mouseMoveListener === 'function') {
       act(() => {
-        mouseMoveListener(new MouseEvent("mousemove", { clientX: 125, clientY: 75 }));
+        mouseMoveListener(new MouseEvent('mousemove', { clientX: 125, clientY: 75 }));
       });
     }
 
-    const mouseUpListener = listeners.get("mouseup");
-    if (typeof mouseUpListener === "function") {
+    const mouseUpListener = listeners.get('mouseup');
+    if (typeof mouseUpListener === 'function') {
       act(() => {
-        mouseUpListener(new MouseEvent("mouseup"));
+        mouseUpListener(new MouseEvent('mouseup'));
       });
     }
 

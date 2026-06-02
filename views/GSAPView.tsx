@@ -1,5 +1,5 @@
-import React from "react";
-import type { PathPoint } from "../types";
+import React from 'react';
+import type { PathPoint } from '../types';
 
 interface GSAPViewProps {
   customEaseId: string;

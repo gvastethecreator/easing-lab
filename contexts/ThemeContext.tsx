@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
-import { ACCENT_COLORS } from "../constants";
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { ACCENT_COLORS } from '../constants';
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -16,12 +16,12 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
  * Política actual: oscuro por defecto, salvo preferencia persistida en localStorage.
  */
 const getInitialDarkMode = (): boolean => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return true;
   }
 
-  const storedTheme = window.localStorage.getItem("theme");
-  if (storedTheme === "light") {
+  const storedTheme = window.localStorage.getItem('theme');
+  if (storedTheme === 'light') {
     return false;
   }
 
@@ -35,11 +35,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Apply Theme Class
   useEffect(() => {
     if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
     } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
 
@@ -47,9 +47,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     const root = document.documentElement;
     const currentColor = ACCENT_COLORS[colorIndex];
-    root.style.setProperty("--accent-primary", currentColor.main);
-    root.style.setProperty("--accent-primary-hover", currentColor.hover);
-    root.style.setProperty("--accent-primary-bg", currentColor.bg);
+    root.style.setProperty('--accent-primary', currentColor.main);
+    root.style.setProperty('--accent-primary-hover', currentColor.hover);
+    root.style.setProperty('--accent-primary-bg', currentColor.bg);
   }, [colorIndex]);
 
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
@@ -64,7 +64,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       cycleAccentColor,
       nextAccentColor: ACCENT_COLORS[(colorIndex + 1) % ACCENT_COLORS.length],
     }),
-    [isDarkMode, colorIndex],
+    [isDarkMode, colorIndex]
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
@@ -73,7 +73,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
 };

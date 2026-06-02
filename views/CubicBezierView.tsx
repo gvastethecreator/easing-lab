@@ -1,5 +1,5 @@
-import React from "react";
-import type { Point } from "../types";
+import React from 'react';
+import type { Point } from '../types';
 
 interface CubicBezierViewProps {
   p1: Point;

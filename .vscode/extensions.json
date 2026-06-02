@@ -1,6 +1,3 @@
 {
-  "recommendations": [
-    "bradlc.vscode-tailwindcss",
-    "vitest.explorer"
-  ]
+  "recommendations": ["bradlc.vscode-tailwindcss", "vitest.explorer"]
 }

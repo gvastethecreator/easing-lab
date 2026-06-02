@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import type { Point } from "../types";
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import type { Point } from '../types';
 
 interface UseMasterProgressAnimationParams {
   progressRef: React.MutableRefObject<{ progress: number }>;
@@ -38,12 +38,12 @@ export const useMasterProgressAnimation = ({
           if (progressRef.current.progress > 1) progressRef.current.progress = 1;
           if (progressRef.current.progress < 0) progressRef.current.progress = 0;
         },
-      },
+      }
     );
 
     const root = document.documentElement;
-    root.style.setProperty("--global-duration", `${duration}s`);
-    root.style.setProperty("--global-easing", currentEase);
+    root.style.setProperty('--global-duration', `${duration}s`);
+    root.style.setProperty('--global-easing', currentEase);
 
     return () => {
       masterTweenRef.current?.kill();

@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { gsap } from "gsap";
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { gsap } from 'gsap';
 import {
   PREVIEW_ANIMATION_TYPES,
   PREVIEW_TARGET_TRANSLATE_PERCENT,
   PREVIEW_TIMELINE_DURATION,
   PREVIEW_TRAIL_COUNT,
-} from "../animationConfig";
+} from '../animationConfig';
 
 type AnimationType = (typeof PREVIEW_ANIMATION_TYPES)[number];
 
@@ -25,8 +25,8 @@ const PreviewButton: React.FC<{ label: string; isActive: boolean; onClick: () =>
     onClick={onClick}
     className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border ${
       isActive
-        ? "bg-accent-primary text-white border-accent-primary shadow-sm"
-        : "bg-surface-base text-text-secondary border-border-subtle hover:bg-surface-2 hover:text-text-primary"
+        ? 'bg-accent-primary text-white border-accent-primary shadow-sm'
+        : 'bg-surface-base text-text-secondary border-border-subtle hover:bg-surface-2 hover:text-text-primary'
     }`}
   >
     {label}
@@ -39,7 +39,7 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
   range,
   progressRef,
 }) => {
-  const [activeAnimation, setActiveAnimation] = useState<AnimationType>("Move");
+  const [activeAnimation, setActiveAnimation] = useState<AnimationType>('Move');
   const [showTrails, setShowTrails] = useState(true);
 
   const targetsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -72,45 +72,45 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
       if (items.length === 0) return;
 
       const getProps = (isGhost: boolean) => {
-        const easeVal = isGhost ? "none" : ease;
+        const easeVal = isGhost ? 'none' : ease;
         const alpha = isGhost ? 0.1 : 1;
         switch (activeAnimation) {
-          case "Move":
-          case "Stagger":
+          case 'Move':
+          case 'Stagger':
             return {
               xPercent: PREVIEW_TARGET_TRANSLATE_PERCENT * range,
               ease: easeVal,
               opacity: alpha,
             };
-          case "Scale":
+          case 'Scale':
             return { scale: 1 + 1 * range, ease: easeVal, opacity: alpha };
-          case "Rotate":
+          case 'Rotate':
             return { rotation: 180 * range, ease: easeVal, opacity: alpha };
           default:
             return {};
         }
       };
 
-      if (activeAnimation === "Stagger") {
+      if (activeAnimation === 'Stagger') {
         items.forEach((item, i) => {
           tl.to(
             item,
-            { ...getProps(false), duration: PREVIEW_TIMELINE_DURATION, overwrite: "auto" },
-            i * 0.1,
+            { ...getProps(false), duration: PREVIEW_TIMELINE_DURATION, overwrite: 'auto' },
+            i * 0.1
           );
         });
       } else {
         const [target, ghost] = items;
         tl.to(
           target,
-          { ...getProps(false), duration: PREVIEW_TIMELINE_DURATION, overwrite: "auto" },
-          0,
+          { ...getProps(false), duration: PREVIEW_TIMELINE_DURATION, overwrite: 'auto' },
+          0
         );
         if (ghost)
           tl.to(
             ghost,
-            { ...getProps(true), duration: PREVIEW_TIMELINE_DURATION, overwrite: "auto" },
-            0,
+            { ...getProps(true), duration: PREVIEW_TIMELINE_DURATION, overwrite: 'auto' },
+            0
           );
       }
       tlRef.current = tl;
@@ -132,7 +132,7 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
         tlRef.current.progress(progress);
 
         // Optimized Trail Logic
-        if (showTrails && activeAnimation === "Move" && targetsRef.current[0]) {
+        if (showTrails && activeAnimation === 'Move' && targetsRef.current[0]) {
           for (let i = 0; i < trails.length; i++) {
             const trail = trails[i];
             const delay = (i + 1) * 0.015;
@@ -145,11 +145,11 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
             // Direct style manipulation for performance
             trail.style.transform = `translate(${xPos}%, 0) scale(${1 - i * 0.1})`;
             trail.style.opacity = `${1 - i / trails.length}`;
-            trail.style.visibility = "visible";
+            trail.style.visibility = 'visible';
           }
         } else {
           for (const trail of trails) {
-            trail.style.visibility = "hidden";
+            trail.style.visibility = 'hidden';
           }
         }
       }
@@ -172,10 +172,10 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
           Preview
         </span>
         <div className="flex gap-2 items-center flex-wrap">
-          {activeAnimation === "Move" && (
+          {activeAnimation === 'Move' && (
             <button
               onClick={() => setShowTrails(!showTrails)}
-              className={`px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors ${showTrails ? "text-accent-primary bg-accent-primary/10" : "text-text-placeholder hover:text-text-secondary"}`}
+              className={`px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors ${showTrails ? 'text-accent-primary bg-accent-primary/10' : 'text-text-placeholder hover:text-text-secondary'}`}
               title="Toggle Motion Trails"
             >
               Trails
@@ -202,12 +202,12 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
           <div
             className="absolute inset-0 opacity-20 pointer-events-none"
             style={{
-              backgroundImage: "linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px)",
-              backgroundSize: "40px 100%",
+              backgroundImage: 'linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px)',
+              backgroundSize: '40px 100%',
             }}
           ></div>
 
-          {activeAnimation === "Stagger" ? (
+          {activeAnimation === 'Stagger' ? (
             <div className="flex flex-col gap-2 w-full">
               {[0, 1, 2].map((i) => (
                 <div
@@ -227,7 +227,7 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
                 }}
                 className="w-10 h-10 rounded-lg bg-text-secondary/20 absolute left-6 pointer-events-none"
               />
-              {activeAnimation === "Move" &&
+              {activeAnimation === 'Move' &&
                 [...Array(PREVIEW_TRAIL_COUNT)].map((_, i) => (
                   <div
                     key={`trail-${i}`}
@@ -252,14 +252,14 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
           <div
             ref={progressBarRef}
             className="h-full bg-accent-primary origin-left will-change-transform"
-            style={{ transform: "scaleX(0)" }}
+            style={{ transform: 'scaleX(0)' }}
           />
         </div>
       </div>
 
       <div className="flex justify-between text-[10px] text-text-placeholder px-1 font-mono">
         <span>0.0s</span>
-        <span>{activeAnimation === "Stagger" ? "Stagger Delay" : "Linear vs Eased"}</span>
+        <span>{activeAnimation === 'Stagger' ? 'Stagger Delay' : 'Linear vs Eased'}</span>
         <span>{duration.toFixed(1)}s</span>
       </div>
     </div>

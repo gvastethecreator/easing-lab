@@ -1,12 +1,12 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import { DraggableHandle } from "./DraggableHandle";
-import type { Point } from "../types";
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { DraggableHandle } from './DraggableHandle';
+import type { Point } from '../types';
 
 const createContainerRef = () => ({ current: null as SVGSVGElement | null });
 
-describe("DraggableHandle", () => {
-  it("permite mover el punto con teclado", () => {
+describe('DraggableHandle', () => {
+  it('permite mover el punto con teclado', () => {
     const onDrag = vi.fn();
 
     render(
@@ -18,16 +18,16 @@ describe("DraggableHandle", () => {
           containerRef={createContainerRef()}
           type="handle"
         />
-      </svg>,
+      </svg>
     );
 
-    const slider = screen.getByRole("slider", { name: /control handle/i });
-    fireEvent.keyDown(slider, { key: "ArrowUp" });
+    const slider = screen.getByRole('slider', { name: /control handle/i });
+    fireEvent.keyDown(slider, { key: 'ArrowUp' });
 
     expect(onDrag).toHaveBeenCalledWith({ x: 0.5, y: 0.51 });
   });
 
-  it("dispara selección con Enter y respeta snap en teclado", () => {
+  it('dispara selección con Enter y respeta snap en teclado', () => {
     const onSelect = vi.fn();
     const onDrag = vi.fn();
 
@@ -42,18 +42,18 @@ describe("DraggableHandle", () => {
           snapToGrid
           type="handle"
         />
-      </svg>,
+      </svg>
     );
 
-    const slider = screen.getByRole("slider", { name: /control handle/i });
-    fireEvent.keyDown(slider, { key: "Enter" });
-    fireEvent.keyDown(slider, { key: "ArrowRight" });
+    const slider = screen.getByRole('slider', { name: /control handle/i });
+    fireEvent.keyDown(slider, { key: 'Enter' });
+    fireEvent.keyDown(slider, { key: 'ArrowRight' });
 
     expect(onSelect).toHaveBeenCalledTimes(1);
     expect(onDrag).toHaveBeenCalledWith({ x: 0.5, y: 0.5 });
   });
 
-  it("si está deshabilitado no responde al teclado", () => {
+  it('si está deshabilitado no responde al teclado', () => {
     const onDrag = vi.fn();
 
     render(
@@ -66,16 +66,16 @@ describe("DraggableHandle", () => {
           isDraggable={false}
           type="anchor"
         />
-      </svg>,
+      </svg>
     );
 
-    const slider = screen.getByRole("slider", { name: /anchor point/i });
-    fireEvent.keyDown(slider, { key: "ArrowLeft" });
+    const slider = screen.getByRole('slider', { name: /anchor point/i });
+    fireEvent.keyDown(slider, { key: 'ArrowLeft' });
 
     expect(onDrag).not.toHaveBeenCalled();
   });
 
-  it("muestra línea de conexión cuando el handle tiene connectedTo", () => {
+  it('muestra línea de conexión cuando el handle tiene connectedTo', () => {
     render(
       <svg>
         <DraggableHandle
@@ -86,9 +86,9 @@ describe("DraggableHandle", () => {
           type="handle"
           connectedTo={{ x: 0.2, y: 0.2 } satisfies Point}
         />
-      </svg>,
+      </svg>
     );
 
-    expect(document.querySelector("line")).not.toBeNull();
+    expect(document.querySelector('line')).not.toBeNull();
   });
 });

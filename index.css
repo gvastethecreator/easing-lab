@@ -1,10 +1,10 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --font-sans: "Inter", sans-serif;
-  --font-mono: "Roboto Mono", monospace;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
 
   --color-surface-base: var(--surface-base);
   --color-surface-1: var(--surface-1);
@@ -88,7 +88,7 @@ html.dark {
   }
 
   button,
-  [role="button"] {
+  [role='button'] {
     -webkit-tap-highlight-color: transparent;
   }
 

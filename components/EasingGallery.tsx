@@ -1,6 +1,6 @@
-import React from "react";
-import { UniversalGraphCard } from "./UniversalGraphCard";
-import type { EasingFunction } from "../types";
+import React from 'react';
+import { UniversalGraphCard } from './UniversalGraphCard';
+import type { EasingFunction } from '../types';
 
 interface EasingGalleryProps {
   functions: EasingFunction[];
@@ -18,15 +18,15 @@ export const EasingGallery: React.FC<EasingGalleryProps> = React.memo(
             title={func.name}
             description={func.description}
             pathData={func.path}
-            animationEase={`cubic-bezier(${func.bezier.join(",")})`}
-            copyValue={`cubic-bezier(${func.bezier.join(", ")})`}
+            animationEase={`cubic-bezier(${func.bezier.join(',')})`}
+            copyValue={`cubic-bezier(${func.bezier.join(', ')})`}
             onSelect={() => onCardClick(func.bezier)}
-            isCustom={func.id === "custom"}
+            isCustom={func.id === 'custom'}
           />
         ))}
       </div>
     );
-  },
+  }
 );
 
-EasingGallery.displayName = "EasingGallery";
+EasingGallery.displayName = 'EasingGallery';
