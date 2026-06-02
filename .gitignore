@@ -8,22 +8,40 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Build output and caches
 node_modules
 dist
 dist-ssr
 coverage
-*.local
+.turbo
+.tmp
+.cache
+.vite-plus
+bunx-cache
+
+# Local env
 .env
 .env.*
 !.env.example
+*.local
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Test artifacts
+junit.xml
+test-results
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 !.vscode/tasks.json
-!.vscode/settings.json
 .idea
-.DS_Store
+.cursor
+.aider*
+.cline
+*.code-workspace
 *.suo
 *.ntvs*
 *.njsproj
