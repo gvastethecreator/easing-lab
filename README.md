@@ -10,7 +10,6 @@
 - Sincronización de animaciones con `gsap.ticker` fuera del render de React.
 - Historial local de cambios con `undo` / `redo`.
 - Tema claro/oscuro y color de acento (modo oscuro por defecto).
-- Scripts con generación automática de logs en `logs/`.
 - Validación con `typecheck`, `lint`, `test`, `coverage`, `build` y `check`.
 
 ## 🧱 Stack actual
@@ -23,14 +22,6 @@
 - **Lint / format:** OXC (`oxlint`, `oxfmt`)
 - **Testing:** Vitest + Testing Library + `happy-dom`
 - **Estilos:** Tailwind CSS 4 con entrada local en `index.css`
-
-Versiones relevantes verificadas en esta iteración:
-
-- `typescript@6.0.2`
-- `oxfmt@0.42.0`
-- `vite-plus@0.1.14`
-- `vite@8.x`
-- `vitest@4.1.2`
 
 ## 🚀 Puesta en marcha
 
@@ -47,56 +38,50 @@ bun install
 
 ### Variables de entorno
 
-El proyecto incluye `.env.example` y `.env` con la variable:
+El proyecto incluye `.env.example` con la variable:
 
 - `GEMINI_API_KEY`
 
-Si no la necesitas para tu flujo actual, puedes dejar el placeholder sin uso.
+Si no la necesitas, puedes ignorar el placeholder; no se requiere para el funcionamiento base de la app.
 
 ## 🧪 Scripts disponibles
 
-Todos los scripts escriben salida en la carpeta `logs/`.
-
 ```bash
-bun run dev
-bun run build
-bun run preview
-bun run typecheck
-bun run lint
-bun run format
-bun run test
-bun run coverage
-bun run metrics
-bun run check
-bun run format:check
+bun run dev          # Servidor de desarrollo
+bun run build        # Build de producción
+bun run preview      # Vista previa del build
+bun run typecheck    # tsc --noEmit
+bun run lint         # oxlint
+bun run lint:fix     # oxlint --fix
+bun run format       # oxfmt
+bun run format:check # oxfmt --check
+bun run test         # vitest
+bun run coverage     # vitest run --coverage
+bun run check        # vp check (format + lint + typecheck)
 ```
-
-`bun run metrics` analiza `dist/`, genera `logs/metrics.json` y actualiza `docs/METRICAS.md`. Para medir bundle real, ejecútalo después de `bun run build`.
 
 ## 🧰 Tareas de VS Code
 
 El workspace incluye tareas listas en `.vscode/tasks.json`:
 
-- `⚡ dev`
-- `🏗️ build`
-- `🧠 typecheck`
-- `🔍 lint`
-- `🧼 format`
-- `🧪 test`
-- `📊 coverage`
-- `📏 metrics`
-- `✅ check`
-- `👀 preview`
+- `🚀 Dev`
+- `🏗️ Build`
+- `🧠 Typecheck`
+- `🧹 Lint`
+- `✨ Format`
+- `🧪 Test`
+- `📊 Coverage`
+- `👁️ Preview`
+- `✅ Check`
 
 ## 📁 Estructura principal
 
 - `components/`: UI reusable y editores.
 - `views/`: composición de pantallas principales.
 - `hooks/`: utilidades de interacción e historial.
-- `utils/`: helpers de comparación y transformación GSAP.
+- `utils/`: helpers de performance.
 - `contexts/`: tema global.
 - `docs/`: documentación funcional y técnica.
-- `scripts/`: utilidades de automatización, incluyendo logging.
 
 ## 📚 Documentación
 
@@ -104,21 +89,13 @@ El workspace incluye tareas listas en `.vscode/tasks.json`:
 - [Arquitectura](docs/ARQUITECTURA.md)
 - [Sistema de Diseño](docs/SISTEMA_DISENO.md)
 - [Guía de Componentes](docs/GUIA_COMPONENTES.md)
-- [Métricas](docs/METRICAS.md)
 - [Revisión General](docs/REVISION_GENERAL.md)
 - [Tareas realizadas](docs/TAREAS_REALIZADAS.md)
 - [Deuda técnica](docs/DEUDA_TECNICA.md)
 
-## ✅ Estado verificado
+> Nota: `docs/METRICAS.md` está pendiente de regenerar. Tras `bun run build` se puede volver a generar manualmente a partir de `dist/`.
 
-Validado en la sesión del **31-03-2026**:
+## 📄 Licencia
 
-- `bun run typecheck`
-- `bun run lint`
-- `bun run test`
-- `bun run coverage`
-- `bun run build`
-- `bun run check`
-- `bun run metrics`
+[MIT](LICENSE)
 
-En resumen: menos magia implícita, más tooling moderno, y bastantes menos gremlins.

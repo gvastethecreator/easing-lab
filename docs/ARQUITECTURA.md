@@ -20,13 +20,14 @@ El proyecto sigue una arquitectura plana basada en funcionalidades y mantiene lo
 components/           # Componentes UI reutilizables y editores
 views/                # Composición de vistas principales
 hooks/                # Lógica de interacción y sincronización
-utils/                # Helpers puros y utilidades de performance/GSAP
+utils/                # Helpers puros y utilidades de performance
+contexts/             # Providers de React (tema, etc.)
 docs/                 # Documentación funcional y técnica
-scripts/              # Automatización y métricas
 App.tsx               # Orquestación de vistas y estado compartido
 index.tsx             # Entrada de React DOM
 animationConfig.ts    # Constantes y defaults de animación
 constants.ts          # Catálogos de easings y presets
+gsapConstants.ts      # Catálogo de easings GSAP
 types.ts              # Tipos globales
 ```
 
@@ -88,8 +89,8 @@ Previsualizador compartido de animaciones.
 
 ## 5. Métricas y observabilidad ligera
 
-- `bun run metrics` analiza el contenido de `dist/`, genera `logs/metrics.json` y actualiza `docs/METRICAS.md`.
 - `index.tsx` publica métricas ligeras de arranque en `window.__EASING_LAB_STARTUP_METRICS__` para inspección manual durante desarrollo.
+- El script `metrics` (que actualizaba `docs/METRICAS.md`) se ha retirado junto con la carpeta `scripts/`. La regeneración queda como tarea pendiente para una futura iteración.
 
 ## 6. Sistema de theming
 
