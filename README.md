@@ -36,13 +36,7 @@
 bun install
 ```
 
-### Variables de entorno
-
-El proyecto incluye `.env.example` con la variable:
-
-- `GEMINI_API_KEY`
-
-Si no la necesitas, puedes ignorar el placeholder; no se requiere para el funcionamiento base de la app.
+No se requieren variables de entorno para ejecutar la aplicación.
 
 ## 🧪 Scripts disponibles
 
@@ -81,21 +75,7 @@ El workspace incluye tareas listas en `.vscode/tasks.json`:
 - `hooks/`: utilidades de interacción e historial.
 - `utils/`: helpers de performance.
 - `contexts/`: tema global.
-- `docs/`: documentación funcional y técnica.
-
-## 📚 Documentación
-
-- [PRD](docs/PRD.md)
-- [Arquitectura](docs/ARQUITECTURA.md)
-- [Sistema de Diseño](docs/SISTEMA_DISENO.md)
-- [Guía de Componentes](docs/GUIA_COMPONENTES.md)
-- [Revisión General](docs/REVISION_GENERAL.md)
-- [Tareas realizadas](docs/TAREAS_REALIZADAS.md)
-- [Deuda técnica](docs/DEUDA_TECNICA.md)
-
-> Nota: `docs/METRICAS.md` está pendiente de regenerar. Tras `bun run build` se puede volver a generar manualmente a partir de `dist/`.
 
 ## 📄 Licencia
 
 [MIT](LICENSE)
-

@@ -19,6 +19,10 @@ coverage
 .vite-plus
 bunx-cache
 
+# Internal dev documentation (briefs, planning, design system, etc.)
+# Kept locally for the maintainer's own reference; not part of the public repo.
+docs/
+
 # Local env
 .env
 .env.*
