@@ -4,19 +4,27 @@
   "private": true,
   "description": "Laboratorio interactivo de easing con React, GSAP, Tailwind CSS y Vite+.",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gvastethecreator/easing-lab.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gvastethecreator/easing-lab/issues"
+  },
+  "homepage": "https://github.com/gvastethecreator/easing-lab",
   "scripts": {
     "dev": "vp dev",
     "build": "vp build",
-    "preview": "bun ./scripts/run-with-log.mjs preview vp preview",
-    "lint": "bun ./scripts/run-with-log.mjs lint vp lint",
-    "lint:fix": "bun ./scripts/run-with-log.mjs lint-fix vp lint --fix",
-    "format": "bun ./scripts/run-with-log.mjs format vp fmt",
-    "format:check": "bun ./scripts/run-with-log.mjs format-check vp fmt --check",
-    "typecheck": "bun ./scripts/run-with-log.mjs typecheck tsc --noEmit",
-    "test": "bun ./scripts/run-with-log.mjs test vp test",
-    "coverage": "bun ./scripts/run-with-log.mjs coverage vitest run --coverage",
-    "metrics": "bun ./scripts/run-with-log.mjs metrics bun ./scripts/collect-metrics.mjs",
-    "check": "bun ./scripts/run-with-log.mjs check vp check"
+    "preview": "vp preview",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix",
+    "format": "vp fmt",
+    "format:check": "vp fmt --check",
+    "typecheck": "tsc --noEmit",
+    "test": "vp test",
+    "coverage": "vitest run --coverage",
+    "check": "vp check"
   },
   "dependencies": {
     "gsap": "^3.15.0",

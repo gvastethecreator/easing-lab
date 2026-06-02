@@ -43,7 +43,6 @@ const config = {
       "dist/**",
       "coverage/**",
       "logs/**",
-      "migrated_prompt_history/**",
     ],
     coverage: {
       provider: "v8",
@@ -52,7 +51,7 @@ const config = {
     },
   },
   lint: {
-    ignorePatterns: ["dist/**", "coverage/**", "logs/**", "migrated_prompt_history/**"],
+    ignorePatterns: ["dist/**", "coverage/**", "logs/**"],
     options: {
       typeAware: true,
       typeCheck: true,
