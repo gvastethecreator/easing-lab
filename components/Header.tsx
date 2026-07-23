@@ -4,7 +4,8 @@ import { ColorToggle } from './ColorToggle';
 import { ThemeToggle } from './ThemeToggle';
 import { PlayIcon, PauseIcon, ChevronDownIcon } from './Icons';
 import { useTheme } from '../contexts/ThemeContext';
-import type { View } from '../types';
+import { getAnimationEngineLabel, getViewLabel, VIEW_TABS } from '../animationConfig';
+import type { AnimationEngine, View } from '../types';
 
 interface HeaderProps {
   activeView: View;
@@ -12,6 +13,8 @@ interface HeaderProps {
   progressRef: React.MutableRefObject<{ progress: number }>;
   isPlaying: boolean;
   togglePlay: () => void;
+  engine: AnimationEngine;
+  engineStatus: 'loading' | 'ready' | 'error';
 }
 
 const NavButton: React.FC<{ label: string; isActive: boolean; onClick: () => void }> = ({
@@ -20,6 +23,8 @@ const NavButton: React.FC<{ label: string; isActive: boolean; onClick: () => voi
   onClick,
 }) => (
   <button
+    type="button"
+    aria-pressed={isActive}
     onClick={onClick}
     className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-surface-base focus:ring-accent-primary overflow-hidden ${
       isActive
@@ -36,9 +41,11 @@ const PlayPauseButton: React.FC<{ isPlaying: boolean; onClick: () => void }> = (
   onClick,
 }) => (
   <button
+    type="button"
     onClick={onClick}
     className="p-2 rounded-full bg-surface-2 dark:bg-surface-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
     title={isPlaying ? 'Pause Animation' : 'Play Animation'}
+    aria-label={isPlaying ? 'Pause animation' : 'Play animation'}
   >
     {isPlaying ? <PauseIcon /> : <PlayIcon />}
   </button>
@@ -64,6 +71,8 @@ export const Header: React.FC<HeaderProps> = ({
   progressRef,
   isPlaying,
   togglePlay,
+  engine,
+  engineStatus,
 }) => {
   const { cycleAccentColor, nextAccentColor } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,9 +84,21 @@ export const Header: React.FC<HeaderProps> = ({
   const isInside = useRef(false);
 
   useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false);
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
     const container = containerRef.current;
     const follower = followerRef.current;
     if (!container || !follower) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const ctx = gsap.context(() => {
       const trail = trailRefs.current.filter(isDefined);
@@ -177,37 +198,68 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-6">
             <div className="flex flex-col">
               <h1 className="text-xl font-black tracking-tight text-text-primary select-none">
-                EASY<span className="text-accent-primary">EASING</span>
+                EASY
+                <span className="text-accent-primary dark:text-accent-primary-hover">EASING</span>
               </h1>
-              <span className="text-[10px] font-mono text-text-secondary uppercase tracking-widest opacity-60 -mt-1 hidden sm:block">
+              <span className="text-[10px] font-mono text-text-secondary uppercase tracking-widest -mt-1 hidden sm:block">
                 Motion Library
               </span>
             </div>
 
-            <nav className="hidden md:flex items-center gap-1 p-1 bg-surface-2/50 dark:bg-surface-1/30 rounded-xl border border-border-subtle">
-              <NavButton
-                label="Cubic Bezier"
-                isActive={activeView === 'cubic'}
-                onClick={() => setView('cubic')}
-              />
-              <NavButton
-                label="GSAP Gallery"
-                isActive={activeView === 'gsap'}
-                onClick={() => setView('gsap')}
-              />
+            <nav
+              className="hidden xl:flex items-center gap-1 p-1 bg-surface-2/50 dark:bg-surface-1/30 rounded-xl border border-border-subtle"
+              aria-label="Easing labs"
+            >
+              {VIEW_TABS.map((tab) => (
+                <NavButton
+                  key={tab.id}
+                  label={tab.label}
+                  isActive={activeView === tab.id}
+                  onClick={() => setView(tab.id)}
+                />
+              ))}
             </nav>
           </div>
 
           <div className="flex items-center gap-3">
             <PlayPauseButton isPlaying={isPlaying} onClick={togglePlay} />
 
-            {/* Mobile Dropdown */}
-            <div className="md:hidden relative">
+            <span
+              aria-hidden="true"
+              title={
+                engineStatus === 'ready'
+                  ? `${getAnimationEngineLabel(engine)} ready`
+                  : engineStatus === 'loading'
+                    ? `Loading ${getAnimationEngineLabel(engine)}`
+                    : `${getAnimationEngineLabel(engine)} failed`
+              }
+              className={`hidden size-2 rounded-full sm:block ${
+                engineStatus === 'ready'
+                  ? 'bg-emerald-500'
+                  : engineStatus === 'loading'
+                    ? 'animate-pulse bg-amber-400'
+                    : 'bg-red-500'
+              }`}
+            />
+            <span className="sr-only" role="status" aria-live="polite">
+              {engineStatus === 'ready'
+                ? `${getAnimationEngineLabel(engine)} ready`
+                : engineStatus === 'loading'
+                  ? `Loading ${getAnimationEngineLabel(engine)}`
+                  : `${getAnimationEngineLabel(engine)} failed`}
+            </span>
+
+            {/* Compact navigation */}
+            <div className="xl:hidden relative">
               <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="bg-surface-2 text-text-primary text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-2 border border-border-subtle focus:ring-2 focus:ring-accent-primary outline-none min-w-25 justify-between"
+                type="button"
+                onClick={() => setMobileMenuOpen((current) => !current)}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-navigation-menu"
+                aria-haspopup="menu"
+                className="bg-surface-2 text-text-primary text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-2 border border-border-subtle focus:ring-2 focus:ring-accent-primary outline-none min-w-28 justify-between"
               >
-                <span>{activeView === 'cubic' ? 'Cubic' : 'GSAP'}</span>
+                <span>{getViewLabel(activeView, true)}</span>
                 <ChevronDownIcon
                   className={`transition-transform duration-200 ${mobileMenuOpen ? 'rotate-180' : ''}`}
                 />
@@ -215,29 +267,36 @@ export const Header: React.FC<HeaderProps> = ({
 
               {mobileMenuOpen && (
                 <>
-                  <div
+                  <button
+                    type="button"
+                    aria-label="Close navigation menu"
+                    tabIndex={-1}
                     className="fixed inset-0 z-10"
                     onClick={() => setMobileMenuOpen(false)}
-                  ></div>
-                  <div className="absolute top-full right-0 mt-2 w-32 bg-surface-1 dark:bg-surface-2 border border-border-subtle rounded-xl shadow-xl z-20 overflow-hidden flex flex-col p-1 animate-in fade-in zoom-in-95 duration-200">
-                    <button
-                      onClick={() => {
-                        setView('cubic');
-                        setMobileMenuOpen(false);
-                      }}
-                      className={`px-3 py-2 rounded-lg text-xs font-medium text-left transition-colors ${activeView === 'cubic' ? 'bg-accent-primary text-white' : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'}`}
-                    >
-                      Cubic Bezier
-                    </button>
-                    <button
-                      onClick={() => {
-                        setView('gsap');
-                        setMobileMenuOpen(false);
-                      }}
-                      className={`px-3 py-2 rounded-lg text-xs font-medium text-left transition-colors ${activeView === 'gsap' ? 'bg-accent-primary text-white' : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'}`}
-                    >
-                      GSAP Gallery
-                    </button>
+                  />
+                  <div
+                    id="mobile-navigation-menu"
+                    role="menu"
+                    className="absolute top-full right-0 mt-2 w-48 bg-surface-1 dark:bg-surface-2 border border-border-subtle rounded-xl shadow-xl z-20 overflow-hidden flex flex-col p-1 animate-in fade-in zoom-in-95 duration-200"
+                  >
+                    <span className="px-3 pb-1 pt-2 text-[9px] font-bold uppercase tracking-widest text-text-placeholder">
+                      Labs
+                    </span>
+                    {VIEW_TABS.map((tab) => (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={activeView === tab.id}
+                        onClick={() => {
+                          setView(tab.id);
+                          setMobileMenuOpen(false);
+                        }}
+                        className={`px-3 py-2 rounded-lg text-xs font-medium text-left transition-colors ${activeView === tab.id ? 'bg-accent-primary text-white' : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'}`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
                   </div>
                 </>
               )}

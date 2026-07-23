@@ -610,14 +610,14 @@ export const EASING_FUNCTIONS: EasingFunction[] = [
 ];
 
 export const ACCENT_COLORS = [
-  { main: '#6366f1', hover: '#818cf8', bg: 'rgba(99, 102, 241, 0.2)' }, // Indigo
-  { main: '#ec4899', hover: '#f472b6', bg: 'rgba(236, 72, 153, 0.2)' }, // Pink
-  { main: '#f97316', hover: '#fb923c', bg: 'rgba(249, 115, 22, 0.2)' }, // Orange
-  { main: '#10b981', hover: '#34d399', bg: 'rgba(16, 185, 129, 0.2)' }, // Emerald
-  { main: '#3b82f6', hover: '#60a5fa', bg: 'rgba(59, 130, 246, 0.2)' }, // Blue
-  { main: '#8b5cf6', hover: '#a78bfa', bg: 'rgba(139, 92, 246, 0.2)' }, // Violet
-  { main: '#14b8a6', hover: '#2dd4bf', bg: 'rgba(20, 184, 166, 0.2)' }, // Teal
-  { main: '#eab308', hover: '#facc15', bg: 'rgba(234, 179, 8, 0.2)' }, // Yellow
-  { main: '#ef4444', hover: '#f87171', bg: 'rgba(239, 68, 68, 0.2)' }, // Red
-  { main: '#64748b', hover: '#94a3b8', bg: 'rgba(100, 116, 139, 0.2)' }, // Slate
+  { main: '#4f46e5', hover: '#6366f1', bg: 'rgba(79, 70, 229, 0.2)' }, // Indigo
+  { main: '#be185d', hover: '#db2777', bg: 'rgba(190, 24, 93, 0.2)' }, // Pink
+  { main: '#c2410c', hover: '#ea580c', bg: 'rgba(194, 65, 12, 0.2)' }, // Orange
+  { main: '#047857', hover: '#059669', bg: 'rgba(4, 120, 87, 0.2)' }, // Emerald
+  { main: '#1d4ed8', hover: '#2563eb', bg: 'rgba(29, 78, 216, 0.2)' }, // Blue
+  { main: '#7c3aed', hover: '#8b5cf6', bg: 'rgba(124, 58, 237, 0.2)' }, // Violet
+  { main: '#0f766e', hover: '#0d9488', bg: 'rgba(15, 118, 110, 0.2)' }, // Teal
+  { main: '#a16207', hover: '#ca8a04', bg: 'rgba(161, 98, 7, 0.2)' }, // Yellow
+  { main: '#dc2626', hover: '#ef4444', bg: 'rgba(220, 38, 38, 0.2)' }, // Red
+  { main: '#475569', hover: '#64748b', bg: 'rgba(71, 85, 105, 0.2)' }, // Slate
 ];

@@ -230,6 +230,7 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
 
           {/* Copy Button */}
           <button
+            type="button"
             onClick={handleCopy}
             className="absolute top-2 right-2 p-2 rounded-lg bg-surface-1/90 dark:bg-surface-2/90 backdrop-blur border border-border-subtle text-text-secondary hover:text-accent-primary hover:border-accent-primary opacity-0 group-hover/card:opacity-100 transition-all duration-200 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary scale-90 hover:scale-100 z-20 shadow-sm"
             aria-label="Copy easing value"
@@ -240,6 +241,9 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
 
           {/* Feedback Copied */}
           <div
+            role="status"
+            aria-live="polite"
+            aria-hidden={!copied}
             className={`absolute inset-0 z-30 flex items-center justify-center pointer-events-none transition-all duration-300 ${copied ? 'opacity-100 backdrop-blur-[2px]' : 'opacity-0'}`}
           >
             <div

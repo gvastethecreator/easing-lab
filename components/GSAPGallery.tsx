@@ -1,41 +1,7 @@
 import React, { useMemo } from 'react';
-import { gsap } from 'gsap';
 import { UniversalGraphCard } from './UniversalGraphCard';
 import { GSAPEasingCategory, type GSAPEasingFunction } from '../types';
-
-const createFallbackLinearPath = (width: number, height: number) => `M 0 ${height} L ${width} 0`;
-
-const generateGSAPPath = (
-  ease: string,
-  width: number,
-  height: number,
-  samples: number = 100
-): string => {
-  let easeFunction: gsap.EaseFunction | null = null;
-  try {
-    const parsed = gsap.parseEase(ease);
-    if (typeof parsed === 'function') {
-      easeFunction = parsed;
-    }
-  } catch {
-    easeFunction = null;
-  }
-
-  if (!easeFunction) {
-    return createFallbackLinearPath(width, height);
-  }
-
-  const points: string[] = [`M 0 ${height}`];
-  const precision = 2;
-  for (let i = 1; i <= samples; i++) {
-    const progress = i / samples;
-    const easedValue = easeFunction(progress);
-    const x = (progress * width).toFixed(precision);
-    const y = (height - easedValue * height).toFixed(precision);
-    points.push(`L ${x} ${y}`);
-  }
-  return points.join(' ');
-};
+import { generateGSAPPath } from '../utils/gsapUtils';
 
 interface GSAPGalleryProps {
   functions: GSAPEasingFunction[];

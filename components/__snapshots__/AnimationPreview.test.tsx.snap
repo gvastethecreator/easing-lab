@@ -11,14 +11,16 @@ exports[`AnimationPreview > mantiene un snapshot estable en su render inicial 1`
       <span
         class="text-[10px] font-bold text-text-secondary uppercase tracking-wider"
       >
-        Preview
+        Preview · GSAP
       </span>
       <div
         class="flex gap-2 items-center flex-wrap"
       >
         <button
-          class="px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors text-accent-primary bg-accent-primary/10"
+          aria-pressed="true"
+          class="px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors text-text-primary bg-accent-primary/15"
           title="Toggle Motion Trails"
+          type="button"
         >
           Trails
         </button>
@@ -29,22 +31,30 @@ exports[`AnimationPreview > mantiene un snapshot estable en su render inicial 1`
           class="flex gap-1"
         >
           <button
+            aria-pressed="true"
             class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border bg-accent-primary text-white border-accent-primary shadow-sm"
+            type="button"
           >
             Move
           </button>
           <button
+            aria-pressed="false"
             class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border bg-surface-base text-text-secondary border-border-subtle hover:bg-surface-2 hover:text-text-primary"
+            type="button"
           >
             Scale
           </button>
           <button
+            aria-pressed="false"
             class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border bg-surface-base text-text-secondary border-border-subtle hover:bg-surface-2 hover:text-text-primary"
+            type="button"
           >
             Rotate
           </button>
           <button
+            aria-pressed="false"
             class="px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border bg-surface-base text-text-secondary border-border-subtle hover:bg-surface-2 hover:text-text-primary"
+            type="button"
           >
             Stagger
           </button>
@@ -62,7 +72,7 @@ exports[`AnimationPreview > mantiene un snapshot estable en su render inicial 1`
           style="background-image: linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px); background-size: 40px 100%;"
         />
         <div
-          class="w-10 h-10 rounded-lg bg-text-secondary/20 absolute left-6 pointer-events-none"
+          class="w-10 h-10 rounded-lg bg-text-secondary/20 absolute left-6 pointer-events-none will-change-transform"
         />
         <div
           class="w-10 h-10 rounded-lg bg-accent-primary/30 absolute left-6 pointer-events-none mix-blend-multiply dark:mix-blend-screen z-0 will-change-transform"
@@ -100,7 +110,7 @@ exports[`AnimationPreview > mantiene un snapshot estable en su render inicial 1`
       </div>
     </div>
     <div
-      class="flex justify-between text-[10px] text-text-placeholder px-1 font-mono"
+      class="flex justify-between text-[10px] text-text-secondary px-1 font-mono"
     >
       <span>
         0.0s

@@ -2,24 +2,9 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AnimationPreview } from './AnimationPreview';
 
-const timelineProgressMock = vi.fn();
-
 vi.mock('gsap', () => ({
   gsap: {
     parseEase: vi.fn(() => (progress: number) => progress),
-    context: vi.fn((callback: () => void) => {
-      callback();
-      return { revert: vi.fn() };
-    }),
-    timeline: vi.fn(() => ({
-      to: vi.fn().mockReturnThis(),
-      progress: timelineProgressMock,
-    })),
-    set: vi.fn(),
-    ticker: {
-      add: vi.fn(),
-      remove: vi.fn(),
-    },
   },
 }));
 
@@ -35,6 +20,7 @@ describe('AnimationPreview', () => {
         duration={1.5}
         range={1}
         progressRef={{ current: { progress: 0.25 } }}
+        engine="gsap"
       />
     );
 
@@ -48,6 +34,7 @@ describe('AnimationPreview', () => {
         duration={1.5}
         range={1}
         progressRef={{ current: { progress: 0.5 } }}
+        engine="gsap"
       />
     );
 

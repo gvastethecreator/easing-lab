@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useMemo, useState, useEffect, useCallback, useId } from 'react';
 import { useHistory } from '../hooks/useHistory';
 import { AnimationPreview } from './AnimationPreview';
 import { DraggableHandle } from './DraggableHandle';
@@ -6,7 +6,7 @@ import { GraphGrid } from './GraphGrid';
 import { ScrubbableInput } from './ScrubbableInput';
 import { EditorLayout } from './EditorLayout';
 import { UndoIcon, RedoIcon, ResetIcon, MagnetIcon, TrashIcon, SparklesIcon } from './Icons';
-import type { PathPoint, Point } from '../types';
+import type { AnimationEngine, PathPoint, Point } from '../types';
 import { CURVE_EDITOR_VIEWBOX_SIZE } from '../animationConfig';
 
 const VIEW_BOX_SIZE = CURVE_EDITOR_VIEWBOX_SIZE;
@@ -54,6 +54,7 @@ interface MultiPointCurveEditorProps {
   range: number;
   setRange: (r: number) => void;
   progressRef: React.MutableRefObject<{ progress: number }>;
+  engine: AnimationEngine;
 }
 
 export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
@@ -65,7 +66,9 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
   range,
   setRange,
   progressRef,
+  engine,
 }) => {
+  const editorId = useId().replaceAll(':', '');
   const svgRef = useRef<SVGSVGElement>(null);
   const [copied, setCopied] = useState(false);
   const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null);
@@ -369,6 +372,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
   const toolbarActions = (
     <>
       <button
+        type="button"
         onClick={handleSmoothAll}
         className="p-1.5 rounded-md hover:bg-surface-2 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
         title="Smooth All Points"
@@ -376,6 +380,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
         <SparklesIcon />
       </button>
       <button
+        type="button"
         onClick={handleReset}
         className="p-1.5 rounded-md hover:bg-surface-2 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
         title="Reset to Linear"
@@ -384,6 +389,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
       </button>
       <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
       <button
+        type="button"
         onClick={() => setSnapEnabled(!snapEnabled)}
         className={`p-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary ${snapEnabled ? 'bg-accent-primary text-white' : 'hover:bg-surface-2 text-text-secondary'}`}
         title="Toggle Snap to Grid"
@@ -392,6 +398,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
       </button>
       <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
       <button
+        type="button"
         onClick={undo}
         disabled={!canUndo}
         className="p-1.5 rounded-md hover:bg-surface-2 disabled:opacity-30 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
@@ -400,6 +407,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
         <UndoIcon />
       </button>
       <button
+        type="button"
         onClick={redo}
         disabled={!canRedo}
         className="p-1.5 rounded-md hover:bg-surface-2 disabled:opacity-30 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
@@ -409,6 +417,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
       </button>
       <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
       <button
+        type="button"
         onClick={addPoint}
         className="px-2 py-1.5 rounded-md hover:bg-surface-2 text-[10px] font-bold uppercase tracking-wide text-text-secondary transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-accent-primary"
       >
@@ -529,6 +538,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
             <div className="flex gap-2 w-32">
               <ScrubbableInput
                 label="X"
+                ariaLabel={`Point ${selectedPointIndex + 1} X`}
                 value={selectedPoint.x}
                 onChange={(v) => updatePointCoordinate(selectedPointIndex, 'x', v)}
                 min={0}
@@ -536,6 +546,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
               />
               <ScrubbableInput
                 label="Y"
+                ariaLabel={`Point ${selectedPointIndex + 1} Y`}
                 value={selectedPoint.y}
                 onChange={(v) => updatePointCoordinate(selectedPointIndex, 'y', v)}
               />
@@ -543,6 +554,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => togglePointSmoothing(selectedPointIndex)}
               className={`px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors ${
                 selectedPoint.handle1 || selectedPoint.handle2
@@ -553,6 +565,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
               {selectedPoint.handle1 || selectedPoint.handle2 ? 'Smooth' : 'Linear'}
             </button>
             <button
+              type="button"
               onClick={() => handleRemovePoint(selectedPointIndex)}
               disabled={selectedPointIndex === 0 || selectedPointIndex === points.length - 1}
               className="p-1.5 rounded bg-surface-1 text-text-secondary hover:text-red-500 disabled:opacity-30 border border-border-subtle transition-colors"
@@ -571,6 +584,9 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
             <span className="font-mono text-text-primary">{duration.toFixed(1)}s</span>
           </div>
           <input
+            id={`${editorId}-duration`}
+            name="duration"
+            aria-label="Animation duration"
             type="range"
             min="0.5"
             max="5"
@@ -586,6 +602,9 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
             <span className="font-mono text-text-primary">{range}x</span>
           </div>
           <input
+            id={`${editorId}-scale`}
+            name="preview-scale"
+            aria-label="Preview scale"
             type="range"
             min="0.1"
             max="3"
@@ -611,6 +630,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
           duration={duration}
           range={range}
           progressRef={progressRef}
+          engine={engine}
         />
       }
       codeString={easeCodeString}

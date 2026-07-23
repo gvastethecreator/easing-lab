@@ -22,13 +22,14 @@ export const ColorToggle: React.FC<ColorToggleProps> = ({ onToggle, nextColor })
 
   return (
     <button
+      type="button"
       ref={buttonRef}
       onClick={handleClick}
       className="w-4 h-4 rounded-full transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-accent-primary focus:ring-offset-2 dark:focus:ring-offset-surface-base hover:opacity-90"
       style={{ backgroundColor: nextColor }}
       aria-label="Change accent color"
     >
-      {/* The button's fill color now shows the next accent color */}
+      {/* The fill previews the next accent color. */}
     </button>
   );
 };

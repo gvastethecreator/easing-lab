@@ -18,10 +18,10 @@
       "problemMatcher": []
     },
     {
-      "label": "✅ Check",
+      "label": "✅ Verify",
       "type": "shell",
       "command": "bun",
-      "args": ["run", "check"],
+      "args": ["run", "verify"],
       "problemMatcher": []
     },
     {
@@ -74,6 +74,20 @@
       "type": "shell",
       "command": "bun",
       "args": ["run", "metrics"],
+      "problemMatcher": []
+    },
+    {
+      "label": "📦 Deps",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "deps"],
+      "problemMatcher": []
+    },
+    {
+      "label": "🔎 Unused",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "unused"],
       "problemMatcher": []
     }
   ]

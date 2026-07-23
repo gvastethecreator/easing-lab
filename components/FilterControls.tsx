@@ -22,6 +22,7 @@ function FilterButton<T extends string>({
 
   return (
     <button
+      type="button"
       onClick={() => onClick(item.value)}
       className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses} ${className}`}
       aria-pressed={isActive}

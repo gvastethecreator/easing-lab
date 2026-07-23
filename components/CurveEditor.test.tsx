@@ -59,6 +59,7 @@ const TestHost: React.FC<{
       range={1}
       setRange={vi.fn()}
       progressRef={{ current: { progress: 0 } }}
+      engine="gsap"
     />
   );
 };

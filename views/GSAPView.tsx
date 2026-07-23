@@ -1,5 +1,15 @@
-import React from 'react';
-import type { PathPoint } from '../types';
+import React, { useMemo, useState } from 'react';
+import { FilterControls } from '../components/FilterControls';
+import { GSAPGallery } from '../components/GSAPGallery';
+import { MultiPointCurveEditor } from '../components/MultiPointCurveEditor';
+import { GSAP_EASING_FUNCTIONS } from '../gsapConstants';
+import { convertGsapEaseToPoints } from '../utils/gsapUtils';
+import {
+  GSAPEasingCategory,
+  type AnimationEngine,
+  type GSAPEasingFunction,
+  type PathPoint,
+} from '../types';
 
 interface GSAPViewProps {
   customEaseId: string;
@@ -10,6 +20,7 @@ interface GSAPViewProps {
   setDuration: React.Dispatch<React.SetStateAction<number>>;
   range: number;
   setRange: React.Dispatch<React.SetStateAction<number>>;
+  engine: AnimationEngine;
 }
 
 export const GSAPView: React.FC<GSAPViewProps> = ({
@@ -21,41 +32,82 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
   setDuration,
   range,
   setRange,
+  engine,
 }) => {
-  const addPoint = () => {
-    setPoints((prev) => [...prev, { x: 1, y: 1 }]);
-    progressRef.current.progress = 0;
+  const [activeCategory, setActiveCategory] = useState<GSAPEasingCategory>(GSAPEasingCategory.ALL);
+
+  const customGSAPEasing = useMemo<GSAPEasingFunction>(
+    () => ({
+      id: 'custom-bezier',
+      name: 'Custom Ease',
+      category: GSAPEasingCategory.CUSTOM,
+      ease: customEaseId,
+      description: 'Your custom ease created in the editor.',
+    }),
+    [customEaseId]
+  );
+
+  const functionsToDisplay = useMemo(() => {
+    if (activeCategory === GSAPEasingCategory.CUSTOM) {
+      return [customGSAPEasing];
+    }
+
+    const catalog = GSAP_EASING_FUNCTIONS.filter(
+      (func) => activeCategory === GSAPEasingCategory.ALL || func.category === activeCategory
+    ).toSorted((a, b) => a.name.localeCompare(b.name));
+
+    return activeCategory === GSAPEasingCategory.ALL ? [customGSAPEasing, ...catalog] : catalog;
+  }, [activeCategory, customGSAPEasing]);
+
+  const categoryItems = useMemo(
+    () => Object.values(GSAPEasingCategory).map((value) => ({ label: value, value })),
+    []
+  );
+
+  const handleCardClick = (ease: string) => {
+    if (ease === customEaseId) return;
+
+    const newPoints = convertGsapEaseToPoints(ease);
+    if (newPoints.length > 0) {
+      setPoints(newPoints);
+      if (window.innerWidth < 1024) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
   };
 
   return (
-    <section className="rounded-xl border border-zinc-700/60 bg-zinc-900/30 p-4 text-zinc-200">
-      <h2 className="mb-2 text-sm font-semibold">GSAP (modo básico)</h2>
-      <p className="mb-3 text-xs text-zinc-400">customEaseId: {customEaseId}</p>
-      <div className="space-y-1 text-xs text-zinc-300">
-        <div>points: {points.length}</div>
-        <div>duration: {duration.toFixed(2)}s</div>
-        <div>range: {range.toFixed(2)}</div>
+    <div className="max-w-7xl w-full mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12">
+        <aside className="lg:col-span-1">
+          <div className="lg:sticky lg:top-28">
+            <MultiPointCurveEditor
+              points={points}
+              setPoints={setPoints}
+              customEaseId={customEaseId}
+              duration={duration}
+              setDuration={setDuration}
+              range={range}
+              setRange={setRange}
+              progressRef={progressRef}
+              engine={engine}
+            />
+          </div>
+        </aside>
+        <section className="lg:col-span-2" aria-label="GSAP easing presets">
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-row items-center justify-start gap-4">
+              <FilterControls
+                items={categoryItems}
+                activeItem={activeCategory}
+                setActiveItem={setActiveCategory}
+                buttonClassName="text-sm font-medium"
+              />
+            </div>
+            <GSAPGallery functions={functionsToDisplay} onCardClick={handleCardClick} />
+          </div>
+        </section>
       </div>
-      <div className="mt-3 flex gap-2">
-        <button
-          type="button"
-          className="rounded-lg border border-zinc-600 px-3 py-1.5 text-xs hover:bg-zinc-800"
-          onClick={addPoint}
-        >
-          Add point
-        </button>
-        <button
-          type="button"
-          className="rounded-lg border border-zinc-600 px-3 py-1.5 text-xs hover:bg-zinc-800"
-          onClick={() => {
-            setDuration(1);
-            setRange(1);
-            progressRef.current.progress = 0;
-          }}
-        >
-          Reset timing
-        </button>
-      </div>
-    </section>
+    </div>
   );
 };

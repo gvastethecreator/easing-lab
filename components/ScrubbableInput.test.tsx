@@ -33,9 +33,16 @@ describe('ScrubbableInput', () => {
 
     render(<ScrubbableInputHost onChangeSpy={onChangeSpy} />);
 
-    fireEvent.mouseDown(screen.getByTitle(/drag to change value/i), { clientX: 100 });
-    fireEvent.mouseMove(window, { clientX: 260 });
-    fireEvent.mouseUp(window);
+    const dragLabel = screen.getByTitle(/drag to change value/i);
+    Object.defineProperties(dragLabel, {
+      setPointerCapture: { value: vi.fn() },
+      hasPointerCapture: { value: vi.fn(() => true) },
+      releasePointerCapture: { value: vi.fn() },
+    });
+
+    fireEvent.pointerDown(dragLabel, { button: 0, clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(dragLabel, { clientX: 260, pointerId: 1 });
+    fireEvent.pointerUp(dragLabel, { clientX: 260, pointerId: 1 });
 
     expect(onChangeSpy).toHaveBeenCalled();
     expect(onChangeSpy.mock.lastCall?.[0]).toBe(1);

@@ -43,7 +43,9 @@ export interface GSAPEasingFunction {
   description: string;
 }
 
-export type View = 'cubic' | 'gsap';
+export type AnimationEngine = 'gsap' | 'motion' | 'animejs' | 'three';
+
+export type View = 'cubic' | AnimationEngine;
 
 /**
  * Represents a coordinate in a 2D space.

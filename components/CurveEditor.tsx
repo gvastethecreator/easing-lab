@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useMemo, useCallback, useId } from 'react';
 import { gsap } from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { AnimationPreview } from './AnimationPreview';
@@ -8,7 +8,7 @@ import { ScrubbableInput } from './ScrubbableInput';
 import { useHistory } from '../hooks/useHistory';
 import { EditorLayout } from './EditorLayout';
 import { UndoIcon, RedoIcon, ResetIcon, MagnetIcon } from './Icons';
-import type { Point } from '../types';
+import type { AnimationEngine, Point } from '../types';
 import { CURVE_EDITOR_VIEWBOX_SIZE } from '../animationConfig';
 
 const FLOAT_TOLERANCE = 0.001;
@@ -40,6 +40,7 @@ interface CurveEditorProps {
   range: number;
   setRange: (r: number) => void;
   progressRef: React.MutableRefObject<{ progress: number }>;
+  engine: AnimationEngine;
 }
 
 export const CurveEditor: React.FC<CurveEditorProps> = ({
@@ -52,7 +53,9 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
   range,
   setRange,
   progressRef,
+  engine,
 }) => {
+  const editorId = useId().replaceAll(':', '');
   const isInteractingRef = useRef(false);
   const viewBoxSize = CURVE_EDITOR_VIEWBOX_SIZE;
   const svgRef = useRef<SVGSVGElement>(null);
@@ -227,6 +230,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
   const toolbarActions = (
     <>
       <button
+        type="button"
         onClick={() => setSnapEnabled(!snapEnabled)}
         className={`p-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary ${snapEnabled ? 'bg-accent-primary text-white' : 'hover:bg-surface-2 text-text-secondary'}`}
         title="Toggle Snap to Grid"
@@ -235,6 +239,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
       </button>
       <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
       <button
+        type="button"
         onClick={undo}
         disabled={!canUndo}
         className="p-1.5 rounded-md hover:bg-surface-2 disabled:opacity-30 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
@@ -243,6 +248,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
         <UndoIcon />
       </button>
       <button
+        type="button"
         onClick={redo}
         disabled={!canRedo}
         className="p-1.5 rounded-md hover:bg-surface-2 disabled:opacity-30 text-text-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
@@ -252,6 +258,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
       </button>
       <div className="w-px h-5 bg-border-subtle mx-2 self-center"></div>
       <button
+        type="button"
         onClick={() => applyPreset('linear')}
         className="p-1.5 rounded-md hover:bg-surface-2 text-text-secondary transition-colors"
         title="Reset to Linear"
@@ -369,6 +376,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
             <div className="flex gap-2">
               <ScrubbableInput
                 label="X"
+                ariaLabel={`${key === 'p1' ? 'Start' : 'End'} control X`}
                 value={coords[key].x}
                 onChange={(v) => updateCoordinate(key, 'x', v)}
                 min={0}
@@ -376,6 +384,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
               />
               <ScrubbableInput
                 label="Y"
+                ariaLabel={`${key === 'p1' ? 'Start' : 'End'} control Y`}
                 value={coords[key].y}
                 onChange={(v) => updateCoordinate(key, 'y', v)}
                 min={-2}
@@ -389,6 +398,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
       <div className="flex gap-2 justify-center">
         {(['linear', 'easeIn', 'easeOut', 'easeInOut'] as const).map((p) => (
           <button
+            type="button"
             key={p}
             onClick={() => applyPreset(p)}
             className="px-2 py-1 rounded bg-surface-2 hover:bg-surface-hover text-[10px] text-text-secondary font-medium uppercase tracking-wide transition-colors focus:ring-2 focus:ring-accent-primary focus:outline-none"
@@ -405,6 +415,9 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
             <span className="font-mono text-text-primary">{duration}s</span>
           </div>
           <input
+            id={`${editorId}-duration`}
+            name="duration"
+            aria-label="Animation duration"
             type="range"
             min="0.1"
             max="5"
@@ -420,6 +433,9 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
             <span className="font-mono text-text-primary">{range}x</span>
           </div>
           <input
+            id={`${editorId}-scale`}
+            name="preview-scale"
+            aria-label="Preview scale"
             type="range"
             min="0.1"
             max="3"
@@ -445,6 +461,7 @@ export const CurveEditor: React.FC<CurveEditorProps> = ({
           duration={duration}
           range={range}
           progressRef={progressRef}
+          engine={engine}
         />
       }
       codeString={bezierString}

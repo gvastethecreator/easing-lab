@@ -53,6 +53,13 @@ const config = {
     },
   },
   fmt: {
+    ignorePatterns: [
+      '.scratch/reports/**/chrome-*/**',
+      '.scratch/research/**',
+      'coverage/**',
+      'dist/**',
+      'logs/**',
+    ],
     semi: true,
     singleQuote: true,
     trailingComma: 'es5',

@@ -33,6 +33,7 @@ const TestHost: React.FC<{ onPointsChange: (points: PathPoint[]) => void }> = ({
       range={1}
       setRange={vi.fn()}
       progressRef={{ current: { progress: 0 } }}
+      engine="gsap"
     />
   );
 };
