@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-07-22T22:42:00-03:00",
+  "status": "locally-ready",
+  "product": {
+    "tabs": ["Cubic Bezier", "GSAP", "Motion", "Anime.js", "Three.js"],
+    "cardsPerBaseEngine": 67,
+    "threeCanvas": true
+  },
+  "verification": {
+    "verify": "passed",
+    "tests": "34/34",
+    "coverageStatements": 65.15,
+    "desktopLighthouse": { "accessibility": 100, "bestPractices": 100, "seo": 100 },
+    "mobileLighthouse": { "accessibility": 100, "bestPractices": 100, "seo": 100 },
+    "lcpMs": 312,
+    "cls": 0.05,
+    "consoleIssues": 0,
+    "mobileHorizontalOverflowPx": 0
+  },
+  "proof": [
+    "proof/before-desktop.png",
+    "proof/after-desktop.png",
+    "../../../docs/TAREAS_REALIZADAS.md",
+    "../../../docs/DEUDA_TECNICA.md"
+  ]
+}

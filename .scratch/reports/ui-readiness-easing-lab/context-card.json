@@ -1,0 +1,29 @@
+{
+  "project": "Easing Lab",
+  "date": "2026-07-22",
+  "surface": "single-page interactive easing editor",
+  "userMode": "explore and create",
+  "primaryArtifact": "editable easing curve with live motion preview",
+  "inputModes": ["pointer", "keyboard", "touch"],
+  "viewports": ["desktop", "narrow mobile"],
+  "themes": ["light", "dark"],
+  "preserve": [
+    "existing layout",
+    "existing tokens",
+    "Cubic Bezier and GSAP flows",
+    "current animation controls"
+  ],
+  "costlyStates": [
+    "full editor and gallery path",
+    "engine loading and engine load failure",
+    "mobile navigation",
+    "reduced motion",
+    "WebGL unavailable",
+    "theme and accent changes"
+  ],
+  "proof": {
+    "before": "proof/before-desktop.png",
+    "after": "proof/after-desktop.png",
+    "mobile": "Chrome device emulation at 390x844; recorded in finish-ledger.json"
+  }
+}
