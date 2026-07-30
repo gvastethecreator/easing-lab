@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { gsap } from 'gsap';
-import { GraphGrid } from './GraphGrid';
-import { CopyIcon, CheckIcon } from './Icons';
-import { GRAPH_CARD_VIEWBOX_SIZE } from '../animationConfig';
+import React, { useRef, useEffect, useState, useMemo } from "react";
+import { gsap } from "gsap";
+import { GraphGrid } from "./GraphGrid";
+import { CopyIcon, CheckIcon } from "./Icons";
+import { GRAPH_CARD_VIEWBOX_SIZE } from "../animationConfig";
 
 interface UniversalGraphCardProps {
   id: string;
@@ -20,7 +20,7 @@ const createMotionPath = (path: SVGPathElement, end?: number) => ({
   path,
   align: path,
   alignOrigin: [0.5, 0.5] as [number, number],
-  ...(typeof end === 'number' ? { end } : {}),
+  ...(typeof end === "number" ? { end } : {}),
 });
 
 export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
@@ -54,7 +54,7 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
           showFineGrid={false}
         />
       ),
-      []
+      [],
     );
 
     useEffect(() => {
@@ -94,26 +94,26 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
           ease: animationEase,
           repeat: -1,
           yoyo: true,
-          overwrite: 'auto',
+          overwrite: "auto",
         });
 
         gsap.to(card, {
-          backgroundColor: 'var(--accent-primary-bg)',
-          borderColor: 'var(--accent-primary)',
+          backgroundColor: "var(--accent-primary-bg)",
+          borderColor: "var(--accent-primary)",
           duration: 0.5,
-          overwrite: 'auto',
+          overwrite: "auto",
         });
 
         gsap.to(path, {
-          stroke: 'var(--accent-primary)',
+          stroke: "var(--accent-primary)",
           duration: 0.5,
-          overwrite: 'auto',
+          overwrite: "auto",
         });
 
         if (description && tooltipRef.current) {
           gsap.to(tooltipRef.current, {
             duration: 0.4,
-            ease: 'back.out(1.7)',
+            ease: "back.out(1.7)",
             autoAlpha: 1,
             y: 0,
             scale: 1,
@@ -133,11 +133,11 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
 
       gsap.killTweensOf([card, path, marker, tooltipRef.current].filter(Boolean));
 
-      const borderColor = isCustom ? 'var(--accent-primary)' : 'var(--border-subtle)';
+      const borderColor = isCustom ? "var(--accent-primary)" : "var(--border-subtle)";
 
       gsap.to(marker, {
         duration: 0.5,
-        ease: 'power2.out',
+        ease: "power2.out",
         motionPath: {
           ...createMotionPath(path),
           end: 0,
@@ -147,21 +147,21 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
 
       gsap.to(card, {
         duration: 0.4,
-        backgroundColor: 'var(--surface-1)',
+        backgroundColor: "var(--surface-1)",
         borderColor: borderColor,
         overwrite: true,
       });
 
       gsap.to(path, {
         duration: 0.4,
-        stroke: 'var(--text-secondary)',
+        stroke: "var(--text-secondary)",
         overwrite: true,
       });
 
       if (tooltipRef.current) {
         gsap.to(tooltipRef.current, {
           duration: 0.3,
-          ease: 'power2.in',
+          ease: "power2.in",
           autoAlpha: 0,
           y: 10,
           scale: 0.95,
@@ -192,7 +192,7 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
             type="button"
             onClick={onSelect}
             className={`relative w-full h-full rounded-xl border-2 bg-surface-1 dark:bg-surface-1 transition-colors duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-accent-primary/60 dark:focus-visible:ring-offset-surface-base ${
-              isCustom ? 'border-accent-primary' : 'border-border-subtle dark:border-border-subtle'
+              isCustom ? "border-accent-primary" : "border-border-subtle dark:border-border-subtle"
             }`}
             aria-label={`Select ${title}`}
           >
@@ -244,10 +244,10 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
             role="status"
             aria-live="polite"
             aria-hidden={!copied}
-            className={`absolute inset-0 z-30 flex items-center justify-center pointer-events-none transition-all duration-300 ${copied ? 'opacity-100 backdrop-blur-[2px]' : 'opacity-0'}`}
+            className={`absolute inset-0 z-30 flex items-center justify-center pointer-events-none transition-all duration-300 ${copied ? "opacity-100 backdrop-blur-[2px]" : "opacity-0"}`}
           >
             <div
-              className={`transform transition-all duration-300 ${copied ? 'translate-y-0 scale-100' : 'translate-y-4 scale-90'}`}
+              className={`transform transition-all duration-300 ${copied ? "translate-y-0 scale-100" : "translate-y-4 scale-90"}`}
             >
               <div className="bg-text-primary text-surface-1 px-4 py-2 rounded-full shadow-xl font-bold text-xs flex items-center gap-2">
                 <CheckIcon />
@@ -278,7 +278,7 @@ export const UniversalGraphCard: React.FC<UniversalGraphCardProps> = React.memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
-UniversalGraphCard.displayName = 'UniversalGraphCard';
+UniversalGraphCard.displayName = "UniversalGraphCard";

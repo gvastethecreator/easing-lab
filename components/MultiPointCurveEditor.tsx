@@ -1,13 +1,13 @@
-import React, { useRef, useMemo, useState, useEffect, useCallback, useId } from 'react';
-import { useHistory } from '../hooks/useHistory';
-import { AnimationPreview } from './AnimationPreview';
-import { DraggableHandle } from './DraggableHandle';
-import { GraphGrid } from './GraphGrid';
-import { ScrubbableInput } from './ScrubbableInput';
-import { EditorLayout } from './EditorLayout';
-import { UndoIcon, RedoIcon, ResetIcon, MagnetIcon, TrashIcon, SparklesIcon } from './Icons';
-import type { AnimationEngine, PathPoint, Point } from '../types';
-import { CURVE_EDITOR_VIEWBOX_SIZE } from '../animationConfig';
+import React, { useRef, useMemo, useState, useEffect, useCallback, useId } from "react";
+import { useHistory } from "../hooks/useHistory";
+import { AnimationPreview } from "./AnimationPreview";
+import { DraggableHandle } from "./DraggableHandle";
+import { GraphGrid } from "./GraphGrid";
+import { ScrubbableInput } from "./ScrubbableInput";
+import { EditorLayout } from "./EditorLayout";
+import { UndoIcon, RedoIcon, ResetIcon, MagnetIcon, TrashIcon, SparklesIcon } from "./Icons";
+import type { AnimationEngine, PathPoint, Point } from "../types";
+import { CURVE_EDITOR_VIEWBOX_SIZE } from "../animationConfig";
 
 const VIEW_BOX_SIZE = CURVE_EDITOR_VIEWBOX_SIZE;
 
@@ -16,7 +16,7 @@ const FLOAT_TOLERANCE = 0.001;
 const isPointEqual = (
   left?: Point,
   right?: Point,
-  tolerance: number = FLOAT_TOLERANCE
+  tolerance: number = FLOAT_TOLERANCE,
 ): boolean => {
   if (!left && !right) return true;
   if (!left || !right) return false;
@@ -26,7 +26,7 @@ const isPointEqual = (
 const arePathPointsEqual = (
   left: PathPoint[],
   right: PathPoint[],
-  tolerance: number = FLOAT_TOLERANCE
+  tolerance: number = FLOAT_TOLERANCE,
 ): boolean => {
   if (left === right) return true;
   if (left.length !== right.length) return false;
@@ -68,7 +68,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
   progressRef,
   engine,
 }) => {
-  const editorId = useId().replaceAll(':', '');
+  const editorId = useId().replaceAll(":", "");
   const svgRef = useRef<SVGSVGElement>(null);
   const [copied, setCopied] = useState(false);
   const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null);
@@ -104,7 +104,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
     (newPoints: PathPoint[]) => {
       setPropPoints(newPoints);
     },
-    [setPropPoints]
+    [setPropPoints],
   );
 
   // Handle Undo/Redo (when history changes but no interaction active)
@@ -251,10 +251,10 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
     updateParent(newPoints);
   };
 
-  const updatePointCoordinate = (index: number, axis: 'x' | 'y', value: number) => {
+  const updatePointCoordinate = (index: number, axis: "x" | "y", value: number) => {
     const newPoints = [...points];
 
-    if (axis === 'x') {
+    if (axis === "x") {
       const prevX = index > 0 ? newPoints[index - 1].x : 0;
       const nextX = index < newPoints.length - 1 ? newPoints[index + 1].x : 1;
 
@@ -265,9 +265,9 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
 
     const point = { ...newPoints[index], [axis]: value };
 
-    if (axis === 'x' || axis === 'y') {
+    if (axis === "x" || axis === "y") {
       const dx = value - newPoints[index][axis];
-      if (axis === 'x') {
+      if (axis === "x") {
         if (point.handle1)
           point.handle1 = { ...point.handle1, x: parseFloat((point.handle1.x + dx).toFixed(3)) };
         if (point.handle2)
@@ -319,8 +319,8 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
 
   const handleDragHandle = (
     pointIndex: number,
-    handleKey: 'handle1' | 'handle2',
-    handlePos: Point
+    handleKey: "handle1" | "handle2",
+    handlePos: Point,
   ) => {
     const newPoints = [...points];
     const point = { ...newPoints[pointIndex] };
@@ -332,7 +332,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
   };
 
   const { pathData, easeCodeString } = useMemo(() => {
-    if (!points || points.length === 0) return { pathData: '', easeCodeString: '' };
+    if (!points || points.length === 0) return { pathData: "", easeCodeString: "" };
 
     const svgPathParts: string[] = [
       `M ${points[0].x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - points[0].y * VIEW_BOX_SIZE}`,
@@ -345,10 +345,10 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
 
       if (p1.handle2 && p2.handle1) {
         svgPathParts.push(
-          `C ${p1.handle2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p1.handle2.y * VIEW_BOX_SIZE} ${p2.handle1.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.handle1.y * VIEW_BOX_SIZE} ${p2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.y * VIEW_BOX_SIZE}`
+          `C ${p1.handle2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p1.handle2.y * VIEW_BOX_SIZE} ${p2.handle1.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.handle1.y * VIEW_BOX_SIZE} ${p2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.y * VIEW_BOX_SIZE}`,
         );
         pathParts.push(
-          `C ${p1.handle2.x.toFixed(3)},${p1.handle2.y.toFixed(3)} ${p2.handle1.x.toFixed(3)},${p2.handle1.y.toFixed(3)} ${p2.x.toFixed(3)},${p2.y.toFixed(3)}`
+          `C ${p1.handle2.x.toFixed(3)},${p1.handle2.y.toFixed(3)} ${p2.handle1.x.toFixed(3)},${p2.handle1.y.toFixed(3)} ${p2.x.toFixed(3)},${p2.y.toFixed(3)}`,
         );
       } else {
         svgPathParts.push(`L ${p2.x * VIEW_BOX_SIZE},${VIEW_BOX_SIZE - p2.y * VIEW_BOX_SIZE}`);
@@ -356,8 +356,8 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
       }
     }
     return {
-      pathData: svgPathParts.join(' '),
-      easeCodeString: `CustomEase.create("${customEaseId}", "${pathParts.join(' ')}");`,
+      pathData: svgPathParts.join(" "),
+      easeCodeString: `CustomEase.create("${customEaseId}", "${pathParts.join(" ")}");`,
     };
   }, [points, customEaseId]);
 
@@ -391,7 +391,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
       <button
         type="button"
         onClick={() => setSnapEnabled(!snapEnabled)}
-        className={`p-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary ${snapEnabled ? 'bg-accent-primary text-white' : 'hover:bg-surface-2 text-text-secondary'}`}
+        className={`p-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary ${snapEnabled ? "bg-accent-primary text-white" : "hover:bg-surface-2 text-text-secondary"}`}
         title="Toggle Snap to Grid"
       >
         <MagnetIcon />
@@ -477,7 +477,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
             {p.handle1 && (
               <DraggableHandle
                 point={p.handle1}
-                onDrag={(np) => handleDragHandle(i, 'handle1', np)}
+                onDrag={(np) => handleDragHandle(i, "handle1", np)}
                 onDragStart={startInteraction}
                 onDragEnd={endInteraction}
                 viewBoxSize={VIEW_BOX_SIZE}
@@ -490,7 +490,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
             {p.handle2 && (
               <DraggableHandle
                 point={p.handle2}
-                onDrag={(np) => handleDragHandle(i, 'handle2', np)}
+                onDrag={(np) => handleDragHandle(i, "handle2", np)}
                 onDragStart={startInteraction}
                 onDragEnd={endInteraction}
                 viewBoxSize={VIEW_BOX_SIZE}
@@ -540,7 +540,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
                 label="X"
                 ariaLabel={`Point ${selectedPointIndex + 1} X`}
                 value={selectedPoint.x}
-                onChange={(v) => updatePointCoordinate(selectedPointIndex, 'x', v)}
+                onChange={(v) => updatePointCoordinate(selectedPointIndex, "x", v)}
                 min={0}
                 max={1}
               />
@@ -548,7 +548,7 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
                 label="Y"
                 ariaLabel={`Point ${selectedPointIndex + 1} Y`}
                 value={selectedPoint.y}
-                onChange={(v) => updatePointCoordinate(selectedPointIndex, 'y', v)}
+                onChange={(v) => updatePointCoordinate(selectedPointIndex, "y", v)}
               />
             </div>
           </div>
@@ -558,11 +558,11 @@ export const MultiPointCurveEditor: React.FC<MultiPointCurveEditorProps> = ({
               onClick={() => togglePointSmoothing(selectedPointIndex)}
               className={`px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors ${
                 selectedPoint.handle1 || selectedPoint.handle2
-                  ? 'bg-accent-primary text-white'
-                  : 'bg-surface-1 text-text-secondary hover:text-text-primary border border-border-subtle'
+                  ? "bg-accent-primary text-white"
+                  : "bg-surface-1 text-text-secondary hover:text-text-primary border border-border-subtle"
               }`}
             >
-              {selectedPoint.handle1 || selectedPoint.handle2 ? 'Smooth' : 'Linear'}
+              {selectedPoint.handle1 || selectedPoint.handle2 ? "Smooth" : "Linear"}
             </button>
             <button
               type="button"

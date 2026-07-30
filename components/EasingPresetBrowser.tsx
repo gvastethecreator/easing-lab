@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
-import { EASING_FUNCTIONS } from '../constants';
-import { EasingCategory, EasingType, type EasingFunction, type Point } from '../types';
-import { EasingGallery } from './EasingGallery';
-import { FilterControls } from './FilterControls';
+import { useMemo, useState } from "react";
+import { EASING_FUNCTIONS } from "../constants";
+import { EasingCategory, EasingType, type EasingFunction, type Point } from "../types";
+import { EasingGallery } from "./EasingGallery";
+import { FilterControls } from "./FilterControls";
 
 interface EasingPresetBrowserProps {
   p1: Point;
@@ -16,14 +16,14 @@ export const EasingPresetBrowser: React.FC<EasingPresetBrowserProps> = ({ p1, p2
 
   const customEasing = useMemo<EasingFunction>(
     () => ({
-      id: 'custom',
-      name: 'Custom Easing',
+      id: "custom",
+      name: "Custom Easing",
       category: EasingCategory.CUBIC,
       type: EasingType.OTHER,
       bezier: [p1.x, p1.y, p2.x, p2.y],
       path: `M0,224 C${p1.x * 224},${224 - p1.y * 224} ${p2.x * 224},${224 - p2.y * 224} 224,0`,
     }),
-    [p1, p2]
+    [p1, p2],
   );
 
   const functions = useMemo(() => {
@@ -39,11 +39,11 @@ export const EasingPresetBrowser: React.FC<EasingPresetBrowserProps> = ({ p1, p2
 
   const categories = useMemo(
     () => Object.values(EasingCategory).map((value) => ({ label: value, value })),
-    []
+    [],
   );
   const types = useMemo(
     () => Object.values(EasingType).map((value) => ({ label: value, value })),
-    []
+    [],
   );
 
   return (

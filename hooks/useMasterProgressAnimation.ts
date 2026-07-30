@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-import { createProgressDriver, type ProgressDriver } from '../animation/progressDrivers';
-import type { AnimationEngine, Point } from '../types';
+import { useEffect, useRef, useState } from "react";
+import { createProgressDriver, type ProgressDriver } from "../animation/progressDrivers";
+import type { AnimationEngine, Point } from "../types";
 
-type ProgressEngineStatus = 'loading' | 'ready' | 'error';
+type ProgressEngineStatus = "loading" | "ready" | "error";
 
 interface UseMasterProgressAnimationParams {
   progressRef: React.MutableRefObject<{ progress: number }>;
@@ -29,7 +29,7 @@ export const useMasterProgressAnimation = ({
   const driverRef = useRef<ProgressDriver | null>(null);
   const isPlayingRef = useRef(isPlaying);
   const [state, setState] = useState<ProgressEngineState>({
-    status: 'loading',
+    status: "loading",
     error: null,
   });
 
@@ -38,8 +38,8 @@ export const useMasterProgressAnimation = ({
   useEffect(() => {
     const currentEase = `cubic-bezier(${p1.x}, ${p1.y}, ${p2.x}, ${p2.y})`;
     const root = document.documentElement;
-    root.style.setProperty('--global-duration', `${duration}s`);
-    root.style.setProperty('--global-easing', currentEase);
+    root.style.setProperty("--global-duration", `${duration}s`);
+    root.style.setProperty("--global-easing", currentEase);
   }, [duration, p1, p2]);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export const useMasterProgressAnimation = ({
     driverRef.current?.dispose();
     driverRef.current = null;
     progressRef.current.progress = 0;
-    setState({ status: 'loading', error: null });
+    setState({ status: "loading", error: null });
 
     void createProgressDriver(engine, {
       duration,
@@ -64,12 +64,12 @@ export const useMasterProgressAnimation = ({
 
         driverRef.current = driver;
         if (isPlayingRef.current) driver.play();
-        setState({ status: 'ready', error: null });
+        setState({ status: "ready", error: null });
       })
       .catch((error: unknown) => {
         if (cancelled) return;
-        const message = error instanceof Error ? error.message : 'No se pudo cargar el motor.';
-        setState({ status: 'error', error: message });
+        const message = error instanceof Error ? error.message : "No se pudo cargar el motor.";
+        setState({ status: "error", error: message });
       });
 
     return () => {

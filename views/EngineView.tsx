@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from 'react';
-import { CurveEditor } from '../components/CurveEditor';
-import { EasingPresetBrowser } from '../components/EasingPresetBrowser';
-import { getAnimationEngineLabel } from '../animationConfig';
-import type { AnimationEngine, Point } from '../types';
+import React, { useMemo, useState } from "react";
+import { CurveEditor } from "../components/CurveEditor";
+import { EasingPresetBrowser } from "../components/EasingPresetBrowser";
+import { getAnimationEngineLabel } from "../animationConfig";
+import type { AnimationEngine, Point } from "../types";
 
-type DedicatedEngine = Exclude<AnimationEngine, 'gsap'>;
+type DedicatedEngine = Exclude<AnimationEngine, "gsap">;
 
 interface EngineViewProps {
   engine: DedicatedEngine;
@@ -29,22 +29,22 @@ const ENGINE_DETAILS: Record<
   }
 > = {
   motion: {
-    description: 'Run cubic-bezier easing through Motion numeric animation controls.',
-    docsUrl: 'https://motion.dev/docs/animate',
-    timing: 'Seconds with reverse repeats',
-    rendering: 'DOM preview driven by normalized progress',
+    description: "Run cubic-bezier easing through Motion numeric animation controls.",
+    docsUrl: "https://motion.dev/docs/animate",
+    timing: "Seconds with reverse repeats",
+    rendering: "DOM preview driven by normalized progress",
   },
   animejs: {
-    description: 'Run cubic-bezier easing through Anime.js 4 alternate loops.',
-    docsUrl: 'https://animejs.com/documentation/animation/',
-    timing: 'Milliseconds with alternate loops',
-    rendering: 'DOM preview driven by normalized progress',
+    description: "Run cubic-bezier easing through Anime.js 4 alternate loops.",
+    docsUrl: "https://animejs.com/documentation/animation/",
+    timing: "Milliseconds with alternate loops",
+    rendering: "DOM preview driven by normalized progress",
   },
   three: {
-    description: 'Drive a WebGL scene with Three.js Timer and renderer lifecycle controls.',
-    docsUrl: 'https://threejs.org/docs/pages/Timer.html',
-    timing: 'Frame delta from Three.js Timer',
-    rendering: 'WebGLRenderer with explicit cleanup',
+    description: "Drive a WebGL scene with Three.js Timer and renderer lifecycle controls.",
+    docsUrl: "https://threejs.org/docs/pages/Timer.html",
+    timing: "Frame delta from Three.js Timer",
+    rendering: "WebGLRenderer with explicit cleanup",
   },
 };
 
@@ -52,11 +52,11 @@ const createCode = (engine: DedicatedEngine, p1: Point, p2: Point, duration: num
   const curve = `${p1.x.toFixed(2)}, ${p1.y.toFixed(2)}, ${p2.x.toFixed(2)}, ${p2.y.toFixed(2)}`;
 
   switch (engine) {
-    case 'motion':
+    case "motion":
       return `import { animate } from 'motion';\n\nanimate(\n  element,\n  { x: 320 },\n  { duration: ${duration.toFixed(1)}, ease: [${curve}] }\n);`;
-    case 'animejs':
+    case "animejs":
       return `import { animate, cubicBezier } from 'animejs';\n\nanimate(element, {\n  x: 320,\n  duration: ${Math.round(duration * 1000)},\n  ease: cubicBezier(${curve}),\n});`;
-    case 'three':
+    case "three":
       return `import { Timer } from 'three';\n\nconst timer = new Timer();\ntimer.connect(document);\n\nrenderer.setAnimationLoop((time) => {\n  timer.update(time);\n  progress += timer.getDelta() / ${duration.toFixed(1)};\n  mesh.position.x = ease(progress) * 3.2;\n  renderer.render(scene, camera);\n});`;
   }
 };
@@ -73,7 +73,7 @@ export const EngineView: React.FC<EngineViewProps> = ({
   setRange,
   progressRef,
 }) => {
-  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
   const details = ENGINE_DETAILS[engine];
   const label = getAnimationEngineLabel(engine);
   const code = useMemo(() => createCode(engine, p1, p2, duration), [duration, engine, p1, p2]);
@@ -81,17 +81,17 @@ export const EngineView: React.FC<EngineViewProps> = ({
   const copyCode = async () => {
     try {
       await navigator.clipboard.writeText(code);
-      setCopyState('copied');
-      window.setTimeout(() => setCopyState('idle'), 1600);
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 1600);
     } catch {
-      setCopyState('error');
+      setCopyState("error");
     }
   };
 
   const selectCurve = (bezier: [number, number, number, number]) => {
     setP1({ x: bezier[0], y: bezier[1] });
     setP2({ x: bezier[2], y: bezier[3] });
-    if (window.innerWidth < 1024) window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (window.innerWidth < 1024) window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -173,11 +173,11 @@ export const EngineView: React.FC<EngineViewProps> = ({
                     onClick={() => void copyCode()}
                     className="rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-primary hover:bg-accent-primary/10 focus:outline-none focus:ring-2 focus:ring-accent-primary"
                   >
-                    {copyState === 'copied'
-                      ? 'Copied'
-                      : copyState === 'error'
-                        ? 'Copy failed'
-                        : 'Copy code'}
+                    {copyState === "copied"
+                      ? "Copied"
+                      : copyState === "error"
+                        ? "Copy failed"
+                        : "Copy code"}
                   </button>
                 </div>
                 <pre className="overflow-x-auto p-4 text-xs leading-6 text-text-secondary">

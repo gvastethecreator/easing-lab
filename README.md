@@ -2,6 +2,8 @@
 
 Laboratorio visual para explorar, editar, comparar y copiar curvas de easing. Incluye una pestaña propia para CSS Cubic Bezier, GSAP, Motion, Anime.js y Three.js. Cada motor muestra cards de curvas y una vista previa que usa el mismo progreso normalizado.
 
+Estado: **listo para desarrollo**. Dependencias y lockfile sincronizados el 2026-07-30; `bun outdated` no informa actualizaciones.
+
 ## Funciones
 
 - Editor `cubic-bezier()` con arrastre, entradas numéricas, presets, undo y redo.
@@ -17,18 +19,18 @@ Laboratorio visual para explorar, editar, comparar y copiar curvas de easing. In
 
 - Bun 1.3.14 como runtime y gestor de paquetes.
 - React 19.2.8 y TypeScript 7.0.2.
-- Vite+ 0.2.5, Vite 8.1.5 y Rolldown.
+- Vite+ 0.2.6, Vite 8.2.0 y Rolldown.
 - Tailwind CSS 4.3.3 con tokens semánticos en `index.css`.
 - OXC, a través de Vite+, para lint y formato.
 - Vitest 4.1.10, Testing Library y happy-dom.
-- GSAP 3.15, Motion 12.42, Anime.js 4.5 y Three.js 0.185.
+- GSAP 3.15.0, Motion 12.43.0, Anime.js 4.5.0 y Three.js 0.185.1.
 
 ## Inicio rápido
 
 Requiere Bun `>=1.3.14` y Node `>=20.19.0`.
 
 ```bash
-bun install --frozen-lockfile
+bun install --frozen-lockfile --ignore-scripts
 bun run dev
 ```
 
@@ -54,6 +56,16 @@ Abre `http://localhost:3000`. El proyecto no necesita secretos ni variables de e
 
 VS Code expone las mismas acciones en `.vscode/tasks.json`, con nombres cortos y emojis.
 
+`bun run check` valida el proyecto con Vite+ y `bun run verify` ejecuta la puerta completa.
+
+Para actualizar dependencias y comprobar el árbol:
+
+```bash
+bun update --latest
+bun install --frozen-lockfile --ignore-scripts
+bun run verify
+```
+
 ## Arquitectura breve
 
 `animation/progressDrivers.ts` adapta cada motor al contrato `play`, `pause` y `dispose`. Los drivers publican progreso lineal de `0` a `1`; `AnimationPreview` aplica una sola vez la curva elegida. React gestiona estado y vistas, pero el progreso por frame vive en una ref para evitar renders continuos.
@@ -70,6 +82,8 @@ Las vistas se cargan de forma diferida. Three.js y los demás motores se importa
 - [Tareas realizadas](docs/TAREAS_REALIZADAS.md)
 - [Deuda técnica](docs/DEUDA_TECNICA.md)
 - [Métricas](docs/METRICAS.md)
+- [PRD](docs/PRD.md)
+- [ADR de drivers](docs/adr/0001-animation-drivers.md)
 
 ## Licencia
 

@@ -1,7 +1,7 @@
-import React from 'react';
-import { CurveEditor } from '../components/CurveEditor';
-import { EasingPresetBrowser } from '../components/EasingPresetBrowser';
-import type { AnimationEngine, Point } from '../types';
+import React from "react";
+import { CurveEditor } from "../components/CurveEditor";
+import { EasingPresetBrowser } from "../components/EasingPresetBrowser";
+import type { AnimationEngine, Point } from "../types";
 
 interface CubicBezierViewProps {
   p1: Point;
@@ -31,7 +31,7 @@ export const CubicBezierView: React.FC<CubicBezierViewProps> = ({
   const selectCurve = (bezier: [number, number, number, number]) => {
     setP1({ x: bezier[0], y: bezier[1] });
     setP2({ x: bezier[2], y: bezier[3] });
-    if (window.innerWidth < 1024) window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (window.innerWidth < 1024) window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

@@ -1,6 +1,6 @@
 # Domain docs
 
-This is a single-context React application for exploring, editing, previewing, and exporting CSS and GSAP easing curves.
+This is a single-context React application for exploring, editing, previewing, and exporting CSS, GSAP, Motion, Anime.js, and Three.js easing curves.
 
 ## Read before exploring
 
@@ -13,8 +13,9 @@ This is a single-context React application for exploring, editing, previewing, a
 
 - **Cubic Bezier**: the CSS `cubic-bezier()` editor and its two control points.
 - **GSAP Custom Ease**: the multipoint curve editor and its generated easing path.
+- **Engine tab**: a dedicated laboratory for Cubic, GSAP, Motion, Anime.js, or Three.js.
+- **Graph card**: a reusable curve preview used by the shared catalogs.
 - **Master progress**: the shared mutable animation progress used by previews.
-- **Graph card**: the reusable visual card used by both easing galleries.
 - **Design tokens**: semantic CSS variables for surfaces, text, borders, accents, and spacing.
 
 Use these terms in issue titles, tests, and technical notes. Keep the existing visual language and interaction model unless the task explicitly changes them.

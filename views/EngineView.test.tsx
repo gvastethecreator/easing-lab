@@ -1,13 +1,13 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import { EngineView } from './EngineView';
-import type { AnimationEngine, Point } from '../types';
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { EngineView } from "./EngineView";
+import type { AnimationEngine, Point } from "../types";
 
-vi.mock('../components/CurveEditor', () => ({
+vi.mock("../components/CurveEditor", () => ({
   CurveEditor: ({ engine }: { engine: AnimationEngine }) => <div>{engine} curve editor</div>,
 }));
 
-vi.mock('../components/EasingPresetBrowser', () => ({
+vi.mock("../components/EasingPresetBrowser", () => ({
   EasingPresetBrowser: ({
     onSelect,
   }: {
@@ -19,7 +19,7 @@ vi.mock('../components/EasingPresetBrowser', () => ({
   ),
 }));
 
-const renderEngine = (engine: 'motion' | 'animejs' | 'three') => {
+const renderEngine = (engine: "motion" | "animejs" | "three") => {
   const setP1 = vi.fn();
   const setP2 = vi.fn();
   const point1: Point = { x: 0.25, y: 0.1 };
@@ -37,25 +37,25 @@ const renderEngine = (engine: 'motion' | 'animejs' | 'three') => {
       range={1}
       setRange={vi.fn()}
       progressRef={{ current: { progress: 0 } }}
-    />
+    />,
   );
 
   return { setP1, setP2 };
 };
 
 describe.each([
-  ['motion', 'Motion'],
-  ['animejs', 'Anime.js'],
-  ['three', 'Three.js'],
-] as const)('EngineView %s', (engine, label) => {
-  it('muestra integración, código y cards de curvas', () => {
+  ["motion", "Motion"],
+  ["animejs", "Anime.js"],
+  ["three", "Three.js"],
+] as const)("EngineView %s", (engine, label) => {
+  it("muestra integración, código y cards de curvas", () => {
     const { setP1, setP2 } = renderEngine(engine);
 
-    expect(screen.getByRole('heading', { name: label })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Official docs' })).toHaveAttribute('href');
-    expect(screen.getByRole('button', { name: 'Curve cards' })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: label })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Official docs" })).toHaveAttribute("href");
+    expect(screen.getByRole("button", { name: "Curve cards" })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Curve cards' }));
+    fireEvent.click(screen.getByRole("button", { name: "Curve cards" }));
     expect(setP1).toHaveBeenCalledWith({ x: 0.1, y: 0.2 });
     expect(setP2).toHaveBeenCalledWith({ x: 0.3, y: 0.4 });
   });

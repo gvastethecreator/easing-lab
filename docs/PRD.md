@@ -2,7 +2,7 @@
 
 Versión: **1.1**
 
-Estado: **implementado y en validación**
+Estado: **implementado y listo para desarrollo**
 
 ## Propósito
 

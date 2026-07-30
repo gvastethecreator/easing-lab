@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { ThemeProvider, useTheme } from './ThemeContext';
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { ThemeProvider, useTheme } from "./ThemeContext";
 
 const createStorageMock = (): Storage => {
   const store = new Map<string, string>();
@@ -32,7 +32,7 @@ const ThemeConsumer = () => {
 
   return (
     <div>
-      <span data-testid="theme-state">{isDarkMode ? 'dark' : 'light'}</span>
+      <span data-testid="theme-state">{isDarkMode ? "dark" : "light"}</span>
       <button type="button" onClick={toggleTheme}>
         Toggle
       </button>
@@ -40,62 +40,62 @@ const ThemeConsumer = () => {
   );
 };
 
-describe('ThemeContext', () => {
+describe("ThemeContext", () => {
   beforeEach(() => {
     const storage = createStorageMock();
-    Object.defineProperty(window, 'localStorage', {
+    Object.defineProperty(window, "localStorage", {
       configurable: true,
       value: storage,
     });
-    Object.defineProperty(globalThis, 'localStorage', {
+    Object.defineProperty(globalThis, "localStorage", {
       configurable: true,
       value: storage,
     });
 
     window.localStorage.clear();
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove("dark");
   });
 
   afterEach(() => {
     window.localStorage.clear();
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove("dark");
   });
 
-  it('usa modo oscuro por defecto cuando no hay preferencia guardada', async () => {
+  it("usa modo oscuro por defecto cuando no hay preferencia guardada", async () => {
     render(
       <ThemeProvider>
         <ThemeConsumer />
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('theme-state')).toHaveTextContent('dark');
-      expect(document.documentElement).toHaveClass('dark');
-      expect(window.localStorage.getItem('theme')).toBe('dark');
+      expect(screen.getByTestId("theme-state")).toHaveTextContent("dark");
+      expect(document.documentElement).toHaveClass("dark");
+      expect(window.localStorage.getItem("theme")).toBe("dark");
     });
   });
 
-  it('respeta preferencia light guardada y permite alternar', async () => {
-    window.localStorage.setItem('theme', 'light');
+  it("respeta preferencia light guardada y permite alternar", async () => {
+    window.localStorage.setItem("theme", "light");
 
     render(
       <ThemeProvider>
         <ThemeConsumer />
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('theme-state')).toHaveTextContent('light');
-      expect(document.documentElement).not.toHaveClass('dark');
-      expect(window.localStorage.getItem('theme')).toBe('light');
+      expect(screen.getByTestId("theme-state")).toHaveTextContent("light");
+      expect(document.documentElement).not.toHaveClass("dark");
+      expect(window.localStorage.getItem("theme")).toBe("light");
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    fireEvent.click(screen.getByRole("button", { name: /toggle/i }));
 
     await waitFor(() => {
-      expect(screen.getByTestId('theme-state')).toHaveTextContent('dark');
-      expect(document.documentElement).toHaveClass('dark');
-      expect(window.localStorage.getItem('theme')).toBe('dark');
+      expect(screen.getByTestId("theme-state")).toHaveTextContent("dark");
+      expect(document.documentElement).toHaveClass("dark");
+      expect(window.localStorage.getItem("theme")).toBe("dark");
     });
   });
 });

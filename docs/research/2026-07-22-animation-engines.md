@@ -44,3 +44,7 @@ Se usará una interfaz interna con `play`, `pause` y `dispose`, resuelta con un 
 - Confirmar los tipos y la cancelación de Motion y Anime.js contra las versiones instaladas.
 - Probar la caída controlada cuando WebGL no está disponible.
 - Medir los chunks dinámicos y verificar que los motores nuevos no entren en la carga inicial.
+
+## Estado actualizado: 2026-07-30
+
+La investigación original conserva su fecha y fuentes. La implementación actual usa `motion` 12.43.0, `animejs` 4.5.0, `three` 0.185.1 y `@types/three` 0.185.1. `bun outdated`, typecheck, tests y build pasan con el árbol fijado en `bun.lock`; los riesgos de navegador permanecen como pruebas de producto, no como bloqueos del toolchain.

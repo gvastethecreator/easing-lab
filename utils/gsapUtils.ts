@@ -1,5 +1,5 @@
-import { gsap } from 'gsap';
-import type { PathPoint } from '../types';
+import { gsap } from "gsap";
+import type { PathPoint } from "../types";
 
 interface ResolvedGsapEase {
   easeFunction: gsap.EaseFunction | null;
@@ -16,7 +16,7 @@ const createFallbackLinearPoints = (): PathPoint[] => [
 const resolveGsapEaseFunction = (ease: string): ResolvedGsapEase => {
   try {
     const parsedEase = gsap.parseEase(ease);
-    if (typeof parsedEase !== 'function') {
+    if (typeof parsedEase !== "function") {
       return {
         easeFunction: null,
         error: new Error(`GSAP ease did not resolve to a function: ${ease}`),
@@ -37,7 +37,7 @@ export const generateGSAPPath = (
   ease: string,
   width: number,
   height: number,
-  samples = 100
+  samples = 100,
 ): string => {
   const { easeFunction } = resolveGsapEaseFunction(ease);
   if (!easeFunction) return createFallbackLinearPath(width, height);
@@ -51,7 +51,7 @@ export const generateGSAPPath = (
     points.push(`L ${x} ${y}`);
   }
 
-  return points.join(' ');
+  return points.join(" ");
 };
 
 /** Converts a GSAP easing into editable anchor points with Bezier handles. */

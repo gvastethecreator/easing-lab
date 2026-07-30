@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { AnimationEngine } from '../types';
-import { createProgressDriver } from './progressDrivers';
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { AnimationEngine } from "../types";
+import { createProgressDriver } from "./progressDrivers";
 
 const mocks = vi.hoisted(() => ({
   gsap: {
@@ -20,7 +20,7 @@ const mocks = vi.hoisted(() => ({
   },
 }));
 
-vi.mock('gsap', () => ({
+vi.mock("gsap", () => ({
   gsap: {
     to: vi.fn((target: { progress: number }, options: { onUpdate: () => void }) => {
       target.progress = 0.5;
@@ -30,16 +30,16 @@ vi.mock('gsap', () => ({
   },
 }));
 
-vi.mock('motion', () => ({
+vi.mock("motion", () => ({
   animate: vi.fn(
     (_from: number, _to: number, options: { onUpdate: (progress: number) => void }) => {
       options.onUpdate(0.5);
       return mocks.motion;
-    }
+    },
   ),
 }));
 
-vi.mock('animejs', () => ({
+vi.mock("animejs", () => ({
   animate: vi.fn((target: { progress: number }, options: { onUpdate: () => void }) => {
     target.progress = 0.5;
     options.onUpdate();
@@ -47,7 +47,7 @@ vi.mock('animejs', () => ({
   }),
 }));
 
-vi.mock('three', () => ({
+vi.mock("three", () => ({
   Timer: class {
     connect = vi.fn();
     reset = vi.fn();
@@ -61,18 +61,18 @@ vi.mock('three', () => ({
   },
 }));
 
-describe('createProgressDriver', () => {
+describe("createProgressDriver", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it.each([
-    ['gsap', mocks.gsap.play, mocks.gsap.pause, mocks.gsap.kill],
-    ['motion', mocks.motion.play, mocks.motion.pause, mocks.motion.cancel],
-    ['animejs', mocks.anime.play, mocks.anime.pause, mocks.anime.cancel],
+    ["gsap", mocks.gsap.play, mocks.gsap.pause, mocks.gsap.kill],
+    ["motion", mocks.motion.play, mocks.motion.pause, mocks.motion.cancel],
+    ["animejs", mocks.anime.play, mocks.anime.pause, mocks.anime.cancel],
   ] satisfies Array<
     [AnimationEngine, typeof mocks.gsap.play, typeof mocks.gsap.pause, typeof mocks.gsap.kill]
-  >)('normaliza el ciclo de vida de %s', async (engine, play, pause, dispose) => {
+  >)("normaliza el ciclo de vida de %s", async (engine, play, pause, dispose) => {
     const onProgress = vi.fn();
     const driver = await createProgressDriver(engine, { duration: 1, onProgress });
 
@@ -86,23 +86,23 @@ describe('createProgressDriver', () => {
     expect(dispose).toHaveBeenCalledOnce();
   });
 
-  it('usa el reloj de Three.js y cancela su frame al pausar', async () => {
+  it("usa el reloj de Three.js y cancela su frame al pausar", async () => {
     const scheduledFrame: { current: FrameRequestCallback | null } = { current: null };
     const requestAnimationFrame = vi.fn((callback: FrameRequestCallback) => {
       scheduledFrame.current = callback;
       return 17;
     });
     const cancelAnimationFrame = vi.fn();
-    vi.stubGlobal('requestAnimationFrame', requestAnimationFrame);
-    vi.stubGlobal('cancelAnimationFrame', cancelAnimationFrame);
+    vi.stubGlobal("requestAnimationFrame", requestAnimationFrame);
+    vi.stubGlobal("cancelAnimationFrame", cancelAnimationFrame);
 
     const onProgress = vi.fn();
-    const driver = await createProgressDriver('three', { duration: 1, onProgress });
+    const driver = await createProgressDriver("three", { duration: 1, onProgress });
 
     driver.play();
     expect(requestAnimationFrame).toHaveBeenCalledOnce();
     expect(scheduledFrame.current).not.toBeNull();
-    if (!scheduledFrame.current) throw new Error('Expected a scheduled frame.');
+    if (!scheduledFrame.current) throw new Error("Expected a scheduled frame.");
     scheduledFrame.current(0);
     expect(onProgress).toHaveBeenCalledWith(0.25);
 

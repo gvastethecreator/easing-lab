@@ -1,18 +1,18 @@
 export enum EasingCategory {
-  ALL = 'All',
-  CUBIC = 'Cubic Easing',
-  SINE = 'Sine',
-  ELASTIC = 'Elastic',
-  BOUNCE = 'Bounce',
-  SPRING = 'Spring',
+  ALL = "All",
+  CUBIC = "Cubic Easing",
+  SINE = "Sine",
+  ELASTIC = "Elastic",
+  BOUNCE = "Bounce",
+  SPRING = "Spring",
 }
 
 export enum EasingType {
-  ALL = 'All',
-  IN = 'In',
-  OUT = 'Out',
-  IN_OUT = 'In-Out',
-  OTHER = 'Other',
+  ALL = "All",
+  IN = "In",
+  OUT = "Out",
+  IN_OUT = "In-Out",
+  OTHER = "Other",
 }
 
 export interface EasingFunction {
@@ -27,12 +27,12 @@ export interface EasingFunction {
 
 // New types for GSAP Gallery
 export enum GSAPEasingCategory {
-  ALL = 'All',
-  CUSTOM = 'Custom',
-  POWER = 'Power',
-  ELASTIC = 'Elastic',
-  BOUNCE = 'Bounce',
-  SPECIAL = 'Special',
+  ALL = "All",
+  CUSTOM = "Custom",
+  POWER = "Power",
+  ELASTIC = "Elastic",
+  BOUNCE = "Bounce",
+  SPECIAL = "Special",
 }
 
 export interface GSAPEasingFunction {
@@ -43,9 +43,9 @@ export interface GSAPEasingFunction {
   description: string;
 }
 
-export type AnimationEngine = 'gsap' | 'motion' | 'animejs' | 'three';
+export type AnimationEngine = "gsap" | "motion" | "animejs" | "three";
 
-export type View = 'cubic' | AnimationEngine;
+export type View = "cubic" | AnimationEngine;
 
 /**
  * Represents a coordinate in a 2D space.

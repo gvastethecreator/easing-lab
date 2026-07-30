@@ -1,15 +1,15 @@
-import React, { useMemo, useState } from 'react';
-import { FilterControls } from '../components/FilterControls';
-import { GSAPGallery } from '../components/GSAPGallery';
-import { MultiPointCurveEditor } from '../components/MultiPointCurveEditor';
-import { GSAP_EASING_FUNCTIONS } from '../gsapConstants';
-import { convertGsapEaseToPoints } from '../utils/gsapUtils';
+import React, { useMemo, useState } from "react";
+import { FilterControls } from "../components/FilterControls";
+import { GSAPGallery } from "../components/GSAPGallery";
+import { MultiPointCurveEditor } from "../components/MultiPointCurveEditor";
+import { GSAP_EASING_FUNCTIONS } from "../gsapConstants";
+import { convertGsapEaseToPoints } from "../utils/gsapUtils";
 import {
   GSAPEasingCategory,
   type AnimationEngine,
   type GSAPEasingFunction,
   type PathPoint,
-} from '../types';
+} from "../types";
 
 interface GSAPViewProps {
   customEaseId: string;
@@ -38,13 +38,13 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
 
   const customGSAPEasing = useMemo<GSAPEasingFunction>(
     () => ({
-      id: 'custom-bezier',
-      name: 'Custom Ease',
+      id: "custom-bezier",
+      name: "Custom Ease",
       category: GSAPEasingCategory.CUSTOM,
       ease: customEaseId,
-      description: 'Your custom ease created in the editor.',
+      description: "Your custom ease created in the editor.",
     }),
-    [customEaseId]
+    [customEaseId],
   );
 
   const functionsToDisplay = useMemo(() => {
@@ -53,7 +53,7 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
     }
 
     const catalog = GSAP_EASING_FUNCTIONS.filter(
-      (func) => activeCategory === GSAPEasingCategory.ALL || func.category === activeCategory
+      (func) => activeCategory === GSAPEasingCategory.ALL || func.category === activeCategory,
     ).toSorted((a, b) => a.name.localeCompare(b.name));
 
     return activeCategory === GSAPEasingCategory.ALL ? [customGSAPEasing, ...catalog] : catalog;
@@ -61,7 +61,7 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
 
   const categoryItems = useMemo(
     () => Object.values(GSAPEasingCategory).map((value) => ({ label: value, value })),
-    []
+    [],
   );
 
   const handleCardClick = (ease: string) => {
@@ -71,7 +71,7 @@ export const GSAPView: React.FC<GSAPViewProps> = ({
     if (newPoints.length > 0) {
       setPoints(newPoints);
       if (window.innerWidth < 1024) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
   };

@@ -1,5 +1,25 @@
 # Tareas realizadas
 
+## Mantenimiento del 2026-07-30
+
+- Actualizadas las dependencias directas y de desarrollo a la última resolución compatible; `bun outdated` quedó vacío.
+- Regenerado `bun.lock` y comprobada la instalación congelada sin scripts.
+- Adaptados `dev`, `build`, `preview` y `test` a los comandos directos de Vite/Vitest tras el cambio de CLI de Vite+ 0.2.6.
+- Actualizados README, dependencias, deuda, revisión general, dominio y métricas.
+- Revisado `.gitignore` para secretos, dependencias, builds, cobertura, logs, perfiles locales y tareas de VS Code.
+- Actualizado `.vscode/tasks.json` con tareas comunes, nombres breves, emojis y comprobación de formato.
+- Knip no detecta código ni dependencias sin uso en producción.
+- Reinstalado el árbol de dependencias para reparar declaraciones de Anime.js que estaban llenas de bytes nulos; el typecheck volvió a pasar.
+
+### Evidencia de esta tanda
+
+- `bun run typecheck`: pasa.
+- `bun run test`: 14 archivos, 34 tests; pasa.
+- `bun run coverage`: 65,29% statements, 52,73% branches, 64,70% functions, 67,66% lines; pasa.
+- `bun run build`: pasa con Vite 8.2.0 y 392 módulos.
+- `bun run metrics`: pasa con 313,77 KB iniciales y 506,94 KB diferidos máximos.
+- `bun run unused`: pasa sin hallazgos.
+
 ## Puesta a punto del 2026-07-22
 
 ### Setup y control del trabajo

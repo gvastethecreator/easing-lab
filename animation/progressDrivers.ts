@@ -1,4 +1,4 @@
-import type { AnimationEngine } from '../types';
+import type { AnimationEngine } from "../types";
 
 export interface ProgressDriver {
   play: () => void;
@@ -22,12 +22,12 @@ const createGsapDriver = async ({
   duration,
   onProgress,
 }: ProgressDriverOptions): Promise<ProgressDriver> => {
-  const { gsap } = await import('gsap');
+  const { gsap } = await import("gsap");
   const state = { progress: 0 };
   const tween = gsap.to(state, {
     progress: 1,
     duration: normalizeDuration(duration),
-    ease: 'none',
+    ease: "none",
     repeat: -1,
     yoyo: true,
     paused: true,
@@ -45,12 +45,12 @@ const createMotionDriver = async ({
   duration,
   onProgress,
 }: ProgressDriverOptions): Promise<ProgressDriver> => {
-  const { animate } = await import('motion');
+  const { animate } = await import("motion");
   const controls = animate(0, 1, {
     duration: normalizeDuration(duration),
-    ease: 'linear',
+    ease: "linear",
     repeat: Infinity,
-    repeatType: 'reverse',
+    repeatType: "reverse",
     autoplay: false,
     onUpdate: (latest) => onProgress(clampProgress(latest)),
   });
@@ -66,12 +66,12 @@ const createAnimeDriver = async ({
   duration,
   onProgress,
 }: ProgressDriverOptions): Promise<ProgressDriver> => {
-  const { animate } = await import('animejs');
+  const { animate } = await import("animejs");
   const state = { progress: 0 };
   const animation = animate(state, {
     progress: 1,
     duration: normalizeDuration(duration) * 1000,
-    ease: 'linear',
+    ease: "linear",
     loop: true,
     alternate: true,
     autoplay: false,
@@ -89,7 +89,7 @@ const createThreeDriver = async ({
   duration,
   onProgress,
 }: ProgressDriverOptions): Promise<ProgressDriver> => {
-  const { MathUtils, Timer } = await import('three');
+  const { MathUtils, Timer } = await import("three");
   const timer = new Timer();
   timer.connect(document);
   const safeDuration = normalizeDuration(duration);
@@ -149,16 +149,16 @@ const createThreeDriver = async ({
 /** Creates the timing driver for the selected, fixed set of animation engines. */
 export const createProgressDriver = (
   engine: AnimationEngine,
-  options: ProgressDriverOptions
+  options: ProgressDriverOptions,
 ): Promise<ProgressDriver> => {
   switch (engine) {
-    case 'gsap':
+    case "gsap":
       return createGsapDriver(options);
-    case 'motion':
+    case "motion":
       return createMotionDriver(options);
-    case 'animejs':
+    case "animejs":
       return createAnimeDriver(options);
-    case 'three':
+    case "three":
       return createThreeDriver(options);
   }
 };

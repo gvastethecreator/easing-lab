@@ -1,10 +1,10 @@
 # Revisión general
 
-Fecha: **2026-07-22**.
+Fecha: **2026-07-30**.
 
 ## Resultado
 
-El proyecto conserva su interfaz y ahora tiene cinco laboratorios: Cubic, GSAP, Motion, Anime.js y Three.js. Cada motor cuenta con una tab y cards de curvas. Los cuatro motores de tiempo cumplen el mismo contrato y se cargan bajo demanda.
+El proyecto conserva su interfaz y tiene cinco laboratorios: Cubic, GSAP, Motion, Anime.js y Three.js. Cada motor cuenta con una tab y cards de curvas. Los cuatro motores de tiempo cumplen el mismo contrato y se cargan bajo demanda. Esta revisión actualiza dependencias, tareas y documentación sin cambiar el flujo visual.
 
 ## Hallazgos corregidos
 
@@ -25,7 +25,7 @@ El proyecto conserva su interfaz y ahora tiene cinco laboratorios: Cubic, GSAP, 
 
 La ref mutable evita renders de React por frame. React, GSAP, vistas y motores se separan en chunks. Three.js es el asset más grande, pero queda fuera de la carga inicial. `bun run metrics` aplica presupuestos explícitos.
 
-## Validación de navegador
+## Validación de navegador (evidencia de producto: 2026-07-22)
 
 - Escritorio: las cuatro tabs de motor llegan a estado `ready`; cada una muestra 67 cards seleccionables.
 - Three.js: canvas presente y activa.
@@ -34,13 +34,15 @@ La ref mutable evita renders de React por frame. React, GSAP, vistas y motores s
 - Consola: sin errores, warnings ni issues tras el barrido.
 - Lighthouse de desarrollo, escritorio y móvil: accesibilidad 100, buenas prácticas 100, SEO 100 y Agentic Browsing 99.
 
-## Puerta final
+## Puerta de mantenimiento
 
-- `bun install --frozen-lockfile`: 176 installs, sin cambios.
-- `bun run verify`: formato, lint, TypeScript 7, Knip, 34 tests, build y métricas en verde.
-- `bun run coverage`: 65,15% statements, 52,47% branches, 64,95% functions y 67,46% lines.
-- Preview de producción: HTTP 200 y título correcto en el puerto alternativo 4175.
-- HTML Lab: reporte offline validado y probado en desktop y 390 px.
+- `bun outdated`: sin paquetes desactualizados.
+- `bun install --frozen-lockfile --ignore-scripts`: 196 instalaciones, sin cambios.
+- `bun run test`: 14 archivos y 34 tests en verde.
+- `bun run coverage`: 65,29% statements, 52,73% branches, 64,70% functions y 67,66% lines.
+- `bun run build`: Vite 8.2.0/Rolldown, 392 módulos transformados.
+- `bun run metrics`: JavaScript inicial 313,77 KB; asset diferido mayor 506,94 KB; ambos dentro de presupuesto.
+- `bun run verify`: pasa; formato, lint, typecheck, Knip, tests, build y métricas en verde.
 
 ## Riesgos aceptados
 

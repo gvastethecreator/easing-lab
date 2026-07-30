@@ -1,5 +1,5 @@
-import React from 'react';
-import { useTheme } from '../contexts/ThemeContext';
+import React from "react";
+import { useTheme } from "../contexts/ThemeContext";
 
 const SunIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg

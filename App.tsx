@@ -1,7 +1,7 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { Header } from './components/Header';
-import { Footer } from './components/Footer';
-import type { AnimationEngine, View, PathPoint, Point } from './types';
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
+import type { AnimationEngine, View, PathPoint, Point } from "./types";
 import {
   createDefaultBezierP1,
   createDefaultBezierP2,
@@ -10,27 +10,27 @@ import {
   DEFAULT_DURATION,
   DEFAULT_RANGE,
   getAnimationEngineLabel,
-} from './animationConfig';
-import { useMasterProgressAnimation } from './hooks/useMasterProgressAnimation';
-import { useRegisterCustomEase } from './hooks/useRegisterCustomEase';
+} from "./animationConfig";
+import { useMasterProgressAnimation } from "./hooks/useMasterProgressAnimation";
+import { useRegisterCustomEase } from "./hooks/useRegisterCustomEase";
 
 const CubicBezierView = lazy(() =>
-  import('./views/CubicBezierView').then((module) => ({ default: module.CubicBezierView }))
+  import("./views/CubicBezierView").then((module) => ({ default: module.CubicBezierView })),
 );
 
 const GSAPView = lazy(() =>
-  import('./views/GSAPView').then((module) => ({ default: module.GSAPView }))
+  import("./views/GSAPView").then((module) => ({ default: module.GSAPView })),
 );
 
 const EngineView = lazy(() =>
-  import('./views/EngineView').then((module) => ({ default: module.EngineView }))
+  import("./views/EngineView").then((module) => ({ default: module.EngineView })),
 );
 
 const App: React.FC = () => {
-  const [view, setView] = useState<View>('cubic');
-  const [engine, setEngine] = useState<AnimationEngine>('gsap');
+  const [view, setView] = useState<View>("cubic");
+  const [engine, setEngine] = useState<AnimationEngine>("gsap");
   const [isPlaying, setIsPlaying] = useState(
-    () => !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    () => !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
   );
 
   // Centralized state for cubic bezier and animation params
@@ -49,7 +49,7 @@ const App: React.FC = () => {
 
   const changeView = (nextView: View) => {
     setView(nextView);
-    if (nextView !== 'cubic') setEngine(nextView);
+    if (nextView !== "cubic") setEngine(nextView);
   };
 
   const engineState = useMasterProgressAnimation({
@@ -63,15 +63,15 @@ const App: React.FC = () => {
   useRegisterCustomEase({ customEaseId, points: gsapPoints });
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!reducedMotion) return;
 
     const handleChange = (event: MediaQueryListEvent) => {
       if (event.matches) setIsPlaying(false);
     };
 
-    reducedMotion.addEventListener('change', handleChange);
-    return () => reducedMotion.removeEventListener('change', handleChange);
+    reducedMotion.addEventListener("change", handleChange);
+    return () => reducedMotion.removeEventListener("change", handleChange);
   }, []);
 
   return (
@@ -85,7 +85,7 @@ const App: React.FC = () => {
         engine={engine}
         engineStatus={engineState.status}
       />
-      {engineState.status === 'error' && (
+      {engineState.status === "error" && (
         <div
           role="alert"
           className="mx-auto mb-4 flex w-[calc(100%-2rem)] max-w-7xl items-center justify-between gap-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-text-primary"
@@ -93,10 +93,10 @@ const App: React.FC = () => {
           <span>
             {getAnimationEngineLabel(engine)} no pudo iniciar: {engineState.error}
           </span>
-          {engine !== 'gsap' && (
+          {engine !== "gsap" && (
             <button
               type="button"
-              onClick={() => changeView('gsap')}
+              onClick={() => changeView("gsap")}
               className="shrink-0 rounded-lg bg-accent-primary px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-accent-primary"
             >
               Usar GSAP
@@ -112,7 +112,7 @@ const App: React.FC = () => {
             </div>
           }
         >
-          {view === 'cubic' && (
+          {view === "cubic" && (
             <CubicBezierView
               p1={p1}
               setP1={setP1}
@@ -126,7 +126,7 @@ const App: React.FC = () => {
               engine={engine}
             />
           )}
-          {view === 'gsap' && (
+          {view === "gsap" && (
             <GSAPView
               customEaseId={customEaseId}
               points={gsapPoints}
@@ -139,7 +139,7 @@ const App: React.FC = () => {
               engine={engine}
             />
           )}
-          {(view === 'motion' || view === 'animejs' || view === 'three') && (
+          {(view === "motion" || view === "animejs" || view === "three") && (
             <EngineView
               engine={view}
               p1={p1}

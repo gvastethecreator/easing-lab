@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 interface HistoryState<T> {
   past: T[];
@@ -10,7 +10,7 @@ interface HistoryState<T> {
  * Type guard para validar objetos indexables sin usar type assertions inseguras.
  */
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
+  return typeof value === "object" && value !== null;
 }
 
 /**
@@ -142,7 +142,7 @@ export function useHistory<T>(initialState: T, maxHistory = 50) {
         };
       });
     },
-    [maxHistory]
+    [maxHistory],
   );
 
   // Force override the entire history (useful when external props reset the state)

@@ -1,11 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { gsap } from 'gsap';
-import { ColorToggle } from './ColorToggle';
-import { ThemeToggle } from './ThemeToggle';
-import { PlayIcon, PauseIcon, ChevronDownIcon } from './Icons';
-import { useTheme } from '../contexts/ThemeContext';
-import { getAnimationEngineLabel, getViewLabel, VIEW_TABS } from '../animationConfig';
-import type { AnimationEngine, View } from '../types';
+import React, { useRef, useEffect, useState } from "react";
+import { gsap } from "gsap";
+import { ColorToggle } from "./ColorToggle";
+import { ThemeToggle } from "./ThemeToggle";
+import { PlayIcon, PauseIcon, ChevronDownIcon } from "./Icons";
+import { useTheme } from "../contexts/ThemeContext";
+import { getAnimationEngineLabel, getViewLabel, VIEW_TABS } from "../animationConfig";
+import type { AnimationEngine, View } from "../types";
 
 interface HeaderProps {
   activeView: View;
@@ -14,7 +14,7 @@ interface HeaderProps {
   isPlaying: boolean;
   togglePlay: () => void;
   engine: AnimationEngine;
-  engineStatus: 'loading' | 'ready' | 'error';
+  engineStatus: "loading" | "ready" | "error";
 }
 
 const NavButton: React.FC<{ label: string; isActive: boolean; onClick: () => void }> = ({
@@ -28,8 +28,8 @@ const NavButton: React.FC<{ label: string; isActive: boolean; onClick: () => voi
     onClick={onClick}
     className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-surface-base focus:ring-accent-primary overflow-hidden ${
       isActive
-        ? 'text-white shadow-md bg-accent-primary'
-        : 'text-text-secondary hover:bg-surface-2 dark:hover:bg-surface-2 hover:text-text-primary'
+        ? "text-white shadow-md bg-accent-primary"
+        : "text-text-secondary hover:bg-surface-2 dark:hover:bg-surface-2 hover:text-text-primary"
     }`}
   >
     <span className="relative z-10">{label}</span>
@@ -44,8 +44,8 @@ const PlayPauseButton: React.FC<{ isPlaying: boolean; onClick: () => void }> = (
     type="button"
     onClick={onClick}
     className="p-2 rounded-full bg-surface-2 dark:bg-surface-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
-    title={isPlaying ? 'Pause Animation' : 'Play Animation'}
-    aria-label={isPlaying ? 'Pause animation' : 'Play animation'}
+    title={isPlaying ? "Pause Animation" : "Play Animation"}
+    aria-label={isPlaying ? "Pause animation" : "Play animation"}
   >
     {isPlaying ? <PauseIcon /> : <PlayIcon />}
   </button>
@@ -57,7 +57,7 @@ const isDefined = <T,>(value: T | null): value is T => value !== null;
 
 const getNumericGsapProperty = (target: gsap.TweenTarget, property: string): number => {
   const value = gsap.getProperty(target, property);
-  if (typeof value === 'number') {
+  if (typeof value === "number") {
     return value;
   }
 
@@ -87,18 +87,18 @@ export const Header: React.FC<HeaderProps> = ({
     if (!mobileMenuOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMobileMenuOpen(false);
+      if (event.key === "Escape") setMobileMenuOpen(false);
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [mobileMenuOpen]);
 
   useEffect(() => {
     const container = containerRef.current;
     const follower = followerRef.current;
     if (!container || !follower) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
       const trail = trailRefs.current.filter(isDefined);
@@ -113,14 +113,14 @@ export const Header: React.FC<HeaderProps> = ({
         y: standbyPos.y,
       });
 
-      const followerXTo = gsap.quickTo(follower, 'x', { duration: 0.6, ease: 'power3.out' });
-      const followerYTo = gsap.quickTo(follower, 'y', { duration: 0.6, ease: 'power3.out' });
+      const followerXTo = gsap.quickTo(follower, "x", { duration: 0.6, ease: "power3.out" });
+      const followerYTo = gsap.quickTo(follower, "y", { duration: 0.6, ease: "power3.out" });
 
       const trailXTo = trail.map((p, i) =>
-        gsap.quickTo(p, 'x', { duration: 0.6 + (i + 1) * 0.05, ease: 'power3.out' })
+        gsap.quickTo(p, "x", { duration: 0.6 + (i + 1) * 0.05, ease: "power3.out" }),
       );
       const trailYTo = trail.map((p, i) =>
-        gsap.quickTo(p, 'y', { duration: 0.6 + (i + 1) * 0.05, ease: 'power3.out' })
+        gsap.quickTo(p, "y", { duration: 0.6 + (i + 1) * 0.05, ease: "power3.out" }),
       );
 
       const tickerFunc = () => {
@@ -133,8 +133,8 @@ export const Header: React.FC<HeaderProps> = ({
         followerXTo(target.x);
         followerYTo(target.y);
 
-        const leaderX = getNumericGsapProperty(follower, 'x');
-        const leaderY = getNumericGsapProperty(follower, 'y');
+        const leaderX = getNumericGsapProperty(follower, "x");
+        const leaderY = getNumericGsapProperty(follower, "y");
 
         trail.forEach((_, i) => {
           trailXTo[i](leaderX);
@@ -146,7 +146,7 @@ export const Header: React.FC<HeaderProps> = ({
         const blur = isInside.current ? 0 : 4 * (1 - prog);
 
         if (isInside.current) {
-          gsap.set(follower, { scale: 1, filter: 'blur(0px)' });
+          gsap.set(follower, { scale: 1, filter: "blur(0px)" });
         } else {
           gsap.set(follower, { scale: pulse * 0.5, filter: `blur(${blur}px)` });
         }
@@ -175,16 +175,16 @@ export const Header: React.FC<HeaderProps> = ({
       mousePos.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     };
 
-    container.addEventListener('mouseenter', onMouseEnter);
-    container.addEventListener('mouseleave', onMouseLeave);
-    container.addEventListener('mousemove', onMouseMove);
+    container.addEventListener("mouseenter", onMouseEnter);
+    container.addEventListener("mouseleave", onMouseLeave);
+    container.addEventListener("mousemove", onMouseMove);
 
     return () => {
       gsap.killTweensOf([follower, ...trailRefs.current.filter(isDefined)]);
       ctx.revert();
-      container.removeEventListener('mouseenter', onMouseEnter);
-      container.removeEventListener('mouseleave', onMouseLeave);
-      container.removeEventListener('mousemove', onMouseMove);
+      container.removeEventListener("mouseenter", onMouseEnter);
+      container.removeEventListener("mouseleave", onMouseLeave);
+      container.removeEventListener("mousemove", onMouseMove);
     };
   }, [progressRef]);
 
@@ -227,24 +227,24 @@ export const Header: React.FC<HeaderProps> = ({
             <span
               aria-hidden="true"
               title={
-                engineStatus === 'ready'
+                engineStatus === "ready"
                   ? `${getAnimationEngineLabel(engine)} ready`
-                  : engineStatus === 'loading'
+                  : engineStatus === "loading"
                     ? `Loading ${getAnimationEngineLabel(engine)}`
                     : `${getAnimationEngineLabel(engine)} failed`
               }
               className={`hidden size-2 rounded-full sm:block ${
-                engineStatus === 'ready'
-                  ? 'bg-emerald-500'
-                  : engineStatus === 'loading'
-                    ? 'animate-pulse bg-amber-400'
-                    : 'bg-red-500'
+                engineStatus === "ready"
+                  ? "bg-emerald-500"
+                  : engineStatus === "loading"
+                    ? "animate-pulse bg-amber-400"
+                    : "bg-red-500"
               }`}
             />
             <span className="sr-only" role="status" aria-live="polite">
-              {engineStatus === 'ready'
+              {engineStatus === "ready"
                 ? `${getAnimationEngineLabel(engine)} ready`
-                : engineStatus === 'loading'
+                : engineStatus === "loading"
                   ? `Loading ${getAnimationEngineLabel(engine)}`
                   : `${getAnimationEngineLabel(engine)} failed`}
             </span>
@@ -261,7 +261,7 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <span>{getViewLabel(activeView, true)}</span>
                 <ChevronDownIcon
-                  className={`transition-transform duration-200 ${mobileMenuOpen ? 'rotate-180' : ''}`}
+                  className={`transition-transform duration-200 ${mobileMenuOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
@@ -292,7 +292,7 @@ export const Header: React.FC<HeaderProps> = ({
                           setView(tab.id);
                           setMobileMenuOpen(false);
                         }}
-                        className={`px-3 py-2 rounded-lg text-xs font-medium text-left transition-colors ${activeView === tab.id ? 'bg-accent-primary text-white' : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'}`}
+                        className={`px-3 py-2 rounded-lg text-xs font-medium text-left transition-colors ${activeView === tab.id ? "bg-accent-primary text-white" : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"}`}
                       >
                         {tab.label}
                       </button>
@@ -313,7 +313,7 @@ export const Header: React.FC<HeaderProps> = ({
             ref={followerRef}
             className="absolute w-64 h-64 rounded-full mix-blend-screen dark:mix-blend-overlay pointer-events-none"
             style={{
-              background: 'radial-gradient(circle, var(--accent-primary) 0%, transparent 70%)',
+              background: "radial-gradient(circle, var(--accent-primary) 0%, transparent 70%)",
               opacity: 0,
             }}
           />
@@ -325,7 +325,7 @@ export const Header: React.FC<HeaderProps> = ({
               }}
               className="absolute w-32 h-32 rounded-full mix-blend-screen dark:mix-blend-overlay pointer-events-none"
               style={{
-                background: 'radial-gradient(circle, var(--accent-primary) 0%, transparent 70%)',
+                background: "radial-gradient(circle, var(--accent-primary) 0%, transparent 70%)",
                 opacity: 0,
               }}
             />
