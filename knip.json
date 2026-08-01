@@ -1,0 +1,12 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "index.tsx",
+    "vite.config.ts",
+    "animation/progressDrivers.ts",
+    "components/ThreePreview.tsx",
+    "scripts/*.mjs"
+  ],
+  "project": ["**/*.{ts,tsx,mjs}", "!dist/**", "!coverage/**", "!.scratch/**"],
+  "ignoreDependencies": ["animejs", "motion", "three"]
+}

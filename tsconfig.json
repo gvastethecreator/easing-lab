@@ -6,7 +6,7 @@
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node", "vitest/globals", "vite/client"],
+    "types": ["node", "vite/client"],
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "moduleDetection": "force",

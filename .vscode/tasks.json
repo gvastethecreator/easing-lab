@@ -18,33 +18,17 @@
       "problemMatcher": []
     },
     {
-      "label": "✅ Check",
+      "label": "👁️ Preview",
       "type": "shell",
       "command": "bun",
-      "args": ["run", "check"],
+      "args": ["run", "preview"],
       "problemMatcher": []
     },
     {
-      "label": "🧠 Typecheck",
+      "label": "✅ Verify",
       "type": "shell",
       "command": "bun",
-      "args": ["run", "typecheck"],
-      "group": "test",
-      "problemMatcher": ["$tsc"]
-    },
-    {
-      "label": "🧹 Lint",
-      "type": "shell",
-      "command": "bun",
-      "args": ["run", "lint"],
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "✨ Format",
-      "type": "shell",
-      "command": "bun",
-      "args": ["run", "format"],
+      "args": ["run", "verify"],
       "problemMatcher": []
     },
     {
@@ -56,24 +40,75 @@
       "problemMatcher": []
     },
     {
-      "label": "📊 Coverage",
+      "label": "📈 Coverage",
       "type": "shell",
       "command": "bun",
       "args": ["run", "coverage"],
       "problemMatcher": []
     },
     {
-      "label": "👁️ Preview",
+      "label": "🧹 Lint",
       "type": "shell",
       "command": "bun",
-      "args": ["run", "preview"],
+      "args": ["run", "lint"],
+      "group": "test",
       "problemMatcher": []
+    },
+    {
+      "label": "🛠️ Fix Lint",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "lint:fix"],
+      "problemMatcher": []
+    },
+    {
+      "label": "✨ Format",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "format"],
+      "problemMatcher": []
+    },
+    {
+      "label": "🧪 Format Check",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "format:check"],
+      "problemMatcher": []
+    },
+    {
+      "label": "🔍 Check",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "check"],
+      "problemMatcher": []
+    },
+    {
+      "label": "🧠 Types",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "typecheck"],
+      "group": "test",
+      "problemMatcher": ["$tsc"]
     },
     {
       "label": "📏 Metrics",
       "type": "shell",
       "command": "bun",
       "args": ["run", "metrics"],
+      "problemMatcher": []
+    },
+    {
+      "label": "📦 Deps",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "deps"],
+      "problemMatcher": []
+    },
+    {
+      "label": "🔎 Unused",
+      "type": "shell",
+      "command": "bun",
+      "args": ["run", "unused"],
       "problemMatcher": []
     }
   ]

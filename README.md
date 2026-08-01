@@ -1,81 +1,90 @@
-# EASY EASING
+# Easy Easing
 
-**EASY EASING** es un laboratorio interactivo para explorar, editar y exportar funciones de easing para interfaces web. La aplicación combina edición visual de curvas CSS `cubic-bezier()` con creación de curvas avanzadas para GSAP mediante `CustomEase`.
+Laboratorio visual para explorar, editar, comparar y copiar curvas de easing. Incluye una pestaña propia para CSS Cubic Bezier, GSAP, Motion, Anime.js y Three.js. Cada motor muestra cards de curvas y una vista previa que usa el mismo progreso normalizado.
 
-## ✨ Qué incluye
+Estado: **listo para desarrollo**. Dependencias y lockfile sincronizados el 2026-07-30; `bun outdated` no informa actualizaciones.
 
-- Editor visual de curvas `cubic-bezier()`.
-- Editor multipunto para curvas GSAP complejas.
-- Galerías de easings CSS y GSAP con vista previa animada.
-- Sincronización de animaciones con `gsap.ticker` fuera del render de React.
-- Historial local de cambios con `undo` / `redo`.
-- Tema claro/oscuro y color de acento (modo oscuro por defecto).
-- Validación con `typecheck`, `lint`, `test`, `coverage`, `build` y `check`.
+## Funciones
 
-## 🧱 Stack actual
+- Editor `cubic-bezier()` con arrastre, entradas numéricas, presets, undo y redo.
+- Editor multipunto para `GSAP CustomEase`.
+- Catálogo de 67 curvas en CSS, Motion, Anime.js y Three.js.
+- Galería propia de curvas multipunto en GSAP.
+- Previews de mover, escalar, rotar y stagger; Three.js añade un canvas WebGL.
+- Play/pausa global, tema claro/oscuro y selección de acento.
+- Navegación de escritorio por tabs y menú compacto en pantallas pequeñas.
+- Respeto por `prefers-reduced-motion` y controles con nombres accesibles.
 
-- **Runtime y gestor:** Bun
-- **UI:** React 19 + TypeScript
-- **Animación:** GSAP (`MotionPathPlugin`, `CustomEase`)
-- **Build tooling:** Vite 8 + Vite+
-- **Bundler:** Rolldown
-- **Lint / format:** OXC (`oxlint`, `oxfmt`)
-- **Testing:** Vitest + Testing Library + `happy-dom`
-- **Estilos:** Tailwind CSS 4 con entrada local en `index.css`
+## Stack
 
-## 🚀 Puesta en marcha
+- Bun 1.3.14 como runtime y gestor de paquetes.
+- React 19.2.8 y TypeScript 7.0.2.
+- Vite+ 0.2.6, Vite 8.2.0 y Rolldown.
+- Tailwind CSS 4.3.3 con tokens semánticos en `index.css`.
+- OXC, a través de Vite+, para lint y formato.
+- Vitest 4.1.10, Testing Library y happy-dom.
+- GSAP 3.15.0, Motion 12.43.0, Anime.js 4.5.0 y Three.js 0.185.1.
 
-### Requisitos
+## Inicio rápido
 
-- Bun `>= 1.3.11`
-- Node `>= 20.19.0`
-
-### Instalar dependencias
+Requiere Bun `>=1.3.14` y Node `>=20.19.0`.
 
 ```bash
-bun install
+bun install --frozen-lockfile --ignore-scripts
+bun run dev
 ```
 
-No se requieren variables de entorno para ejecutar la aplicación.
+Abre `http://localhost:3000`. El proyecto no necesita secretos ni variables de entorno.
 
-## 🧪 Scripts disponibles
+## Tareas
+
+| Comando                | Uso                           | Log                               |
+| ---------------------- | ----------------------------- | --------------------------------- |
+| `bun run dev`          | Servidor local                | `logs/dev.log`                    |
+| `bun run build`        | Build de producción           | `logs/build.log`                  |
+| `bun run preview`      | Sirve `dist/`                 | `logs/preview.log`                |
+| `bun run format`       | Corrige formato OXC           | `logs/format.log`                 |
+| `bun run format:check` | Comprueba formato             | `logs/format-check.log`           |
+| `bun run lint`         | Ejecuta Oxlint                | `logs/lint.log`                   |
+| `bun run typecheck`    | Comprueba TypeScript          | `logs/typecheck.log`              |
+| `bun run test`         | Suite Vitest                  | `logs/test.log`                   |
+| `bun run coverage`     | Cobertura V8                  | `logs/coverage.log`               |
+| `bun run deps`         | Dependencias desfasadas       | `logs/deps.log`                   |
+| `bun run unused`       | Código y dependencias sin uso | `logs/unused.log`                 |
+| `bun run metrics`      | Presupuestos del bundle       | `logs/metrics.log`                |
+| `bun run verify`       | Puerta completa               | `logs/verify.json` y logs previos |
+
+VS Code expone las mismas acciones en `.vscode/tasks.json`, con nombres cortos y emojis.
+
+`bun run check` valida el proyecto con Vite+ y `bun run verify` ejecuta la puerta completa.
+
+Para actualizar dependencias y comprobar el árbol:
 
 ```bash
-bun run dev          # Servidor de desarrollo
-bun run build        # Build de producción
-bun run preview      # Vista previa del build
-bun run typecheck    # tsc --noEmit
-bun run lint         # oxlint
-bun run lint:fix     # oxlint --fix
-bun run format       # oxfmt
-bun run format:check # oxfmt --check
-bun run test         # vitest
-bun run coverage     # vitest run --coverage
-bun run check        # vp check (format + lint + typecheck)
+bun update --latest
+bun install --frozen-lockfile --ignore-scripts
+bun run verify
 ```
 
-## 🧰 Tareas de VS Code
+## Arquitectura breve
 
-El workspace incluye tareas listas en `.vscode/tasks.json`:
+`animation/progressDrivers.ts` adapta cada motor al contrato `play`, `pause` y `dispose`. Los drivers publican progreso lineal de `0` a `1`; `AnimationPreview` aplica una sola vez la curva elegida. React gestiona estado y vistas, pero el progreso por frame vive en una ref para evitar renders continuos.
 
-- `🚀 Dev`
-- `🏗️ Build`
-- `🧠 Typecheck`
-- `🧹 Lint`
-- `✨ Format`
-- `🧪 Test`
-- `📊 Coverage`
-- `👁️ Preview`
-- `✅ Check`
+Las vistas se cargan de forma diferida. Three.js y los demás motores se importan al abrir su pestaña. `EasingPresetBrowser` comparte filtros y cards entre Cubic, Motion, Anime.js y Three.js.
 
-## 📁 Estructura principal
+## Documentación
 
-- `components/`: UI reusable y editores.
-- `views/`: composición de pantallas principales.
-- `hooks/`: utilidades de interacción e historial.
-- `utils/`: helpers de performance.
-- `contexts/`: tema global.
+- [Arquitectura](docs/ARQUITECTURA.md)
+- [Dependencias](docs/DEPENDENCIAS.md)
+- [Sistema de diseño](docs/SISTEMA_DISENO.md)
+- [Guía de componentes](docs/GUIA_COMPONENTES.md)
+- [Revisión general](docs/REVISION_GENERAL.md)
+- [Tareas realizadas](docs/TAREAS_REALIZADAS.md)
+- [Deuda técnica](docs/DEUDA_TECNICA.md)
+- [Métricas](docs/METRICAS.md)
+- [PRD](docs/PRD.md)
+- [ADR de drivers](docs/adr/0001-animation-drivers.md)
 
-## 📄 Licencia
+## Licencia
 
 [MIT](LICENSE)

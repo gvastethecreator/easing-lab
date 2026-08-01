@@ -1,5 +1,7 @@
-import React from 'react';
-import type { Point } from '../types';
+import React from "react";
+import { CurveEditor } from "../components/CurveEditor";
+import { EasingPresetBrowser } from "../components/EasingPresetBrowser";
+import type { AnimationEngine, Point } from "../types";
 
 interface CubicBezierViewProps {
   p1: Point;
@@ -11,6 +13,7 @@ interface CubicBezierViewProps {
   range: number;
   setRange: React.Dispatch<React.SetStateAction<number>>;
   progressRef: React.MutableRefObject<{ progress: number }>;
+  engine: AnimationEngine;
 }
 
 export const CubicBezierView: React.FC<CubicBezierViewProps> = ({
@@ -23,38 +26,37 @@ export const CubicBezierView: React.FC<CubicBezierViewProps> = ({
   range,
   setRange,
   progressRef,
+  engine,
 }) => {
-  const resetPreview = () => {
-    setP1({ x: 0.25, y: 0.1 });
-    setP2({ x: 0.25, y: 1 });
-    setDuration(1.2);
-    setRange(1);
-    progressRef.current.progress = 0;
+  const selectCurve = (bezier: [number, number, number, number]) => {
+    setP1({ x: bezier[0], y: bezier[1] });
+    setP2({ x: bezier[2], y: bezier[3] });
+    if (window.innerWidth < 1024) window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <section className="rounded-xl border border-zinc-700/60 bg-zinc-900/30 p-4 text-zinc-200">
-      <h2 className="mb-2 text-sm font-semibold">Cubic Bézier (modo básico)</h2>
-      <p className="mb-3 text-xs text-zinc-400">
-        Vista temporal para mantener el build estable mientras se restauran los módulos de editor.
-      </p>
-      <div className="space-y-1 text-xs text-zinc-300">
-        <div>
-          p1: ({p1.x.toFixed(2)}, {p1.y.toFixed(2)})
-        </div>
-        <div>
-          p2: ({p2.x.toFixed(2)}, {p2.y.toFixed(2)})
-        </div>
-        <div>duration: {duration.toFixed(2)}s</div>
-        <div>range: {range.toFixed(2)}</div>
+    <div className="max-w-7xl w-full mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12">
+        <aside className="lg:col-span-1">
+          <div className="lg:sticky lg:top-28">
+            <CurveEditor
+              p1={p1}
+              setP1={setP1}
+              p2={p2}
+              setP2={setP2}
+              duration={duration}
+              setDuration={setDuration}
+              range={range}
+              setRange={setRange}
+              progressRef={progressRef}
+              engine={engine}
+            />
+          </div>
+        </aside>
+        <section className="lg:col-span-2" aria-label="Easing presets">
+          <EasingPresetBrowser p1={p1} p2={p2} onSelect={selectCurve} />
+        </section>
       </div>
-      <button
-        type="button"
-        className="mt-3 rounded-lg border border-zinc-600 px-3 py-1.5 text-xs hover:bg-zinc-800"
-        onClick={resetPreview}
-      >
-        Reset preview
-      </button>
-    </section>
+    </div>
   );
 };

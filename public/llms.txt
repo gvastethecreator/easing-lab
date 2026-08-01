@@ -1,0 +1,6 @@
+# Easy Easing
+
+Interactive easing curve editor for CSS, GSAP, Motion, Anime.js, and Three.js.
+
+- [Project repository](https://github.com/gvastethecreator/easing-lab)
+- [Usage guide](https://github.com/gvastethecreator/easing-lab#readme)

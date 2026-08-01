@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import type { Point } from '../types';
+import { useEffect, useRef, useState } from "react";
+import { createProgressDriver, type ProgressDriver } from "../animation/progressDrivers";
+import type { AnimationEngine, Point } from "../types";
+
+type ProgressEngineStatus = "loading" | "ready" | "error";
 
 interface UseMasterProgressAnimationParams {
   progressRef: React.MutableRefObject<{ progress: number }>;
@@ -8,6 +10,12 @@ interface UseMasterProgressAnimationParams {
   p2: Point;
   duration: number;
   isPlaying: boolean;
+  engine: AnimationEngine;
+}
+
+interface ProgressEngineState {
+  status: ProgressEngineStatus;
+  error: string | null;
 }
 
 export const useMasterProgressAnimation = ({
@@ -16,53 +24,68 @@ export const useMasterProgressAnimation = ({
   p2,
   duration,
   isPlaying,
-}: UseMasterProgressAnimationParams) => {
-  const masterTweenRef = useRef<gsap.core.Tween | null>(null);
+  engine,
+}: UseMasterProgressAnimationParams): ProgressEngineState => {
+  const driverRef = useRef<ProgressDriver | null>(null);
+  const isPlayingRef = useRef(isPlaying);
+  const [state, setState] = useState<ProgressEngineState>({
+    status: "loading",
+    error: null,
+  });
+
+  isPlayingRef.current = isPlaying;
 
   useEffect(() => {
     const currentEase = `cubic-bezier(${p1.x}, ${p1.y}, ${p2.x}, ${p2.y})`;
-
-    masterTweenRef.current?.kill();
-
-    masterTweenRef.current = gsap.fromTo(
-      progressRef.current,
-      { progress: 0 },
-      {
-        progress: 1,
-        duration,
-        ease: currentEase,
-        repeat: -1,
-        yoyo: true,
-        paused: !isPlaying,
-        onUpdate: () => {
-          if (progressRef.current.progress > 1) progressRef.current.progress = 1;
-          if (progressRef.current.progress < 0) progressRef.current.progress = 0;
-        },
-      }
-    );
-
     const root = document.documentElement;
-    root.style.setProperty('--global-duration', `${duration}s`);
-    root.style.setProperty('--global-easing', currentEase);
-
-    return () => {
-      masterTweenRef.current?.kill();
-    };
-  }, [duration, isPlaying, p1, p2, progressRef]);
+    root.style.setProperty("--global-duration", `${duration}s`);
+    root.style.setProperty("--global-easing", currentEase);
+  }, [duration, p1, p2]);
 
   useEffect(() => {
-    const tween = masterTweenRef.current;
+    let cancelled = false;
 
-    if (!tween) {
-      return;
-    }
+    driverRef.current?.dispose();
+    driverRef.current = null;
+    progressRef.current.progress = 0;
+    setState({ status: "loading", error: null });
 
-    if (isPlaying) {
-      tween.play();
-    } else {
-      tween.pause();
-    }
+    void createProgressDriver(engine, {
+      duration,
+      onProgress: (progress) => {
+        progressRef.current.progress = progress;
+      },
+    })
+      .then((driver) => {
+        if (cancelled) {
+          driver.dispose();
+          return;
+        }
+
+        driverRef.current = driver;
+        if (isPlayingRef.current) driver.play();
+        setState({ status: "ready", error: null });
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        const message = error instanceof Error ? error.message : "No se pudo cargar el motor.";
+        setState({ status: "error", error: message });
+      });
+
+    return () => {
+      cancelled = true;
+      driverRef.current?.dispose();
+      driverRef.current = null;
+    };
+  }, [duration, engine, progressRef]);
+
+  useEffect(() => {
+    const driver = driverRef.current;
+    if (!driver) return;
+
+    if (isPlaying) driver.play();
+    else driver.pause();
   }, [isPlaying]);
 
-  return masterTweenRef;
+  return state;
 };

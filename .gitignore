@@ -13,15 +13,16 @@ node_modules
 dist
 dist-ssr
 coverage
+.vite
 .turbo
 .tmp
 .cache
 .vite-plus
 bunx-cache
 
-# Internal dev documentation (briefs, planning, design system, etc.)
-# Kept locally for the maintainer's own reference; not part of the public repo.
-docs/
+# Local research and browser profiles
+.scratch/research/
+.scratch/reports/**/chrome-*/
 
 # Local env
 .env
@@ -36,6 +37,10 @@ Thumbs.db
 # Test artifacts
 junit.xml
 test-results
+playwright-report
+.nyc_output
+*.pid
+*.pid.lock
 
 # Editor directories and files
 .vscode/*
